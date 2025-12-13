@@ -1,0 +1,55 @@
+# OS-specific files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+
+# Editor directories and files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+*.sublime-project
+*.sublime-workspace
+
+# Build artifacts
+*.o
+*.nes
+*.bin
+*.lst
+*.map
+*.cfg.bak
+
+# Temporary files
+*.tmp
+*.log
+*.bak
+*.backup
+
+# Documentation build
+_site/
+.jekyll-cache/
+.jekyll-metadata
+
+# Node modules (if using any JS tooling)
+node_modules/
+package-lock.json
+yarn.lock
+
+# Python (if using any Python tooling)
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+
+# Local configuration
+.env
+.env.local
