@@ -92,10 +92,10 @@ The code is organized into clear sections:
 
 ## Files
 
-- `main.s` - Main assembly source (refactored with best practices)
+- `main.asm` - Main assembly source (refactored with best practices)
 - `nes.cfg` - Linker configuration (16 KB PRG ROM)
 - `Makefile` - Build system with targets
-- `chars_data.s` - CHR ROM with complete alphabet tiles (contains all character data)
+- `chars_data.asm` - CHR ROM with complete alphabet tiles (contains all character data)
 - `README.md` - This file
 
 ## What It Displays

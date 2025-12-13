@@ -25,6 +25,7 @@ Move from "it works" to "it is correct on real hardware".
 - [2.3 PPU Rendering Rules](02-advanced-fundamentals/2.3-ppu-rendering-rules.md) - VRAM access, scroll registers, sprite evaluation
 - [2.4 Controller I/O](02-advanced-fundamentals/2.4-controller-io.md) - Shift register, strobing, button reading
 - [2.5 Audio Fundamentals](02-advanced-fundamentals/2.5-audio-fundamentals.md) - APU channels, frame counter, timing
+- [2.6 Advanced Optimization Techniques](02-advanced-fundamentals/2.6-optimization-techniques.md) - Cycle optimization, memory access, performance tuning
 
 ### 3. Core Concepts
 
@@ -45,6 +46,7 @@ Fast reference for active coding.
 - [4.3 Memory Cheatsheets](04-cheatsheets/4.3-memory-cheatsheets.md) - Memory maps, zero page, APU registers
 - [4.4 Timing Cheatsheets](04-cheatsheets/4.4-timing-cheatsheets.md) - Frame timing, VBlank windows, cycle budgets
 - [4.5 Audio Cheatsheets](04-cheatsheets/4.5-audio-cheatsheets.md) - APU register map, channel control, frame counter
+- [4.6 Optimization Cheatsheets](04-cheatsheets/4.6-optimization-cheatsheets.md) - Quick optimization reference, cycle costs, patterns
 
 ### 5. Applied Patterns & Systems
 

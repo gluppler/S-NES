@@ -219,7 +219,7 @@ Your NES project should follow this structure:
 
 ```
 my-nes-game/
-├── main.s          # Main assembly source
+├── main.asm        # Main assembly source
 ├── nes.cfg         # Linker configuration
 ├── Makefile        # Build system
 ├── chars.chr       # CHR ROM (tile graphics)
@@ -235,8 +235,8 @@ AS = ca65
 LD = ld65
 CFG = nes.cfg
 
-SOURCES = main.s
-OBJECTS = $(SOURCES:.s=.o)
+SOURCES = main.asm
+OBJECTS = $(SOURCES:.asm=.o)
 TARGET = game.nes
 
 .PHONY: all clean run
@@ -246,7 +246,7 @@ all: $(TARGET)
 $(TARGET): $(OBJECTS) $(CFG)
 	$(LD) -C $(CFG) -o $(TARGET) $(OBJECTS)
 
-%.o: %.s
+%.o: %.asm
 	$(AS) $< -o $@
 
 clean:
@@ -323,7 +323,7 @@ fceux --help
 
 ### Basic Workflow
 
-1. **Edit source code** (`main.s`)
+1. **Edit source code** (`main.asm`)
 2. **Build ROM**: `make`
 3. **Test in emulator**: `make run` or `mesen2 game.nes`
 4. **Debug**: Use emulator debugger (Mesen2 recommended)
@@ -428,7 +428,7 @@ sudo pacman -S cc65        # Arch
 
 **"Cannot open input file"**
 - Verify file paths in Makefile
-- Check file permissions: `chmod 644 *.s`
+- Check file permissions: `chmod 644 *.asm`
 
 ### Emulator Issues
 
@@ -455,7 +455,7 @@ fceux --verbose game.nes
 
 ### ROM Won't Boot
 
-1. **Check iNES header**: Verify header bytes in `main.s`
+1. **Check iNES header**: Verify header bytes in `main.asm`
 2. **Check reset vector**: Must point to valid code
 3. **Verify initialization**: Ensure proper PPU/APU setup
 4. **Test in multiple emulators**: Try Mesen2 and FCEUX

@@ -1,13 +1,12 @@
 # ============================================================================
-# NES Hello World Build System
+# NES Welcome Typography Build System
 # ============================================================================
-# Build system for Hello World NES program
+# Build system for Welcome Typography NES program
 # Follows NES documentation best practices
 #
 # Requirements:
 #   - ca65 (assembler, part of cc65)
 #   - ld65 (linker, part of cc65)
-#   - Python 3 (for verify target only)
 #   - FCEUX or compatible NES emulator
 # ============================================================================
 
@@ -19,7 +18,7 @@ CFG = nes.cfg
 # Source files
 SOURCES = main.asm
 OBJECTS = $(SOURCES:.asm=.o)
-TARGET = hello-world.nes
+TARGET = welcome.nes
 
 # Phony targets
 .PHONY: all clean distclean run verify help
@@ -32,13 +31,11 @@ TARGET = hello-world.nes
 all: $(TARGET)
 
 # Build object files from assembly source
-# Dependencies: main.asm requires chars_data.asm (included via .include)
 %.o: %.asm chars_data.asm
 	@echo "Assembling $<..."
 	$(AS) $< -o $@
 
 # Link ROM from object files
-# Dependencies: object files, linker config, and CHR data
 $(TARGET): $(OBJECTS) $(CFG) chars_data.asm
 	@echo "Linking $(TARGET)..."
 	$(LD) -C $(CFG) -o $(TARGET) $(OBJECTS)
@@ -54,13 +51,13 @@ $(TARGET): $(OBJECTS) $(CFG) chars_data.asm
 # Clean Targets
 # ============================================================================
 
-# Clean build artifacts (object files and ROM)
+# Clean build artifacts
 clean:
 	@echo "Cleaning build files..."
 	rm -f $(OBJECTS) $(TARGET)
 	@echo "✓ Clean complete"
 
-# Deep clean (same as clean for this project)
+# Deep clean
 distclean: clean
 	@echo "Deep cleaning..."
 	@echo "✓ Deep clean complete"
@@ -70,14 +67,11 @@ distclean: clean
 # ============================================================================
 
 # Run ROM in emulator
-# Detects display server (X11/Wayland) and sets appropriate Qt platform
 run: $(TARGET)
 	@echo "Running $(TARGET) in FCEUX..."
-	@echo "ROM file: $(TARGET) ($(shell stat -c%s $(TARGET)) bytes, modified $(shell stat -c%y $(TARGET) | cut -d' ' -f1-2))"
-	@echo "Note: Check FCEUX PPU Viewer (Tools -> PPU Viewer) to debug display issues"
-	@echo "IMPORTANT: If you see old data, close FCEUX completely and reopen it to reload the ROM"
+	@echo "ROM file: $(TARGET) ($(shell stat -c%s $(TARGET)) bytes)"
 	@if [ -n "$$WAYLAND_DISPLAY" ] && [ -n "$$DISPLAY" ]; then \
-		echo "Wayland detected with XWayland - using XCB platform for better compatibility"; \
+		echo "Wayland detected with XWayland - using XCB platform"; \
 		QT_QPA_PLATFORM=xcb fceux "$(TARGET)"; \
 	elif [ -n "$$WAYLAND_DISPLAY" ]; then \
 		echo "Wayland detected - using Wayland platform"; \
@@ -94,7 +88,7 @@ run: $(TARGET)
 # Verify Targets
 # ============================================================================
 
-# Verify ROM structure (size and header)
+# Verify ROM structure
 verify: $(TARGET)
 	@echo "Verifying ROM structure..."
 	@python3 -c "import sys; rom = open('$(TARGET)', 'rb').read(); \
@@ -114,7 +108,7 @@ verify: $(TARGET)
 
 # Display help information
 help:
-	@echo "NES Hello World Build System"
+	@echo "NES Welcome Typography Build System"
 	@echo ""
 	@echo "Targets:"
 	@echo "  make          - Build ROM (default)"

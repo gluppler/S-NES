@@ -17,8 +17,8 @@ LD = ld65
 CFG = nes.cfg
 
 # Source files
-SOURCES = main.s
-OBJECTS = $(SOURCES:.s=.o)
+SOURCES = main.asm
+OBJECTS = $(SOURCES:.asm=.o)
 TARGET = template.nes
 
 # Phony targets
@@ -32,7 +32,7 @@ TARGET = template.nes
 all: $(TARGET)
 
 # Build object files from assembly source
-%.o: %.s
+%.o: %.asm
 	@echo "Assembling $<..."
 	$(AS) $< -o $@
 

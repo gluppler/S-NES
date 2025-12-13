@@ -1,18 +1,19 @@
 ; ============================================================================
-; Hello World NES Program
+; NES Template
 ; ============================================================================
-; Displays text using complete alphabet/lexicon (A-Z, 0-9, punctuation)
+; Minimal working NES program structure
 ; Follows NES documentation best practices and hardware-accurate patterns
 ;
 ; Architecture:
-;   - 16 KB PRG ROM (Mapper 0, NROM)
+;   - 32 KB PRG ROM (Mapper 0, NROM)
 ;   - 8 KB CHR ROM (512 tiles)
-;   - Name table rendering with text system
+;   - Frame-synchronized game loop
+;   - OAM buffer for sprites
 ; ============================================================================
 
 .segment "HEADER"
     .byte "NES", $1A    ; iNES header identifier
-    .byte 1             ; 16 KB PRG ROM (1 * 16 KB)
+    .byte 2             ; 32 KB PRG ROM (2 * 16 KB)
     .byte 1             ; 8 KB CHR ROM (1 * 8 KB)
     .byte %00000000     ; Mapper 0, horizontal mirroring, no battery
     .byte %00000000     ; Mapper 0 (high), NES format
@@ -30,9 +31,40 @@
 ; ============================================================================
 ; Per NES documentation: Zero page ($0000-$00FF) for frequently accessed data
 ; Zero page access is faster (3 cycles vs 4 cycles for absolute addressing)
+; 
+; ADD CODE HERE: Define your own zero page variables
+; Recommended locations: $09-$7F (avoid $00-$08 which are used by template)
 ; ============================================================================
 zp_temp = $00           ; Temporary variable
-text_ptr = $02          ; 16-bit pointer for text data (low byte at $02, high byte at $03)
+zp_ptr = $02            ; 16-bit pointer (low byte at $02, high byte at $03)
+frame_counter = $04     ; Frame counter
+frame_ready = $05       ; Frame synchronization flag
+scroll_x = $06          ; Horizontal scroll position
+scroll_y = $07          ; Vertical scroll position
+ppu_ctrl = $08          ; PPU control register value
+
+; ADD CODE HERE: Your zero page variables
+; Example:
+;   player_x = $09      ; Player X position
+;   player_y = $0A       ; Player Y position
+;   score = $0B          ; Score (low byte)
+;   score_high = $0C    ; Score (high byte)
+
+; ============================================================================
+; RAM Variables
+; ============================================================================
+; Per NES documentation: RAM usage patterns
+; 
+; ADD CODE HERE: Define your own RAM variables
+; Recommended locations: $0300-$07FF (avoid $0000-$02FF which are used)
+; ============================================================================
+oam_buffer = $0200      ; OAM buffer (256 bytes, 64 sprites)
+
+; ADD CODE HERE: Your RAM variables
+; Example:
+;   game_state = $0300   ; Game state variable
+;   level_data = $0400   ; Level data buffer (256 bytes)
+;   enemy_data = $0500   ; Enemy data buffer (256 bytes)
 
 ; ============================================================================
 ; Reset Handler
@@ -82,38 +114,50 @@ vblank_wait2:
     BIT $2002
     BPL vblank_wait2
     
-    ; Load palette and background BEFORE enabling rendering
-    ; Per NES documentation: VRAM writes must happen during VBlank or forced blanking
-    JSR load_palette
-    JSR load_background
-    
-    ; Wait for VBlank before enabling rendering
-    ; Per NES documentation: Ensures first frame renders correctly
-vblank_wait3:
-    BIT $2002
-    BPL vblank_wait3
-    
-    ; Set scroll registers
-    ; Per NES documentation: Must be set before enabling rendering
-    LDA $2002           ; Reset scroll latch (read $2002)
-    LDA #0
-    STA $2005           ; X scroll = 0
-    STA $2005           ; Y scroll = 0
-    
-    ; Enable rendering
-    ; Per NES documentation: Enable during VBlank
+    ; Initialize PPU registers
+    ; Per NES documentation: Set up PPU before enabling rendering
     ; PPUCTRL ($2000): Bit 7=1 (NMI enable), Bit 3=0 (pattern table $0000 for background)
     ;                   Bit 0-1=00 (name table $2000), Bit 2=0 (increment by 1)
     LDA #%10000000      ; Enable NMI, pattern table 0, name table 0, increment by 1
     STA $2000
+    STA ppu_ctrl        ; Store for later updates
     ; PPUMASK ($2001): Bit 3=1 (show background), Bit 4=1 (show sprites)
     ;                   Bit 1=1 (show background in left 8px), Bit 0=0 (no grayscale)
     LDA #%00011110      ; Enable background and sprites, show left 8px
     STA $2001
     
+    ; Initialize game state variables
+    LDA #0
+    STA frame_counter
+    STA frame_ready
+    STA scroll_x
+    STA scroll_y
+    
+    ; Initialize OAM buffer (move all sprites off-screen)
+    ; Per NES documentation: Sprites with Y=255 are off-screen
+    LDX #0
+    LDA #$FF
+clear_oam:
+    STA oam_buffer,X
+    INX
+    BNE clear_oam       ; Loop until X wraps to 0 (256 iterations)
+    
+    ; Load palette
+    JSR load_palette
+    
+    ; ADD CODE HERE: Load background (optional - uncomment to use)
+    ; JSR load_background
+    
+    ; ADD CODE HERE: Initialize your game state variables
+    ; Example:
+    ;   LDA #0
+    ;   STA player_x
+    ;   STA player_y
+    ;   LDA #100
+    ;   STA score
+    
     ; Enter main loop
-    ; Per NES documentation: Simple loop, all work done in NMI
-main_loop:
+    ; Per NES documentation: Game loop pattern with frame synchronization
     JMP main_loop
 
 ; ============================================================================
@@ -135,17 +179,35 @@ nmi:
     ; Per NES documentation: Required! Reading $2002 clears bit 7
     LDA $2002
     
+    ; Update OAM via DMA
+    ; Per NES documentation: Fastest way to update sprites (513 cycles)
+    LDA #0
+    STA $2003           ; OAM address = 0
+    LDA #>oam_buffer    ; High byte of OAM buffer address
+    STA $4014           ; Start OAM DMA (513 cycles)
+    
     ; Update scroll registers
     ; Per NES documentation: Must be written twice per frame to maintain position
     ; First write = X scroll, second write = Y scroll
-    LDA #0
-    STA $2005           ; X scroll = 0
-    STA $2005           ; Y scroll = 0
+    ; ADD CODE HERE: Update scroll_x and scroll_y variables if you need scrolling
+    LDA scroll_x
+    STA $2005           ; X scroll
+    LDA scroll_y
+    STA $2005           ; Y scroll
     
     ; Update PPU control register
     ; Per NES documentation: Must be done every frame
-    LDA #%10000000      ; Enable NMI, pattern table 0, name table 0
+    ; ADD CODE HERE: Modify ppu_ctrl if you need to change name table, pattern table, etc.
+    LDA ppu_ctrl
     STA $2000
+    
+    ; Increment frame counter
+    INC frame_counter
+    
+    ; Set frame ready flag
+    ; Per NES documentation: Frame synchronization
+    LDA #1
+    STA frame_ready
     
     ; Restore CPU registers
     PLA                 ; Restore Y register
@@ -162,6 +224,106 @@ nmi:
 ; ============================================================================
 irq:
     RTI                 ; Return from interrupt (no-op for this program)
+
+; ============================================================================
+; Main Loop
+; ============================================================================
+; Per NES documentation: Game loop pattern with frame synchronization
+; ============================================================================
+main_loop:
+    ; Wait for frame
+    ; Per NES documentation: Frame synchronization
+    LDA frame_ready
+    BEQ main_loop       ; Wait until frame ready flag is set
+    
+    ; Clear frame flag
+    LDA #0
+    STA frame_ready
+    
+    ; Read controllers
+    ; Per NES documentation: Input polling
+    JSR read_controllers
+    
+    ; Update game logic
+    ; Per NES documentation: Game logic runs in main loop, not NMI
+    JSR update_game
+    
+    ; Update rendering data
+    ; Per NES documentation: Prepare rendering data before NMI
+    JSR update_rendering
+    
+    ; Loop back
+    JMP main_loop
+
+; ============================================================================
+; Read Controllers
+; ============================================================================
+; Per NES documentation: Controller reading via shift register
+; ============================================================================
+read_controllers:
+    ; Strobe controller 1
+    ; Per NES documentation: Set then clear strobe
+    LDA #$01
+    STA $4016           ; Set strobe
+    LDA #$00
+    STA $4016           ; Clear strobe
+    
+    ; ADD CODE HERE: Read 8 buttons (A, B, Select, Start, Up, Down, Left, Right)
+    ; Example implementation:
+    ;   LDX #0              ; Button index
+    ; read_loop:
+    ;   LDA $4016           ; Read button state
+    ;   AND #$01            ; Isolate bit 0
+    ;   STA button_states,X ; Store in RAM
+    ;   INX
+    ;   CPX #8              ; 8 buttons total
+    ;   BNE read_loop
+    
+    RTS
+
+; ============================================================================
+; Update Game
+; ============================================================================
+; Per NES documentation: Game logic runs in main loop, not NMI
+; ============================================================================
+update_game:
+    ; ADD CODE HERE: Game logic goes here
+    ; This is called once per frame (60 Hz NTSC)
+    ; 
+    ; Example: Update player position, check collisions, update game state
+    ; 
+    ; Important: Keep this function fast! Slow game logic can cause frame drops.
+    ; If you need to do heavy processing, split it across multiple frames.
+    
+    RTS
+
+; ============================================================================
+; Update Rendering
+; ============================================================================
+; Per NES documentation: Prepare rendering data before NMI
+; ============================================================================
+update_rendering:
+    ; ADD CODE HERE: Prepare rendering data (OAM buffer, etc.)
+    ; This is called once per frame, before NMI
+    ; 
+    ; Example: Update OAM buffer with sprite positions
+    ;   LDX #0
+    ;   LDA player_y
+    ;   STA oam_buffer,X    ; Sprite Y position
+    ;   INX
+    ;   LDA #0              ; Tile index
+    ;   STA oam_buffer,X    ; Sprite tile
+    ;   INX
+    ;   LDA #0              ; Attributes
+    ;   STA oam_buffer,X    ; Sprite attributes
+    ;   INX
+    ;   LDA player_x
+    ;   STA oam_buffer,X    ; Sprite X position
+    ; 
+    ; Note: OAM buffer is at $0200-$02FF (256 bytes, 64 sprites)
+    ; Format: Y, Tile, Attributes, X (4 bytes per sprite)
+    
+    RTS
 
 ; ============================================================================
 ; Load Palette
@@ -188,16 +350,6 @@ palette_loop:
     CPX #32             ; 32 palette bytes total
     BNE palette_loop
     
-    ; Set universal background color
-    ; Per NES documentation: $3F00 affects all backgrounds (mirrors to $3F10, $3F20, $3F30)
-    LDA $2002           ; Reset latch
-    LDA #$3F
-    STA $2006
-    LDA #$00
-    STA $2006
-    LDA #$0F            ; Universal background = black ($0F)
-    STA $2007
-    
     RTS
 
 ; ============================================================================
@@ -221,7 +373,7 @@ load_background:
     LDX #0
     LDY #0
 clear_name_table:
-    LDA #0              ; Tile 0 (space)
+    LDA #0              ; Tile 0 (empty)
     STA $2007           ; Write tile, auto-increments address
     INX
     BNE clear_name_table ; Loop 256 times (X wraps to 0)
@@ -248,185 +400,16 @@ clear_attribute_table:
     CPX #64             ; 64 attribute bytes total
     BNE clear_attribute_table
     
-    ; Write text to name table
-    ; Per NES documentation: Must reset latch after previous operations
+    ; ADD CODE HERE: Write your background tiles to name table
+    ; Example: Write a pattern of tiles starting at row 0, column 0
+    ;   LDA $2002           ; Reset latch
+    ;   LDA #$20            ; Name table 0 high byte
+    ;   STA $2006
+    ;   LDA #$00            ; Name table 0 low byte (row 0, col 0)
+    ;   STA $2006
+    ;   LDA #1              ; Tile 1
+    ;   STA $2007           ; Write tile
     
-    ; Write "HELLO WORLD!" at row 5, column 5
-    ; Address = $2000 + (row * 32) + column = $2000 + (5 * 32) + 5 = $20A5
-    LDA $2002           ; Reset latch
-    LDA #$20            ; High byte of $20A5
-    STA $2006           ; Write high byte first
-    LDA #$A5            ; Low byte of $20A5
-    STA $2006           ; Write low byte second - address is now $20A5
-    
-    ; Write text using text rendering function
-    LDA #<hello_text    ; Low byte of text address
-    STA text_ptr
-    LDA #>hello_text    ; High byte of text address
-    STA text_ptr+1
-    JSR write_text      ; Write text string
-    
-    ; Write alphabet demonstration at row 7, column 0
-    ; Address = $2000 + (7 * 32) + 0 = $20E0
-    LDA $2002           ; Reset latch
-    LDA #$20            ; High byte of $20E0
-    STA $2006
-    LDA #$E0            ; Low byte of $20E0
-    STA $2006
-    
-    LDA #<alphabet_text
-    STA text_ptr
-    LDA #>alphabet_text
-    STA text_ptr+1
-    JSR write_text
-    
-    ; Write numbers demonstration at row 8, column 0
-    ; Address = $2000 + (8 * 32) + 0 = $2100
-    LDA $2002           ; Reset latch
-    LDA #$21            ; High byte of $2100
-    STA $2006
-    LDA #$00            ; Low byte of $2100
-    STA $2006
-    
-    LDA #<numbers_text
-    STA text_ptr
-    LDA #>numbers_text
-    STA text_ptr+1
-    JSR write_text
-    
-    ; Write punctuation demonstration at row 9, column 0
-    ; Address = $2000 + (9 * 32) + 0 = $2120
-    LDA $2002           ; Reset latch
-    LDA #$21            ; High byte of $2120
-    STA $2006
-    LDA #$20            ; Low byte of $2120
-    STA $2006
-    
-    LDA #<punctuation_text
-    STA text_ptr
-    LDA #>punctuation_text
-    STA text_ptr+1
-    JSR write_text
-    
-    RTS
-
-; ============================================================================
-; Write Text String
-; ============================================================================
-; Writes a null-terminated string to name table at current PPU address
-; Input: text_ptr points to string (null-terminated)
-; Per NES documentation: Writes to $2007 go directly to PPU, no buffering
-; ============================================================================
-write_text:
-    LDY #0              ; Index into string
-write_text_loop:
-    LDA (text_ptr),Y    ; Load character from string (indirect indexed addressing)
-    BEQ write_text_done ; If null terminator (0), done
-    
-    ; Convert ASCII character to tile index using lookup function
-    JSR char_to_tile    ; Convert character to tile index (result in A)
-    STA $2007           ; Write tile index to name table, auto-increments address
-    INY                 ; Next character
-    CPY #32             ; Limit to 32 characters per line (name table width)
-    BCS write_text_done ; If >= 32, stop (prevent wrapping to next line)
-    JMP write_text_loop ; Continue
-write_text_done:
-    RTS
-
-; ============================================================================
-; Character to Tile Index Conversion
-; ============================================================================
-; Converts ASCII character to tile index using lookup logic
-; Input: A = ASCII character
-; Output: A = tile index
-; Per NES documentation: Lookup tables in ROM for efficient conversion
-; ============================================================================
-char_to_tile:
-    ; Check character type and convert to tile index
-    ; Order: numbers first (most common), then letters, then punctuation
-    
-    ; Check if number: '0'-'9' (ASCII 48-57)
-    CMP #'0'
-    BCC char_check_letter ; If < '0', check letter
-    CMP #'9'+1
-    BCS char_check_letter ; If >= '9'+1, check letter
-    ; Number: '0' (48) -> tile 1, '1' (49) -> tile 2, etc.
-    SEC
-    SBC #'0'            ; Convert to 0-9
-    CLC
-    ADC #1              ; Add base tile index for numbers (tile 1 = '0')
-    RTS
-
-char_check_letter:
-    ; Check if uppercase letter: 'A'-'Z' (ASCII 65-90)
-    CMP #'A'
-    BCC char_check_lower ; If < 'A', check lowercase
-    CMP #'Z'+1
-    BCS char_check_lower ; If >= 'Z'+1, check lowercase
-    ; Uppercase letter: 'A' (65) -> tile 11, 'B' (66) -> tile 12, etc.
-    SEC
-    SBC #'A'            ; Convert to 0-25
-    CLC
-    ADC #11             ; Add base tile index for letters (tile 11 = 'A')
-    RTS
-
-char_check_lower:
-    ; Check if lowercase letter: 'a'-'z' (ASCII 97-122)
-    CMP #'a'
-    BCC char_check_punct ; If < 'a', check punctuation
-    CMP #'z'+1
-    BCS char_check_punct ; If >= 'z'+1, check punctuation
-    ; Lowercase letter: convert to uppercase
-    SEC
-    SBC #('a' - 'A')    ; Convert 'a' to 'A', etc. (subtract 32)
-    JMP char_to_tile    ; Recursively convert uppercase
-
-char_check_punct:
-    ; Check punctuation characters
-    CMP #'.'
-    BEQ char_period
-    CMP #','
-    BEQ char_comma
-    CMP #'!'
-    BEQ char_exclaim
-    CMP #'?'
-    BEQ char_question
-    CMP #':'
-    BEQ char_colon
-    CMP #';'
-    BEQ char_semicolon
-    CMP #'-'
-    BEQ char_dash
-    CMP #$27            ; Apostrophe (ASCII 39 = $27)
-    BEQ char_quote
-    ; Default to space if unknown character
-char_invalid:
-    LDA #0              ; Tile 0 = space
-    RTS
-
-char_period:
-    LDA #37              ; Tile 37 = period
-    RTS
-char_comma:
-    LDA #38              ; Tile 38 = comma
-    RTS
-char_exclaim:
-    LDA #39              ; Tile 39 = exclamation
-    RTS
-char_question:
-    LDA #40              ; Tile 40 = question mark
-    RTS
-char_colon:
-    LDA #41              ; Tile 41 = colon
-    RTS
-char_semicolon:
-    LDA #42              ; Tile 42 = semicolon
-    RTS
-char_dash:
-    LDA #43              ; Tile 43 = dash
-    RTS
-char_quote:
-    LDA #44              ; Tile 44 = apostrophe
     RTS
 
 ; ============================================================================
@@ -435,9 +418,19 @@ char_quote:
 ; Per NES documentation: Constants and data in ROM
 ; ============================================================================
 
-; Palette data
+; ============================================================================
+; Palette Data
+; ============================================================================
+; ADD CODE HERE: Customize your palette colors
 ; Per NES documentation: 32 bytes, 8 palettes × 4 colors
 ; Format: Background color, Color 1, Color 2, Color 3
+; 
+; Color values: $00-$3F (64 colors total in NES palette)
+; Common colors: $0F=black, $30=white, $10=grey, $16=red, $27=blue, $18=green
+; 
+; Palette structure:
+;   - Background palettes 0-3: Used by background tiles (name table)
+;   - Sprite palettes 0-3: Used by sprites (OAM)
 palette_data:
     .byte $0F, $30, $10, $00  ; Background palette 0: bg=$0F(black), c1=$30(white), c2=$10(grey), c3=$00(black)
     .byte $0F, $30, $10, $00  ; Background palette 1
@@ -448,19 +441,6 @@ palette_data:
     .byte $0F, $16, $27, $18  ; Sprite palette 2
     .byte $0F, $16, $27, $18  ; Sprite palette 3
 
-; Text strings (null-terminated)
-hello_text:
-    .byte "HELLO WORLD!", 0
-
-alphabet_text:
-    .byte "ABCDEFGHIJKLMNOPQRSTUVWXYZ", 0
-
-numbers_text:
-    .byte "0123456789", 0
-
-punctuation_text:
-    .byte ".,!?:;-'", 0
-
 ; ============================================================================
 ; CHR ROM Data
 ; ============================================================================
@@ -468,4 +448,4 @@ punctuation_text:
 ; Each tile is 16 bytes: 8 bytes bitplane 0, 8 bytes bitplane 1
 ; ============================================================================
 .segment "CHARS"
-    .include "chars_data.s"
+    .incbin "chars.chr"

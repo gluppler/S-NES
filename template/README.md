@@ -16,7 +16,7 @@ This template includes:
 
 ## Files
 
-- `main.s` - Main assembly source file with complete NES program structure
+- `main.asm` - Main assembly source file with complete NES program structure
 - `nes.cfg` - Linker configuration file for ca65/ld65
 - `Makefile` - Build system with compile, run, and clean targets
 - `chars.chr` - Empty CHR ROM file (8 KB of zeros, ready to replace)
@@ -123,7 +123,7 @@ The template defines common zero page variables:
 
 ### Adding Your Game Logic
 
-Edit `main.s` and modify these functions:
+Edit `main.asm` and modify these functions:
 
 - `update_game:` - Add your game logic here
 - `update_rendering:` - Prepare rendering data (OAM buffer, etc.)
@@ -135,7 +135,7 @@ Replace `chars.chr` with your own 8 KB CHR ROM file containing tile graphics.
 
 ### Modifying Palette
 
-Edit the `palette_data:` section in `main.s` to change colors.
+Edit the `palette_data:` section in `main.asm` to change colors.
 
 ### Adding Background
 
@@ -151,7 +151,7 @@ The `nes.cfg` file defines:
 - **Mirroring**: Horizontal
 
 To change these, modify:
-1. The iNES header in `main.s` (`.segment "HEADER"`)
+1. The iNES header in `main.asm` (`.segment "HEADER"`)
 2. The memory configuration in `nes.cfg`
 
 ## Code Structure
