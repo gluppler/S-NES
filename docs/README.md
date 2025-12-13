@@ -120,7 +120,6 @@ This knowledge base does **not** cover:
 
 ## Cross-References
 
-- INSTRUCTIONS.md → Complete project structure and organization
 - [Main README](../README.md) - Project overview and contribution guidelines
 - [References](../REFERENCES.md) - External resources and authoritative links
 - [Contributing Guide](../CONTRIBUTING.md) - How to contribute to this project

@@ -188,7 +188,6 @@ clear_ram:
 
 ## Cross-References
 
-- INSTRUCTIONS.md → 7️⃣ Real Hardware Considerations
 - Related Fundamentals: 1.1 (NES System Overview)
 - Related Advanced Fundamentals: 2.1 (CPU Timing), 2.2 (NMI & VBlank), 2.3 (PPU Rendering Rules)
 - Related Tooling: 6.2 (Emulators & Debuggers)
