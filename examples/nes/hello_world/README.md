@@ -53,12 +53,12 @@ This example is based on the canonical [nes-hello](https://github.com/pinobatch/
 
 For detailed NES programming documentation, see:
 
-- [NES Documentation Index](../../../docs/nes/README.md) – NES documentation index
-- [NES Fundamentals](../../../docs/nes/fundamentals/) – Core NES hardware concepts
-- [NES Advanced Fundamentals](../../../docs/nes/advanced_fundamentals/) – Timing and constraints
-- [NES References](../../../docs/nes/references/REFERENCES.md) – External resources and authoritative links
+- [NES Documentation Index](../../../docs/nes/README.md) - NES documentation index
+- [NES Fundamentals](../../../docs/nes/fundamentals/) - Core NES hardware concepts
+- [NES Advanced Fundamentals](../../../docs/nes/advanced_fundamentals/) - Timing and constraints
+- [NES References](../../../docs/nes/REFERENCES.md) - External resources and authoritative links
 
 ## Related Resources
 
-- [NES Template](../../../templates/nes/) – Complete NES template with full structure
-- [Framework Overview](../../../README.md) – Main framework README
+- [NES Template](../../../templates/nes/) - Complete NES template with full structure
+- [Framework Overview](../../../README.md) - Main framework README

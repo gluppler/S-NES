@@ -17,7 +17,26 @@ EMULATOR ?= fceux
 # Source files
 MAIN_SOURCE = src/main.asm
 SOURCES = $(shell find src -name "*.asm" -o -name "*.inc" | sort)
-OBJECTS = $(patsubst src/%.asm,build/obj/%.o,$(shell find src -name "*.asm"))
+
+# Files included in main.asm should NOT be compiled separately
+# These are included with .include, so they become part of main.asm's object file
+EXCLUDE_FROM_OBJECTS = \
+	src/sprites/sprite_dma.asm \
+	src/input/controller.asm \
+	src/input/debounce.asm \
+	src/ppu/ppu_init.asm \
+	src/ppu/ppu_write.asm \
+	src/ppu/scrolling.asm \
+	src/tilemap/tilemap_loader.asm \
+	src/game/entities.asm \
+	src/screens/welcome.asm \
+	src/screens/game.asm \
+	src/ppu/attributes.asm
+
+# Compile only .asm files that are NOT included in main.asm
+ALL_ASM = $(shell find src -name "*.asm")
+STANDALONE_ASM = $(filter-out $(EXCLUDE_FROM_OBJECTS),$(ALL_ASM))
+OBJECTS = $(patsubst src/%.asm,build/obj/%.o,$(STANDALONE_ASM))
 
 # Target ROM
 TARGET = build/rom/game.nes

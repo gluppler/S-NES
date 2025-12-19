@@ -201,4 +201,4 @@ update_rendering:
 ; Per NES documentation: Pattern table data, 8 KB (512 tiles × 16 bytes)
 ; ============================================================================
 .segment "CHARS"
-    .incbin "../assets/graphics/chr/font.chr"
+    .incbin "assets/graphics/chr/font.chr"

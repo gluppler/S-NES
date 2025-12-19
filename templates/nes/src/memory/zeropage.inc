@@ -29,9 +29,9 @@ ppu_ctrl = $08          ; PPU control register value
 ; ADD CODE HERE: Your zero page variables
 ; Recommended locations: $09-$7F (avoid $00-$08 which are used by template)
 ; Example:
-;   player_x = $09      ; Player X position
-;   player_y = $0A       ; Player Y position
-;   score = $0B          ; Score (low byte)
-;   score_high = $0C    ; Score (high byte)
+;   player_x = $0B      ; Player X position
+;   player_y = $0C      ; Player Y position
+;   score = $0D         ; Score (low byte)
+;   score_high = $0E    ; Score (high byte)
 
 .endif ; ZEROPAGE_INC

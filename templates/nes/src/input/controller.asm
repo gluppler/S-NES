@@ -14,6 +14,8 @@
 ; Per NES documentation: Controller reading via shift register
 ; Reads both controllers and calculates pressed/released states
 ; ============================================================================
+.export read_controllers
+
 read_controllers:
     ; Save registers
     PHA
@@ -69,6 +71,7 @@ read_controller1_loop:
 ; Input: A = button index (BUTTON_A, BUTTON_B, etc.)
 ; Output: A = 1 if pressed, 0 if not
 ; ============================================================================
+.export check_button_pressed
 check_button_pressed:
     TAX                 ; Use X as index
     LDA controller1_pressed,X  ; Load pressed state
@@ -81,6 +84,7 @@ check_button_pressed:
 ; Input: A = button index (BUTTON_A, BUTTON_B, etc.)
 ; Output: A = 1 if held, 0 if not
 ; ============================================================================
+.export check_button_held
 check_button_held:
     TAX                 ; Use X as index
     LDA controller1_buttons,X  ; Load current state
@@ -93,6 +97,7 @@ check_button_held:
 ; Input: A = button index (BUTTON_A, BUTTON_B, etc.)
 ; Output: A = 1 if released, 0 if not
 ; ============================================================================
+.export check_button_released
 check_button_released:
     TAX                 ; Use X as index
     LDA controller1_released,X  ; Load released state

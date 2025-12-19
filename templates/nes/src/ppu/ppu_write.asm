@@ -7,6 +7,9 @@
 .include "constants/ppu.inc"
 .include "memory/zeropage.inc"
 
+.export set_ppu_address
+.export write_tile
+
 ; ============================================================================
 ; Set PPU Address
 ; ============================================================================

@@ -1,0 +1,19 @@
+*.sw[a-p]
+*.o
+*~
+*.chr
+/obj/nes/*.s
+/zip.in
+*.nes.deb
+*.dbg
+*.fdb
+/map*.txt
+__pycache__/
+*.pyc
+*rom-template-*.zip
+*rom-template.nes
+
+# this is NES homebrew, not DSiWare
+*.DS_Store
+
+

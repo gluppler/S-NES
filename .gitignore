@@ -66,3 +66,12 @@ env/
 # Local configuration
 .env
 .env.local
+
+# Internal documentation/prompt files (not for public repository)
+PROMPT.md
+PROMPT2.md
+DOCS-UPDATE.md
+DOCS-UPDATE2.md
+DOCS-UPDATE3.md
+*PROMPT*.md
+*DOCS-UPDATE*.md
