@@ -1,140 +1,163 @@
-# S-NES-BOY SNES Documentation
+# Super Nintendo Entertainment System (SNES) Documentation
 
-Hardware-accurate documentation for the Super Nintendo Entertainment System using the 65C816 (65816) CPU.
+Hardware-accurate documentation for the Super Nintendo Entertainment System (SNES / Super Famicom).
 
-## Overview
+## System Architecture
 
-This documentation is part of **S-NES-BOY**, a Learning & Development Framework for NES, SNES, and Game Boy systems. The content in this tree is specific to the SNES and provides a complete learning path from fundamentals to advanced development.
+The SNES is a **three-processor system**:
 
-This documentation applies to:
-- SNES (Super Nintendo Entertainment System): Primary focus
+- **Ricoh 5A22 (WDC 65C816)**: Main CPU at 3.58 MHz (NTSC) / 3.55 MHz (PAL)
+- **S-PPU (Picture Processing Unit)**: Graphics processor with 8 background modes, Mode 7, windowing, color math
+- **SPC700 + S-DSP**: Separate 8-bit audio CPU (1.024 MHz) with dedicated DSP for 8-voice sample playback
 
-## Primary Sources of Truth
+This architecture is fundamentally different from NES and requires SNES-specific documentation structure.
 
-- [Super Wiki](https://wiki.super.org) - Comprehensive SNES development resources and documentation
-- [65816.org](http://www.65816.org/) - 65816 processor documentation
+## Documentation Structure
 
-## Reference Implementation
+This documentation is organized to reflect SNES hardware architecture:
 
-The canonical minimal SNES example is **snes-hello** (https://github.com/SlithyMatt/snes-hello). The code patterns from snes-hello have been integrated into the S-NES-BOY example at `examples/snes/hello_world/`, which demonstrates correct hardware initialization patterns and serves as the reference for SNES development.
+### Getting Started
+- [Hardware Overview](getting-started/01-hardware-overview.md) - Three-processor architecture, system components
+- [Toolchain Setup](getting-started/02-toolchain-setup.md) - ca65, wla-dx, asar, bass assemblers
+- [First SNES Program](getting-started/03-first-program.md) - Complete working example
+- [Understanding 65816](getting-started/04-understanding-65816.md) - Native vs emulation mode, register widths
 
-## Structure
+### Hardware Documentation
 
-This knowledge base is organized into seven primary sections:
+#### CPU (65816)
+- [Native vs Emulation Mode](hardware/cpu-65816/native-vs-emulation.md) - Critical SNES concept
+- [Register Width Control](hardware/cpu-65816/register-widths.md) - 8-bit vs 16-bit mode
+- [Addressing Modes](hardware/cpu-65816/addressing-modes.md) - Direct page, banked addressing
+- [Interrupts & Vectors](hardware/cpu-65816/interrupts.md) - NMI, IRQ, COP, BRK
+- [MUL/DIV Hardware](hardware/cpu-65816/mul-div-hardware.md) - Hardware multiply/divide registers
 
-### 1. Fundamentals
+#### Memory
+- [WRAM Organization](hardware/memory/wram-organization.md) - 128 KB work RAM layout
+- [LoROM Mapping](hardware/memory/rom-mapping-lorom.md) - Low ROM mapping mode
+- [HiROM Mapping](hardware/memory/rom-mapping-hirom.md) - High ROM mapping mode
+- [ExHiROM Mapping](hardware/memory/rom-mapping-exhirom.md) - Extended HiROM mapping
+- [SRAM & Save Formats](hardware/memory/sram-save-formats.md) - Battery-backed RAM
+- [MMIO Registers](hardware/memory/mmio-registers.md) - Memory-mapped I/O ($2100-$43FF)
 
-Establish correct mental models and non-negotiable concepts for SNES systems.
+#### PPU (S-PPU)
+- [Background Modes](hardware/ppu/background-modes.md) - Modes 0-7, tile formats
+- [Mode 7 Math](hardware/ppu/mode-7-math.md) - Affine transformation, rotation, scaling
+- [Tile Formats](hardware/ppu/tile-formats.md) - 2bpp, 4bpp, 8bpp tile encoding
+- [OAM System](hardware/ppu/oam-system.md) - Sprite attribute memory, 32 per scanline limit
+- [Windowing](hardware/ppu/windowing.md) - Window system, masking
+- [Color Math](hardware/ppu/color-math.md) - Add/sub blending, fixed color
 
-- [1.1 SNES System Overview](fundamentals/1.1-snes-system-overview.md) - Hardware overview, NTSC vs PAL, VBlank
-- [1.2 65816 CPU Fundamentals](fundamentals/1.2-65816-cpu-fundamentals.md) - Registers, addressing modes, instructions
-- [1.3 Memory Fundamentals](fundamentals/1.3-memory-fundamentals.md) - CPU memory map, WRAM, ROM mapping
-- [1.4 PPU Fundamentals](fundamentals/1.4-ppu-fundamentals.md) - Backgrounds, sprites, modes, VRAM
-- [1.5 ROM Fundamentals](fundamentals/1.5-rom-fundamentals.md) - LoROM/HiROM, header, cartridge structure
+#### DMA & HDMA
+- [General DMA](hardware/dma-hdma/general-dma.md) - 8 DMA channels, transfer modes
+- [HDMA Per-Scanline](hardware/dma-hdma/hdma-per-scanline.md) - H-Blank DMA, per-scanline effects
+- [DMA Channels](hardware/dma-hdma/dma-channels.md) - Channel configuration, priorities
+- [Cycle Stealing](hardware/dma-hdma/cycle-stealing.md) - DMA timing, CPU impact
 
-### 2. Advanced Fundamentals
+#### Audio (SPC700 + S-DSP)
+- [SPC700 Boot](hardware/audio-spc700/spc700-boot.md) - IPL, boot protocol, upload
+- [CPU-APU Protocol](hardware/audio-spc700/cpu-apu-protocol.md) - Communication via $2140-$2143
+- [DSP Registers](hardware/audio-spc700/dsp-registers.md) - S-DSP register map
+- [BRR Format](hardware/audio-spc700/brr-format.md) - Bit Rate Reduction audio compression
+- [ADSR Envelopes](hardware/audio-spc700/adsr-envelopes.md) - Volume envelope system
+- [Echo System](hardware/audio-spc700/echo-system.md) - FIR filter, ring buffer, reverb
 
-Move from "it works" to "it is correct on real hardware".
+### Programming Guides
 
-- [2.1 CPU Timing & Cycles](advanced_fundamentals/2.1-cpu-timing-cycles.md) - Cycle counts, branch penalties, timing
-- [2.2 NMI & VBlank Discipline](advanced_fundamentals/2.2-nmi-vblank-discipline.md) - NMI handling, VBlank windows
-- [2.3 PPU Rendering Rules](advanced_fundamentals/2.3-ppu-rendering-rules.md) - VRAM access, register writes, rendering
-- [2.4 Controller I/O](advanced_fundamentals/2.4-controller-io.md) - Controller reading, auto-joypad
-- [2.5 Audio Fundamentals](advanced_fundamentals/2.5-audio-fundamentals.md) - SPC700, communication, channels
-- [2.6 Advanced Optimization Techniques](advanced_fundamentals/2.6-optimization-techniques.md) - Cycle optimization, DMA usage, performance tuning
-- [2.7 Graphics & Pixel Art](advanced_fundamentals/2.7-graphics-pixel-art.md) - Tile design, palette systems, pixel art techniques
+#### Initialization
+- [CPU Initialization](programming/initialization/cpu-init.md) - Native mode entry, stack, direct page
+- [PPU Initialization](programming/initialization/ppu-init.md) - Register setup, forced blanking
+- [SPC700 Boot](programming/initialization/spc700-boot.md) - Audio processor boot sequence
+- [Fast ROM Setup](programming/initialization/fast-rom-setup.md) - Enabling fast ROM access
 
-### 3. Core Concepts
+#### Game Loop
+- [Frame Synchronization](programming/game-loop/frame-synchronization.md) - WAI, frame timing
+- [NMI Handler](programming/game-loop/nmi-handler.md) - VBlank interrupt handling
+- [VBlank Windows](programming/game-loop/vblank-windows.md) - Safe PPU access periods
 
-Learn how subsystems interact and work together.
+#### Rendering
+- [OAM Mirror](programming/rendering/oam-mirror.md) - WRAM sprite buffer
+- [DMA OAM Updates](programming/rendering/dma-oam-updates.md) - DMA channel 0 for OAM
+- [VRAM Management](programming/rendering/vram-management.md) - Tile loading, DMA transfers
+- [Background Layers](programming/rendering/background-layers.md) - Layer setup, scrolling
 
-- [3.1 The Game Loop](concepts/3.1-the-game-loop.md) - Main loop, NMI handler, frame synchronization
-- [3.2 Data-Oriented Design (SNES Style)](concepts/3.2-data-oriented-design.md) - Memory layout, WRAM organization, struct-of-arrays
-- [3.3 Rendering Architecture](concepts/3.3-rendering-architecture.md) - OAM buffering, VRAM updates, rendering pipeline
-- [3.4 Input → State → Output Pipeline](concepts/3.4-input-state-output-pipeline.md) - Controller input, game state, rendering output
-- [3.5 Map & Level Systems](concepts/3.5-map-level-systems.md) - Metatiles, compression, level data
+#### Input
+- [Auto-Joypad](programming/input/auto-joypad.md) - Hardware automatic controller polling
+- [Button State Tracking](programming/input/button-state-tracking.md) - Triggered vs held buttons
 
-### 4. Cheatsheets
+### Techniques
 
-Fast reference for active coding.
+#### Mode 7
+- [Mode 7 Setup](techniques/mode-7/setup.md) - Matrix initialization
+- [Rotation & Scaling](techniques/mode-7/rotation-scaling.md) - Affine transformations
+- [Matrix Math](techniques/mode-7/matrix-math.md) - Matrix operations
 
-- [4.1 CPU Cheatsheets](cheatsheets/04-cheatsheets/4.1-cpu-cheatsheets.md) - Instruction reference, addressing modes, flags
-- [4.2 PPU Cheatsheets](cheatsheets/04-cheatsheets/4.2-ppu-cheatsheets.md) - Register reference, background modes, sprites
-- [4.3 Memory Cheatsheets](cheatsheets/04-cheatsheets/4.3-memory-cheatsheets.md) - Memory maps, WRAM, ROM mapping
-- [4.4 Timing Cheatsheets](cheatsheets/04-cheatsheets/4.4-timing-cheatsheets.md) - Frame timing, VBlank windows, cycle budgets
-- [4.5 Audio Cheatsheets](cheatsheets/04-cheatsheets/4.5-audio-cheatsheets.md) - SPC700 register map, communication protocol
-- [4.6 Optimization Cheatsheets](cheatsheets/04-cheatsheets/4.6-optimization-cheatsheets.md) - Quick optimization reference, cycle costs, patterns
+#### HDMA Effects
+- [Per-Scanline Colors](techniques/hdma-effects/per-scanline-colors.md) - Color changes per scanline
+- [Window Effects](techniques/hdma-effects/window-effects.md) - HDMA windowing
+- [Mode 7 Transforms](techniques/hdma-effects/mode-7-transforms.md) - Per-scanline Mode 7 changes
 
-### 5. Applied Patterns & Systems
+### Reference
 
-Reusable, proven solutions for common problems.
+Quick lookup tables, register maps, and external resources:
+- [Quick Reference Guides](references/) - CPU, PPU, DMA, SPC700, memory, timing
+- [External References](references/REFERENCES.md) - 100+ authoritative SNES resources
 
-- [5.1 Sprite Engine Patterns](techniques/05-applied-patterns/5.1-sprite-engine-patterns.md) - Fixed slots, dynamic allocation, priority
-- [5.2 Scrolling Patterns](techniques/05-applied-patterns/5.2-scrolling-patterns.md) - Horizontal, vertical, four-way scrolling
-- [5.3 Collision Systems](techniques/05-applied-patterns/5.3-collision-systems.md) - Tile-based, bounding box, hybrid collision
-- [5.4 Animation Systems](techniques/05-applied-patterns/5.4-animation-systems.md) - Frame tables, timers, state-driven animation
-- [5.5 Audio Integration](techniques/05-applied-patterns/5.5-audio-integration.md) - SPC700 communication, music vs SFX priority
+## Key SNES Concepts
 
-### 6. Tooling & Debugging
+### Native vs Emulation Mode
+The 65816 starts in emulation mode (6502-compatible). You **must** switch to native mode:
+```asm
+CLC
+XCE  ; Switch to native mode
+```
 
-Tools and techniques for development.
+### Register Width Control
+65816 registers can be 8-bit or 16-bit:
+```asm
+SEP #$20  ; 8-bit accumulator
+REP #$20  ; 16-bit accumulator
+```
 
-- [6.1 Toolchain (Linux-first)](06-tooling-debugging/6.1-toolchain.md) - ca65/ld65, Makefiles
-- [6.2 Emulators & Debuggers](06-tooling-debugging/6.2-emulators-debuggers.md) - bsnes workflow, breakpoints, PPU viewers
-- [6.3 Test ROMs](06-tooling-debugging/6.3-test-roms.md) - CPU tests, PPU tests, SPC700 tests (see [`tests/snes/`](../../../tests/snes/) for test ROM collection when available) (see `tests/snes/` for test ROM collection when available)
+### DMA is Essential
+SNES uses DMA for all VRAM/CGRAM/OAM transfers. Manual writes are too slow.
 
-### 7. Real Hardware Considerations
+### SPC700 Boot Required
+Audio requires booting the SPC700 processor before use. It's a separate CPU.
 
-What you need to know for real SNES hardware.
+### Mode 7 is Unique
+SNES Mode 7 provides real-time affine transformation (rotation, scaling) - unique to SNES.
 
-- [Real Hardware Considerations](07-real-hardware/real-hardware-considerations.md) - Flashcarts, power-on state, emulator mismatches
+## Authoritative Sources
 
-## Philosophy
+See [References](references/REFERENCES.md) for complete list of 100+ authoritative SNES resources including:
+- **Fullsnes** (problemkaputt.de) - Complete SNES hardware documentation
+- **SNESdev Wiki** (wiki.super.org) - SNES development resources
+- **65816.org** - 65816 processor documentation
+- **S-DSP Documentation** - Complete S-DSP specification
 
-This knowledge base follows these principles:
+## Examples
 
-- **Hardware-first**: No abstractions until justified by hardware constraints
-- **Assembly-aware**: Assembly language is the foundation; higher-level languages are convenience layers
-- **Deterministic**: Cycle counts, registers, memory maps matter
-- **Cross-linked**: Concepts reference each other, not isolated chapters
-- **Cheatsheet-driven**: Fast recall is a first-class feature
-- **SNES focused**: Dedicated to SNES development
+SNES code examples are in [`examples/snes/`](../../examples/snes/):
+- `hello_world/` - Minimal SNES program demonstrating text rendering
+- `move_sprite/` - Sprite movement with controller input and DMA OAM updates
+- `bounce_sprite/` - Bouncing sprite with automatic physics
+- `lorom-template/` - Complete LoROM template with audio support
 
-## Global Constraints
+## Templates
 
-- Hardware-first explanations
-- Precise terminology (use official register names)
-- Explicitly describe limitations and invariants
-- Assume native 65816 mode unless stated otherwise
+SNES development templates are in [`templates/snes/`](../../templates/snes/):
+- Complete SNES project structure
+- Initialization code
+- DMA utilities
+- SPC700 boot code
 
-## Tone
+## Schematics
 
-- Technical
-- Precise
-- Non-tutorial
-- Non-hand-holding
-
-## Target Audience
-
-- **Technically competent**: Assumes programming knowledge
-- **New to SNES**: No system-specific intuition required
-- **65816 literate**: Basic assembly understanding helpful but not required
-- **Hardware enthusiasts**: Interest in understanding how these systems work
-
-## Related Resources
-
-- [Main README](../../README.md) - Framework overview
-- [References](references/REFERENCES.md) - SNES-specific external resources
-- [Gold Standard Examples](gold_standard/) - Verified implementation patterns
-- [Contributing Guide](../../CONTRIBUTING.md) - How to contribute to this framework
-
-## External Resources
-
-- [Super Wiki](https://wiki.super.org) - SNES development resources
-- [65816.org](http://www.65816.org/) - 65816 processor documentation
+SNES hardware schematics are in [`schematics/snes/`](../../../schematics/snes/):
+- Console schematics
+- Component datasheets
+- Development manuals
 
 ---
 
-S-NES-BOY SNES documentation is dedicated to learning and development of SNES systems.
-
-This documentation is maintained as part of the S-NES-BOY Learning & Development Framework. See [CONTRIBUTING.md](../../CONTRIBUTING.md) for contribution guidelines.
+**This documentation is SNES-specific and does not match NES structure.**

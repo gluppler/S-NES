@@ -118,7 +118,7 @@
 ; ============================================================================
 ; Include Screen Modules
 ; ============================================================================
-.include "screens/welcome.asm"
+; Note: welcome screen is now integrated into reset.asm (matching hello_world pattern)
 .include "screens/game.asm"
 
 ; ============================================================================

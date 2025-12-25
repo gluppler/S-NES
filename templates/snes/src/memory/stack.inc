@@ -1,15 +1,17 @@
 ; ============================================================================
 ; Stack Memory Definitions
 ; ============================================================================
-; SNES hardware behavior: Stack is at $0100-$01FF
+; SNES stack is at $000100-$0001FF (256 bytes)
 ; Stack pointer initialized to $01FF (grows downward)
+; See ../../docs/snes/programming/initialization/cpu-init.md
 ; ============================================================================
 
 .ifndef SNES_STACK_INC
 SNES_STACK_INC = 1
 
-STACK_BASE = $01FF      ; Stack base address (top of stack)
-STACK_SIZE = 256        ; Stack size (256 bytes)
+STACK_BASE = $0100        ; Stack base address
+STACK_TOP = $01FF         ; Stack top (initial SP value)
+STACK_SIZE = 256          ; Stack size (256 bytes)
 
 ; Stack usage notes:
 ; - Stack is used for subroutine calls (JSR/RTS)

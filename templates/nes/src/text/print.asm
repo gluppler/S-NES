@@ -30,6 +30,7 @@ write_text_done:
 ; ============================================================================
 ; Character to Tile Index Conversion
 ; ============================================================================
+.export char_to_tile
 char_to_tile:
     CMP #32
     BCC char_invalid

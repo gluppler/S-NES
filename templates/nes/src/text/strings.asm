@@ -4,7 +4,9 @@
 ; Text strings for the game
 ; ============================================================================
 
-; ADD CODE HERE: Define your text strings
-; Example:
-; hello_text:
-;     .byte "HELLO WORLD!", 0
+; Template display strings
+template_str:
+    .byte "NES TEMPLATE", 0
+
+ready_str:
+    .byte "READY TO CODE", 0

@@ -14,10 +14,10 @@ CFG = linker/lorom.cfg
 # Emulator selection (default: bsnes)
 EMULATOR ?= bsnes
 
-# Source files
-MAIN_SOURCE = src/main.asm
-SOURCES = $(shell find src -name "*.asm" -o -name "*.inc" | sort)
-OBJECTS = $(patsubst src/%.asm,build/obj/%.o,$(shell find src -name "*.asm"))
+# Source files - only compile main.s for minimal template
+MAIN_SOURCE = src/main.s
+SOURCES = src/main.s
+OBJECTS = build/obj/main.o
 
 # Target ROM
 TARGET = build/rom/game.sfc
@@ -351,6 +351,7 @@ check-python:
 # ============================================================================
 
 # Default target: build ROM
+.DEFAULT_GOAL := all
 all: check-cc65 $(TARGET)
 
 # Create build directories
@@ -359,13 +360,13 @@ build/obj build/rom build/map:
 
 # Build object files from assembly source
 # Uses 65816 CPU mode and force_range feature for 16-bit immediates (required for SNES)
-build/obj/%.o: src/%.asm | build/obj check-cc65
+build/obj/%.o: src/%.s | build/obj check-cc65
 	@echo "Assembling $<..."
 	@mkdir -p $(dir $@)
-	$(AS) --cpu 65816 --feature force_range -I src $< -o $@
+	$(AS) --cpu 65816 --feature force_range -I src -I headers -I . $< -o $@
 
 # Link ROM from object files
-$(TARGET): $(OBJECTS) $(CFG) assets/graphics/chr/font.chr | build/rom build/map
+$(TARGET): $(OBJECTS) $(CFG) | build/rom build/map
 	@echo "Linking $(TARGET)..."
 	$(LD) -C $(CFG) -o $(TARGET) $(OBJECTS) -m build/map/game.map
 	@if [ -f $(TARGET) ]; then \

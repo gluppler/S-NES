@@ -41,5 +41,7 @@ When adding new gold-standard examples:
 ## Related Documentation
 
 - [SNES Documentation Index](../README.md) - Main SNES documentation
-- [SNES Fundamentals](../fundamentals/) - Core hardware concepts
-- [SNES Advanced Fundamentals](../advanced_fundamentals/) - Timing and constraints
+- [Getting Started](../getting-started/) - Learning guides
+- [Hardware Documentation](../hardware/) - Hardware details
+- [Programming Guides](../programming/) - Development guides
+- [Examples](../../../examples/snes/) - SNES code examples

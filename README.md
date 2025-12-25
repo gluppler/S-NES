@@ -27,7 +27,7 @@ Each system documentation tree is written in hardware terms, is self-contained, 
 Hardware schematic diagrams for console and cartridge circuits:
 
 - `schematics/nes/` - NES console and cartridge schematic diagrams (KiCad and PDF)
-- `schematics/snes/` - SNES schematics (directory structure ready)
+- `schematics/snes/` - SNES console and cartridge schematic diagrams (PDF)
 - `schematics/gb/` - Game Boy schematics (directory structure ready)
 
 These schematics provide circuit-level documentation essential for understanding hardware behavior, developing accurate emulators, and creating hardware projects.
@@ -70,7 +70,7 @@ These examples serve as learning resources, demonstrating correct hardware initi
 Comprehensive test ROM collections for verifying hardware behavior, emulator accuracy, and code correctness live under `tests/`:
 
 - `tests/nes/` - NES test ROMs: CPU tests, PPU tests, APU tests, mapper tests, timing tests, and specialized tests
-- `tests/snes/` - SNES test ROMs (directory structure ready)
+- `tests/snes/` - SNES test ROMs: hardware validation tests and test demos for CPU, PPU, DMA/HDMA, audio, and memory
 - `tests/gb/` - Game Boy test ROMs (directory structure ready)
 
 These test ROMs are authoritative tools for:

@@ -1,0 +1,65 @@
+Modules list:
+-------------
+main.o:
+    CODE              Offs=000000  Size=0002DE  Align=00001  Fill=0000
+    RODATA            Offs=000000  Size=000038  Align=00001  Fill=0000
+    ZEROPAGE          Offs=000000  Size=00000E  Align=00001  Fill=0000
+    INESHDR           Offs=000000  Size=000008  Align=00001  Fill=0000
+    VECTORS           Offs=000000  Size=000006  Align=00001  Fill=0000
+vauspads.o:
+    CODE              Offs=0002DE  Size=000023  Align=00001  Fill=0000
+    ZEROPAGE          Offs=00000E  Size=000008  Align=00001  Fill=0000
+ppuclear.o:
+    CODE              Offs=000301  Size=000045  Align=00001  Fill=0000
+
+
+Segment list:
+-------------
+Name                   Start     End    Size  Align
+----------------------------------------------------
+INESHDR               000000  000007  000008  00001
+ZEROPAGE              000010  000025  000016  00001
+CODE                  00C000  00C345  000346  00001
+RODATA                00C400  00C437  000038  00001
+VECTORS               00FFFA  00FFFF  000006  00001
+
+
+Exports list by name:
+---------------------
+OAM                       000200 REA    cur_keys_d0               00001E RLZ    
+cur_keys_d1               000020 RLZ    cur_keys_d3               000022 RLZ    
+cur_keys_d4               000024 RLZ    ppu_clear_nt              00C301 RLA    
+ppu_clear_oam             00C323 RLA    ppu_screen_on             00C333 RLA    
+read_all_pads             00C2DE RLA    
+
+
+Exports list by value:
+----------------------
+cur_keys_d0               00001E RLZ    cur_keys_d1               000020 RLZ    
+cur_keys_d3               000022 RLZ    cur_keys_d4               000024 RLZ    
+OAM                       000200 REA    read_all_pads             00C2DE RLA    
+ppu_clear_nt              00C301 RLA    ppu_clear_oam             00C323 RLA    
+ppu_screen_on             00C333 RLA    
+
+
+Imports list:
+-------------
+OAM (main.o):
+    ppuclear.o                src/ppuclear.asm:12
+cur_keys_d0 (vauspads.o):
+    main.o                    src/main.asm:15
+cur_keys_d1 (vauspads.o):
+    main.o                    src/main.asm:15
+cur_keys_d3 (vauspads.o):
+    main.o                    src/main.asm:15
+cur_keys_d4 (vauspads.o):
+    main.o                    src/main.asm:15
+ppu_clear_nt (ppuclear.o):
+    main.o                    src/main.asm:14
+ppu_clear_oam (ppuclear.o):
+    main.o                    src/main.asm:14
+ppu_screen_on (ppuclear.o):
+    main.o                    src/main.asm:14
+read_all_pads (vauspads.o):
+    main.o                    src/main.asm:14
+

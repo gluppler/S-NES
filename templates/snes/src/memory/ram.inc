@@ -1,25 +1,25 @@
 ; ============================================================================
-; RAM Memory Definitions
+; WRAM Memory Definitions
 ; ============================================================================
-; SNES hardware behavior: RAM usage patterns
-; Recommended locations: $0300-$07FF (avoid $0000-$02FF which are used)
+; SNES WRAM organization ($7E0000-$7FFFFF, 128 KB)
+; See ../../docs/snes/hardware/memory/wram-organization.md
 ; ============================================================================
 
 .ifndef SNES_RAM_INC
 SNES_RAM_INC = 1
 
-; Game state variables
-game_state = $0300      ; Current game state (0=title, 1=playing, 2=paused, etc.)
-level_number = $0301     ; Current level number
-lives = $0302           ; Player lives
-score = $0303           ; Score (low byte)
-score_high = $0304      ; Score (high byte)
-score_mid = $0305       ; Score (middle byte)
-score_highest = $0306   ; Score (highest byte)
+; WRAM Base
+WRAM_BASE = $7E0000
+WRAM_SIZE = $20000        ; 128 KB
 
-; ADD CODE HERE: Your RAM variables
-; Example:
-;   level_data = $0400   ; Level data buffer (256 bytes)
-;   enemy_data = $0500   ; Enemy data buffer (256 bytes)
+; Game state variables (in WRAM)
+game_state = $7E1000      ; Current game state
+level_number = $7E1001    ; Current level number
+lives = $7E1002           ; Player lives
+score = $7E1003           ; Score (low byte)
+score_high = $7E1004      ; Score (high byte)
+
+; ADD CODE HERE: Your WRAM variables
+; Recommended: Use $7E1000-$7EFFFF for game data
 
 .endif ; SNES_RAM_INC

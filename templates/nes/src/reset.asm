@@ -1,106 +1,145 @@
 ; ============================================================================
 ; Reset Handler
 ; ============================================================================
-; Per NES documentation: Initialize system, clear RAM, setup PPU
-; Must follow exact sequence for hardware compatibility
+; EXACTLY matches hello_world example initialization sequence
 ; ============================================================================
 
-.include "memory/zeropage.inc"
-.include "memory/ram.inc"
-.include "memory/oam.inc"
-.include "constants/cpu.inc"
 .include "constants/ppu.inc"
+.include "text/strings.asm"
 
-; Import symbols from other modules
-.import main_loop
-.import init_sprites
-.import init_game_state
-.import load_palette
+; APU constants (matching hello_world exactly)
+APU_FRAMECTR    = $4017
+APU_MODCTRL     = $4010
+
+; Constants (matching hello_world exactly)
+DEFMASK        = %00001000 ; background enabled
+START_X        = 9
+START_Y        = 14
+NAMETABLE_A    = $2000
+ATTRTABLE_A    = $23C0
+BG_COLOR       = $3F00
+START_NT_ADDR  = NAMETABLE_A + 32*START_Y + START_X
+
+; Color constants (matching hello_world exactly)
+BLACK       = $1D
+WHITE       = $30
+DARK        = $00
+NEUTRAL     = $10
+LIGHT       = $20
+
+; WAIT_VBLANK macro (matching hello_world exactly)
+.macro WAIT_VBLANK
+:  bit PPUSTATUS
+   bpl :-
+.endmacro
 
 ; Export reset entry point
 .export reset
 reset:
-    ; Disable interrupts and initialize CPU
-    SEI                 ; Disable interrupts (per NES documentation: required first)
-    CLD                 ; Clear decimal mode (6502 specific: NES doesn't use BCD)
-    LDX #STACK_INIT
-    TXS                 ; Initialize stack pointer to $01FF
-    INX                 ; X = 0 (for clearing RAM)
-    
-    ; Disable PPU rendering
-    ; Per NES documentation: Must disable before VRAM access to prevent corruption
-    STX PPUCTRL         ; Disable NMI (PPUCTRL = 0)
-    STX PPUMASK         ; Disable rendering (PPUMASK = 0)
-    STX $4010           ; Disable DMC IRQ
-    
-    ; Wait for PPU to stabilize
-    ; Per NES documentation: Wait 2 VBlanks to ensure PPU is ready
-    BIT PPUSTATUS       ; Clear VBlank flag
-vblank_wait1:
-    BIT PPUSTATUS
-    BPL vblank_wait1    ; Wait for VBlank flag to be set (bit 7)
-    
-    ; Clear RAM
-    ; Per NES documentation: Initialize all RAM to known state ($0000-$07FF)
-    LDA #0
-clear_ram:
-    STA $0000,X         ; Zero page
-    STA $0100,X         ; Stack
-    STA $0200,X         ; OAM buffer
-    STA $0300,X         ; RAM
-    STA $0400,X         ; RAM
-    STA $0500,X         ; RAM
-    STA $0600,X         ; RAM
-    STA $0700,X         ; RAM
-    INX
-    BNE clear_ram       ; Loop until X wraps to 0 (256 iterations)
-    
-    ; Wait for second VBlank
-    ; Per NES documentation: Ensures PPU is fully stabilized
-vblank_wait2:
-    BIT PPUSTATUS
-    BPL vblank_wait2
-    
-    ; Initialize PPU registers
-    ; Per NES documentation: Set up PPU before enabling rendering
-    LDA #(PPUCTRL_NMI_ENABLE | PPUCTRL_NAMETABLE_0)
-    STA PPUCTRL
-    STA ppu_ctrl        ; Store for later updates
-    LDA #(PPUMASK_SHOW_BG | PPUMASK_SHOW_SPRITES | PPUMASK_SHOW_BG_LEFT)
-    STA PPUMASK
-    
-    ; Initialize game state variables
-    LDA #0
-    STA frame_counter
-    STA frame_ready
-    STA scroll_x
-    STA scroll_y
-    
-    ; Initialize sprite system
-    JSR init_sprites
-    
-    ; Initialize game state
-    JSR init_game_state
-    
-    ; Load palette
-    JSR load_palette
-    
-    ; Load background (optional)
-    ; JSR load_background
-    
-    ; Wait for VBlank before enabling rendering
-    ; Per NES documentation: Ensures first frame renders correctly
-vblank_wait3:
-    BIT PPUSTATUS
-    BPL vblank_wait3
-    
-    ; Set scroll registers
-    ; Per NES documentation: Must be set before enabling rendering
-    LDA PPUSTATUS       ; Reset scroll latch (read PPUSTATUS)
-    LDA #0              ; Scroll value
-    STA PPUSCROLL       ; X scroll = 0
-    STA PPUSCROLL       ; Y scroll = 0
-    
-    ; Enter main loop
-    ; Per NES documentation: Game loop pattern with frame synchronization
-    JMP main_loop
+    ; EXACTLY like hello_world: Initialize CPU
+    sei
+    cld
+    ldx #$40
+    stx APU_FRAMECTR ; disable IRQ
+    ldx #$FF
+    txs ; init stack pointer
+    inx ; reset X to zero to initialize PPU and APU registers
+    stx PPUCTRL
+    stx PPUMASK
+    stx APU_MODCTRL
+
+    WAIT_VBLANK
+
+    ; while waiting for two frames for PPU to stabilize, reset RAM
+    ; EXACTLY like hello_world
+    txa   ; still zero!
+@clr_ram:
+    sta $000,x
+    sta $100,x
+    sta $200,x
+    sta $300,x
+    sta $400,x
+    sta $500,x
+    sta $600,x
+    sta $700,x
+    inx
+    bne @clr_ram
+
+    WAIT_VBLANK
+
+    ; start writing to palette, starting with background color
+    ; EXACTLY like hello_world
+    lda #>BG_COLOR
+    sta PPUADDR
+    lda #<BG_COLOR
+    sta PPUADDR
+    lda #BLACK
+    sta PPUDATA ; black background color
+    sta PPUDATA ; palette 0, color 0 = black
+    lda #(WHITE | DARK)
+    sta PPUDATA ; color 1 = dark white
+    lda #(WHITE | NEUTRAL)
+    sta PPUDATA ; color 2 = neutral white
+    lda #(WHITE | LIGHT)
+    sta PPUDATA ; color 3 = light white
+
+    ; place "NES TEMPLATE" string
+    ; EXACTLY like hello_world pattern
+    lda #>START_NT_ADDR
+    sta PPUADDR
+    lda #<START_NT_ADDR
+    sta PPUADDR
+    ldx #0
+@template_loop:
+    lda template_str,x
+    beq @ready_line
+    sta PPUDATA
+    inx
+    jmp @template_loop
+
+@ready_line:
+    ; Place "READY TO CODE" on next line (START_Y + 1)
+    ; EXACTLY like hello_world pattern
+    lda #>(NAMETABLE_A + 32*(START_Y + 1) + START_X)
+    sta PPUADDR
+    lda #<(NAMETABLE_A + 32*(START_Y + 1) + START_X)
+    sta PPUADDR
+    ldx #0
+@ready_loop:
+    lda ready_str,x
+    beq @setpal
+    sta PPUDATA
+    inx
+    jmp @ready_loop
+
+@setpal:
+    ; set all table A tiles to palette 0
+    ; EXACTLY like hello_world
+    lda #>ATTRTABLE_A
+    sta PPUADDR
+    lda #<ATTRTABLE_A
+    sta PPUADDR
+    lda #0
+    ldx #64
+@attr_loop:
+    sta PPUDATA
+    dex
+    bne @attr_loop
+
+    ; set scroll position to 0,0
+    ; EXACTLY like hello_world
+    lda #0
+    sta PPUSCROLL ; x = 0
+    sta PPUSCROLL ; y = 0
+    ; enable display
+    lda #DEFMASK
+    sta PPUMASK
+
+    ; Enter game loop (EXACTLY like hello_world)
+    jmp game_loop
+
+; Game loop (EXACTLY like hello_world)
+game_loop:
+    WAIT_VBLANK
+    ; do something
+    jmp game_loop

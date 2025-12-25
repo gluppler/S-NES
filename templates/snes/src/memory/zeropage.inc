@@ -1,10 +1,12 @@
 ; ============================================================================
-; Zero Page Memory Definitions
+; Direct Page Memory Definitions (Legacy Zero Page)
 ; ============================================================================
-; SNES hardware behavior: Zero page ($0000-$00FF) for frequently accessed data
-; Zero page access is faster (3 cycles vs 4 cycles for absolute addressing)
+; SNES uses direct page ($0000-$FFFF, 64 KB) instead of zero page (256 bytes)
+; Direct page access is faster (3 cycles vs 4-5 cycles for absolute addressing)
 ; 
-; Memory layout follows data-oriented design principles
+; Note: This file uses "zeropage" name for compatibility, but SNES uses
+; direct page. See direct_page.inc for proper SNES direct page definitions.
+; See ../../docs/snes/hardware/cpu-65816/addressing-modes.md
 ; ============================================================================
 
 .ifndef SNES_ZEROPAGE_INC

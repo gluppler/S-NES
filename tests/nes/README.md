@@ -92,6 +92,22 @@ All test ROMs have been converted to use `.asm` file extensions (6502 assembly s
 
 ## Building Tests
 
+### Building All Tests
+
+A main `Makefile` is provided to build all tests that have their own Makefiles:
+
+```bash
+cd tests/nes
+make              # Build all tests with Makefiles
+make <test_name>  # Build specific test
+make clean        # Clean all tests
+make help         # Show help
+```
+
+The Makefile automatically installs dependencies (cc65, python3) if missing.
+
+### Building Individual Tests
+
 Most tests use the ca65 assembler. Example build process:
 
 ```bash
@@ -100,7 +116,7 @@ ca65 -I common -o test.o test_file.asm
 ld65 -C nes.cfg test.o -o test.nes
 ```
 
-Some tests include `Makefile` or `makefile` for automated building.
+Some tests include `Makefile` or `makefile` for automated building. Tests without Makefiles may require manual building - see individual test directories for instructions.
 
 ## Using Test ROMs
 

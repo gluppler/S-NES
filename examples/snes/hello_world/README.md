@@ -1,19 +1,14 @@
-# SNES Hello World Learning Example
+# SNES Hello World Example
 
-Minimal SNES "Hello World" example from the S-NES-BOY Learning & Development Framework, based on the canonical snes-hello implementation.
-
-## Overview
-
-This example is part of the S-NES-BOY framework and demonstrates correct SNES hardware initialization and basic text rendering. It is based on the snes-hello repository (https://github.com/SlithyMatt/snes-hello), which serves as the canonical reference for SNES development.
+Minimal SNES program demonstrating correct hardware initialization and basic text rendering.
 
 ## Features
 
-- Correct 65816 native mode entry (`clc; xce`)
-- Proper register size configuration (`.p816`, `.i16`, `.a8`)
+- Native 65816 mode entry (`clc; xce`)
+- Complete SNES initialization
+- PPU setup and text rendering
 - DMA-based VRAM clearing
-- Hardware-accurate PPU initialization
-- LoROM mapping with correct header structure
-- Minimal, working SNES ROM
+- LoROM mapping with correct header
 
 ## Building
 
@@ -21,32 +16,37 @@ This example is part of the S-NES-BOY framework and demonstrates correct SNES ha
 make
 ```
 
-This produces `hello.smc`, which can be loaded in any SNES emulator.
+Produces `hello.smc` for SNES emulators.
 
 ## Requirements
 
-- cc65 toolchain (cl65)
+- cc65 toolchain (ca65, ld65)
 - SNES emulator (bsnes, higan, etc.)
 
-## Files
+## Code Structure
 
-- `main.asm` - Main source file with initialization and rendering
-- `snes.cfg` - Linker configuration for LoROM mapping
-- `Makefile` - Build system (integrated snes-hello build process)
-- `headers/` - Header files (snes.inc, charmap.inc)
-- `assets/data/` - Character data (charset.asm)
+- `main.s` - Main source with initialization and rendering
+- `snes.cfg` - LoROM linker configuration
+- `Makefile` - Build system
+- `headers/` - SNES register definitions
+- `assets/data/` - Character set data
 
-## Reference
+## What This Demonstrates
 
-This example is based on [snes-hello](https://github.com/SlithyMatt/snes-hello), which serves as the canonical minimal SNES example.
-
-The code patterns from snes-hello have been integrated into the S-NES-BOY templates at `templates/snes/`.
+1. **Native Mode Entry**: `clc; xce` switches to native mode
+2. **Register Widths**: 8-bit A, 16-bit X/Y
+3. **PPU Initialization**: Complete S-PPU register setup
+4. **DMA Usage**: VRAM clearing via DMA
+5. **Text Rendering**: Character set loading and display
 
 ## Related Documentation
 
-- [SNES Documentation Index](../../../docs/snes/README.md) – SNES documentation index
-- [SNES Fundamentals](../../../docs/snes/fundamentals/) – Core SNES hardware concepts
-- [SNES Gold Standard Examples](../../../docs/snes/gold_standard/) – Reference implementations
-- [SNES Template](../../../templates/snes/) – Complete SNES template with full structure
-- [SNES Test ROMs](../../../tests/snes/) – SNES test ROMs (when available)
-- [Framework Overview](../../../README.md) – Main framework README
+See [SNES Documentation](../../../docs/snes/README.md) for complete SNES development guides.
+
+## Related Documentation
+
+- [SNES Documentation](../../../docs/snes/README.md) - SNES documentation index
+- [Getting Started](../../../docs/snes/getting-started/) - Learning guides
+- [Hardware Overview](../../../docs/snes/getting-started/01-hardware-overview.md) - System architecture
+- [CPU Initialization](../../../docs/snes/programming/initialization/cpu-init.md) - 65816 initialization
+- [PPU Initialization](../../../docs/snes/programming/initialization/ppu-init.md) - S-PPU initialization

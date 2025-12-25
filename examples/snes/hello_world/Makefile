@@ -11,7 +11,7 @@ CFG     = snes.cfg
 EMU    ?= bsnes    # Default emulator; override with EMU=higan, etc.
 
 # Source / target
-SOURCES = main.asm
+SOURCES = main.s
 TARGET  = hello.smc
 
 # Phony targets
@@ -220,7 +220,7 @@ all: check-cc65 $(TARGET)
 
 # Build ROM from assembly source
 # Mirrors snes-hello build process:
-#   cl65 -C smc.cfg -o hello.smc -l hello.list -m hello.mmap main.asm
+#   cl65 -C smc.cfg -o hello.smc -l hello.list -m hello.mmap main.s
 $(TARGET): $(SOURCES) $(CFG) check-cc65
 	@echo "Building $(TARGET)..."
 	$(CL65) -C $(CFG) -o $(TARGET) -l hello.list -m hello.mmap $(SOURCES)
