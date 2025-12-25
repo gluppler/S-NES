@@ -16,11 +16,11 @@ This framework provides a complete learning and development environment organize
 
 Comprehensive hardware-accurate documentation lives under `docs/`:
 
-- `docs/nes/` - Complete NES learning path: fundamentals, advanced topics, core concepts, techniques, cheatsheets, and references
-- `docs/snes/` - Complete SNES learning path: fundamentals, advanced topics, core concepts, techniques, cheatsheets, and references
+- `docs/nes/` - Complete NES learning path: fundamentals, advanced topics, core concepts, techniques, cheatsheets, tooling, and references
+- `docs/snes/` - Complete SNES learning path: getting started, hardware documentation (CPU, PPU, DMA, audio, memory), programming guides (initialization, game loop, rendering, input), techniques (Mode 7, HDMA effects), and references
 - `docs/gameboy/` - Complete Game Boy learning path: fundamentals, advanced topics, core concepts, cheatsheets, references, and gold-standard examples
 
-Each system documentation tree is written in hardware terms, is self-contained, and provides a complete learning path from basics to advanced development.
+Each system documentation tree is written in hardware terms, is self-contained, and provides a complete learning path from basics to advanced development. SNES documentation follows a three-processor architecture structure (65816 CPU, S-PPU, SPC700 audio).
 
 ## Hardware Schematics
 
@@ -36,8 +36,8 @@ These schematics provide circuit-level documentation essential for understanding
 
 Production-ready development templates live under `templates/`:
 
-- `templates/nes/` - Complete NES development template that builds valid iNES ROMs with proper hardware initialization
-- `templates/snes/` - Complete SNES development template that boots correctly on real hardware with proper 65816 mode setup
+- `templates/nes/` - Complete NES development template that builds valid iNES ROMs with proper hardware initialization (matches hello_world pattern)
+- `templates/snes/` - Complete SNES development template that boots correctly on real hardware with proper 65816 native mode setup, DMA utilities, and SPC700 boot code
 - `templates/gb/` - Complete Game Boy development template that builds valid `.gb` ROMs with correct cartridge headers
 
 Each template provides a complete, hardware-accurate starting point for development with a consistent structure: `build`, `src`, `assets`, `linker`, `headers`, `macros`, `tools`, `config`, and `rom` directories.
@@ -48,7 +48,7 @@ Working example projects live under `examples/`:
 
 ### NES Examples
 
-- `examples/nes/hello_world` - NES text rendering example demonstrating hardware initialization and PPU usage
+- `examples/nes/hello_world` - NES text rendering example demonstrating hardware initialization and PPU usage (matches canonical nes-hello pattern)
 - `examples/nes/vdelay_example` - Variable delay routine demonstrating cycle-accurate timing (29-65535 cycles)
 - `examples/nes/prng_6502_example` - Complete PRNG example demonstrating all three PRNG widths (16, 24, and 32-bit) with separate seed storage
 - `examples/nes/hex_string_example` - Hex string macro example demonstrating multibyte constant definition
@@ -57,20 +57,23 @@ Working example projects live under `examples/`:
 
 ### SNES Examples
 
-- `examples/snes/hello_world` - SNES text rendering example demonstrating native mode entry and PPU setup
+- `examples/snes/hello_world` - Minimal SNES program demonstrating text rendering, native mode entry, and PPU setup
+- `examples/snes/move_sprite` - Modular sprite movement example with controller input, DMA OAM updates, and auto-joypad reading
+- `examples/snes/bounce_sprite` - Modular bouncing sprite example with automatic physics and boundary collision detection
+- `examples/snes/lorom-template` - Complete LoROM template with audio support (SPC700, Pently music engine), sprite/background graphics, and asset conversion tools
 
 ### Game Boy Examples
 
 - `examples/gameboy/hello_world` - Game Boy text rendering example demonstrating LCD initialization and tile rendering
 
-These examples serve as learning resources, demonstrating correct hardware initialization, text rendering, timing patterns, and basic program structure for each system.
+These examples serve as learning resources, demonstrating correct hardware initialization, text rendering, timing patterns, sprite systems, input handling, and basic program structure for each system.
 
 ## Test ROMs
 
 Comprehensive test ROM collections for verifying hardware behavior, emulator accuracy, and code correctness live under `tests/`:
 
-- `tests/nes/` - NES test ROMs: CPU tests, PPU tests, APU tests, mapper tests, timing tests, and specialized tests
-- `tests/snes/` - SNES test ROMs: hardware validation tests and test demos for CPU, PPU, DMA/HDMA, audio, and memory
+- `tests/nes/` - NES test ROMs: CPU tests, PPU tests, APU tests, mapper tests, timing tests, and specialized tests (64+ test directories)
+- `tests/snes/` - SNES test ROMs: hardware validation tests and test demos for CPU, PPU, DMA/HDMA, audio, memory, Mode 7, color math, and graphics (12+ test demos)
 - `tests/gb/` - Game Boy test ROMs (directory structure ready)
 
 These test ROMs are authoritative tools for:
@@ -79,7 +82,7 @@ These test ROMs are authoritative tools for:
 - Code correctness validation
 - Timing edge case discovery
 
-See [`tests/nes/README.md`](tests/nes/README.md) for detailed information about NES test ROMs.
+See [`tests/nes/README.md`](tests/nes/README.md) for detailed information about NES test ROMs. See [`tests/snes/README.md`](tests/snes/README.md) for detailed information about SNES test demos.
 
 ## Quick Start
 
@@ -133,9 +136,31 @@ Key top-level files:
 
 This framework consists of four integrated components:
 
-1. **Comprehensive Documentation** - Complete learning paths for each system
-2. **Development Templates** - Production-ready starting points for new projects
-3. **Working Examples** - Reference implementations demonstrating correct patterns
+1. **Comprehensive Documentation** - Complete learning paths for each system with hardware-accurate explanations
+2. **Development Templates** - Production-ready starting points for new projects with proper hardware initialization
+3. **Working Examples** - Reference implementations demonstrating correct patterns and hardware usage
 4. **Test ROMs** - Authoritative test suites for hardware verification and emulator validation
+
+## Current Status
+
+### NES
+- ✅ Complete documentation structure
+- ✅ Production-ready template (matches hello_world pattern)
+- ✅ 6 working examples
+- ✅ 64+ test ROM directories
+- ✅ Comprehensive Makefile build system
+
+### SNES
+- ✅ Complete documentation structure (three-processor architecture)
+- ✅ Production-ready template with DMA utilities and SPC700 boot
+- ✅ 4 working examples (including modular sprite examples)
+- ✅ 12+ test demos (CPU, PPU, DMA, audio, Mode 7, graphics)
+- ✅ Comprehensive Makefile build system
+
+### Game Boy
+- ✅ Documentation structure
+- ✅ Basic template structure
+- ✅ 1 working example
+- ⏳ Test ROMs (directory structure ready)
 
 For contribution details, see [`CONTRIBUTING.md`](CONTRIBUTING.md). For external references, see the per-system `docs/<system>/REFERENCES.md` files.
