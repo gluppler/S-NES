@@ -46,12 +46,20 @@ templates/nes/
 │       └── neschar.asm  # Character graphics
 ├── linker/           # Linker configurations
 │   └── nrom.cfg      # NROM mapper config
+├── headers/          # Header files and constants
+├── macros/           # Macro definitions
+├── config/           # Configuration files
+├── tools/            # Build tools and utilities
+├── debug/            # Debugging utilities
+├── tests/            # Template test files
 ├── build/            # Build output
 │   ├── obj/          # Object files
 │   ├── rom/          # Final ROM
 │   └── map/          # Linker map files
 └── Makefile          # Build system
 ```
+
+This is a single, unified NES template. For mapper-specific examples, see `examples/nes/nrom_example/` and `examples/nes/snrom_example/`.
 
 ## Building
 

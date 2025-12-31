@@ -185,9 +185,9 @@ To improve this documentation:
 ## 🎮 Practical Examples
 
 All concepts in this documentation are demonstrated in:
-- [examples/nes/](../../examples/nes/) - Working examples
-- [templates/nes/](../../templates/nes/) - Starting template
-- [tests/nes/](../../tests/nes/) - Validation tests
+- [examples/nes/](../../examples/nes/) - Working examples (hello_world, vdelay_example, prng_6502_example, hex_string_example, nrom_example, snrom_example, nes-basic-*, nes-birthday-blast, fds)
+- [templates/nes/](../../templates/nes/) - Production-ready starting template
+- [tests/nes/](../../tests/nes/) - Validation tests (64+ test directories)
 
 ## 📞 Getting Help
 

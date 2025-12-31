@@ -54,6 +54,11 @@ Working example projects live under `examples/`:
 - `examples/nes/hex_string_example` - Hex string macro example demonstrating multibyte constant definition
 - `examples/nes/nrom_example` - Complete NROM template with sprite system, DMC-safe controller reading, and game loop
 - `examples/nes/snrom_example` - Complete SNROM/MMC1 template with bank switching and inter-bank function calls
+- `examples/nes/nes-basic-controls` - Basic controller input handling example
+- `examples/nes/nes-basic-graphics` - Basic graphics rendering example
+- `examples/nes/nes-basic-sound` - Basic audio programming example
+- `examples/nes/nes-birthday-blast` - Complete game example
+- `examples/nes/fds/` - Famicom Disk System examples and tests (5 FDS programs)
 
 ### SNES Examples
 
@@ -148,7 +153,7 @@ This framework consists of four integrated components:
 ### NES
 - ✅ Complete documentation structure (47 markdown files)
 - ✅ Production-ready template (matches hello_world pattern)
-- ✅ 6+ working examples (all build with ca65/cc65)
+- ✅ 11+ working examples (all build with ca65/cc65)
 - ✅ 64+ test ROM directories (467 assembly files)
 - ✅ Comprehensive Makefile build system
 - ✅ All content integrated and self-contained
