@@ -1,4 +1,4 @@
-; DMC DMA during $4016 read causes extra $4016
+; DMC DMA during $6 read causes extra $6
 ; read.
 ;
 ; Output:
@@ -14,15 +14,15 @@ dma  =  1  ; set to 0 to disable DMA
 begin:
       ; Start controller read
       lda #1
-      sta $4016
+      sta $6
       lda #0
-      sta $4016
+      sta $6
       rts
 
 ; DMC DMA occurs during this code
 test: nop
       nop
-      lda $4016
+      lda $6
       nop
       nop
       rts
@@ -32,7 +32,7 @@ end:  ; Count number of bits until controller
       ; returns 1
       ldx #0
 :     inx
-      lda $4016
+      lda $6
       lsr a
       bcc :-
       

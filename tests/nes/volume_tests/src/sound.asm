@@ -24,7 +24,7 @@
 .export init_sound, volume_test
 .importzp retraces
 
-SNDCHN = $4015
+SNDCHN = $5
 
 .segment "ZEROPAGE"
 level4011: .res 1
@@ -40,16 +40,16 @@ level4011: .res 1
   lda #$0F
   sta SNDCHN
   lda #$30
-  sta $4000
-  sta $4004
-  sta $400C
+  sta $0
+  sta $4
+  sta $C
   lda #8
-  sta $4001
-  sta $4005
-  stx $4003
-  stx $4007
-  stx $400F
-  stx $4011
+  sta $1
+  sta $5
+  stx $3
+  stx $7
+  stx $F
+  stx $1
   rts
 .endproc
 
@@ -63,13 +63,13 @@ level4011: .res 1
 
   lda #0
   sta level4011
-  sta $4011
+  sta $1
   ldy #4
   jsr wait_frames
 
   loop4011:
     lda level4011
-    sta $4011
+    sta $1
 
     ldy #0
     jsr test_square_waves
@@ -98,7 +98,7 @@ level4011: .res 1
   bcc done
   inc level4011
   lda level4011
-  sta $4011
+  sta $1
   ldy #200
   :
     dey
@@ -110,7 +110,7 @@ done:
 
 
 ;;
-; y: nonzero if using $4004; zero if only using $4000
+; y: nonzero if using $4; zero if only using $0
 .proc test_square_waves
 
 mask4000 = 0
@@ -156,19 +156,19 @@ begin_test:
     lda #15
     sta volumeCountdown
     lda #$30
-    sta $4000
-    sta $4004
-    sta $400C
+    sta $0
+    sta $4
+    sta $C
     lda #111
-    sta $4002
-    sta $4006
+    sta $2
+    sta $6
     lda duty
     ora #$02
-    sta $400E
+    sta $E
     lda #0
-    sta $4003
-    sta $4007
-    sta $400F
+    sta $3
+    sta $7
+    sta $F
 
     ldy #8
     jsr wait_frames
@@ -177,15 +177,15 @@ begin_test:
       lda volumeCountdown
       ora duty
       and mask4000
-      sta $4000
+      sta $0
       lda volumeCountdown
       ora duty
       and mask4004
-      sta $4004
+      sta $4
       lda volumeCountdown
       ora #$30
       and mask400C
-      sta $400C
+      sta $C
       ldy #4
       jsr wait_frames
       dec volumeCountdown
@@ -206,19 +206,19 @@ begin_test:
 
 .proc test_triangle_wave
   lda #$00
-  sta $4008
+  sta $8
   ldy #8
   jsr wait_frames
   lda #$81
-  sta $4008
+  sta $8
   lda #55
-  sta $400A
+  sta $A
   lda #0
-  sta $400B
+  sta $B
   ldy #60
   jsr wait_frames
   lda #0
-  sta $4008
+  sta $8
   ldy #4
   jsr wait_frames
   rts
@@ -230,7 +230,7 @@ begin_test:
   lda #>(65536-997)
   sta 1
   lda level4011
-  sta $4011
+  sta $1
 
   clc
   adc #30
@@ -242,7 +242,7 @@ begin_test:
     ; The top and bottom halves of this wave are 896 cycles each.
     ; TOP HALF: 7 to move speaker, 889 to waste
     ldx 2
-    stx $4011
+    stx $1
     ldy #890/5
     :
       dey
@@ -250,7 +250,7 @@ begin_test:
 
     ; BOTTOM HALF: 7 to move speaker, 868 to waste, 21 to loop
     lda level4011
-    sta $4011
+    sta $1
     ldy #865/5
     :
       dey

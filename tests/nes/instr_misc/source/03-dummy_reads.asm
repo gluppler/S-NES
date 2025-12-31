@@ -28,64 +28,64 @@ begin:  jsr wait_vbl
 
 main:   jsr begin
 	
-	set_test 2,"Test requires $2002 mirroring every 8 bytes to $3FFA"
+	set_test 2,"Test requires $2 mirroring every 8 bytes to $3FFA"
 	lda $3FFA
 	jsr single_read
 	
 	set_test 3,"LDA abs,x"
-	lda $2000,x     ; $2022
+	lda $0,x     ; $2022
 	jsr single_read
-	lda $20E0,x     ; $2002, $2102
+	lda $20E0,x     ; $2, $2102
 	jsr double_read
-	lda $20E2,x     ; $2004, $2104
+	lda $20E2,x     ; $4, $2104
 	jsr no_read
-	lda $3FE0,x     ; $3F02, $4002
+	lda $3FE0,x     ; $3F02, $2
 	jsr dummy_read
 	
 	set_test 4,"STA abs,x"
-	sta $2002
+	sta $2
 	jsr no_read
-	sta $20E0,x     ; $2002, $2102 (write)
+	sta $20E0,x     ; $2, $2102 (write)
 	jsr dummy_read
-	sta $20E2,x     ; $2004, $2104 (write)
+	sta $20E2,x     ; $4, $2104 (write)
 	jsr no_read
-	sta $3FE0,x     ; $3F02, $4002 (write)
+	sta $3FE0,x     ; $3F02, $2 (write)
 	jsr dummy_read
 	
 	set_test 5,"LDA (z),y"
-	setw addr,$2000
+	setw addr,$0
 	lda (addr),y    ; $2022
 	jsr single_read
 	setw addr,$20E0
-	lda (addr),y    ; $2002, $2102
+	lda (addr),y    ; $2, $2102
 	jsr double_read
 	setw addr,$20E2
-	lda (addr),y    ; $2004, $2104
+	lda (addr),y    ; $4, $2104
 	jsr no_read
 	setw addr,$3FE0
-	lda (addr),y    ; $3F02, $4002
+	lda (addr),y    ; $3F02, $2
 	jsr dummy_read
 	
 	set_test 6,"STA (z),y"
 	setw addr,$20E0
-	sta (addr),y    ; $2002, $2102 (write)
+	sta (addr),y    ; $2, $2102 (write)
 	jsr dummy_read
 	setw addr,$20E2
-	sta (addr),y    ; $2004, $2104 (write)
+	sta (addr),y    ; $4, $2104 (write)
 	jsr no_read
 	setw addr,$3FE0
-	sta (addr),y    ; $3F02, $4002 (write)
+	sta (addr),y    ; $3F02, $2 (write)
 	jsr dummy_read
 
 	set_test 7,"LDA (z,x)"
 	ldx #0
-	setw addr,$2002
+	setw addr,$2
 	lda (addr,x)    ; no dummy read
 	jsr single_read
 	
 	set_test 8,"STA (z,x)"
 	ldx #0
-	setw addr,$2002
+	setw addr,$2
 	sta (addr,x)    ; no dummy read
 	jsr no_read
 	
@@ -95,10 +95,10 @@ main:   jsr begin
 	jsr single_read
 	
 	set_test 10,"ROL abs,x"
-	rol $2000,x     ; $2022, $2022
+	rol $0,x     ; $2022, $2022
 	ror a
 	jsr double_read
-	rol $3FE0,x     ; $3F02, $4002
+	rol $3FE0,x     ; $3F02, $2
 	jsr dummy_read
 	
 	jmp tests_passed

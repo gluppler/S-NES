@@ -2,7 +2,7 @@
 result = $f8
 
 default_test_name:
-	.db 0
+	..byte 0
 	.default test_name = default_test_name
 	
 ; Report error if branch with given condition would be taken
@@ -93,11 +93,11 @@ test_passed:
 	jmp report_beeps
 
 passed_str:
-	.db "PASSED",0
+	..byte "PASSED",0
 failed_str:
-	.db "FAILED: #",0
+	..byte "FAILED: #",0
 internal_error_str:
-	.db "INTERNAL ERROR",0
+	..byte "INTERNAL ERROR",0
 	.code
 	
 ; Print null-terminated string at X*$100+Y

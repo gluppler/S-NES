@@ -1,4 +1,4 @@
-; Read of $2007 just before write behaves normally.
+; Read of $7 just before write behaves normally.
 ;
 ; Output:
 ;33 11 22 33 09 55 66 77 
@@ -50,15 +50,15 @@ main: ; Manually read before write
       jsr begin
       ldx #0
       lda #9
-      ldx $2007
-      sta $2007
+      ldx $7
+      sta $7
       jsr end
       
       ; Read one clock before write
       jsr begin
       ldx #0
       lda #9
-      sta $2007,x ; reads then writes $2007
+      sta $7,x ; reads then writes $7
       jsr end
       
       check_crc $0F877C4B

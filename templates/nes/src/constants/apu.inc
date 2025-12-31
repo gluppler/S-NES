@@ -7,7 +7,7 @@
 .ifndef APU_CONSTANTS_INC
 APU_CONSTANTS_INC = 1
 
-; APU registers
+; APU registers (NES hardware addresses: $4000-$4017)
 APU_PULSE1_CTRL = $4000
 APU_PULSE1_SWEEP = $4001
 APU_PULSE1_TIMER_LOW = $4002
@@ -35,6 +35,7 @@ APU_DMC_LENGTH = $4013
 
 APU_STATUS = $4015      ; APU status register
 APU_FRAME_COUNTER = $4017
+OAMDMA = $4014          ; OAM DMA register
 
 ; APU status bits
 APU_STATUS_DMC_ACTIVE = %10000000

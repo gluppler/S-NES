@@ -43,7 +43,7 @@
 
 **Implications:
 * **Always initialize RAM: Clear RAM in reset handler
-* **Always initialize PPU: Set $2000, $2001 in reset
+* **Always initialize PPU: Set $0, $1 in reset
 * **Always initialize APU: Disable channels, set frame counter
 * **Always initialize stack: Set SP to $FF
 
@@ -57,14 +57,14 @@ reset:
     
     ; Disable PPU
     LDX #0
-    STX $2000
-    STX $2001
-    STX $4010
+    STX $0
+    STX $1
+    STX $0
     
     ; Wait for PPU
-    BIT $2002
+    BIT $2
 vblank_wait1:
-    BIT $2002
+    BIT $2
     BPL vblank_wait1
     
     ; Clear RAM
@@ -98,8 +98,8 @@ clear_ram:
 
 **OAM Corruption:
 * **Emulator: May not corrupt OAM during sprite evaluation
-* **Hardware: Reading $2002 during rendering can corrupt OAM
-* **Fix: Only read $2002 during VBlank
+* **Hardware: Reading $2 during rendering can corrupt OAM
+* **Fix: Only read $2 during VBlank
 
 **Audio Timing:
 * **Emulator: May not be cycle-accurate for audio

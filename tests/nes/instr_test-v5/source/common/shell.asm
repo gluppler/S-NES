@@ -85,9 +85,9 @@ pre_main:
 
 	; Clear APU registers
 	lda #0
-	sta $4015
+	sta $5
 	ldx #$13
-:   sta $4000,x
+:   sta $0,x
 	dex
 	bpl :-
 	

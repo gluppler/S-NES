@@ -4,7 +4,7 @@ These tests verify a small part of MMC3 (and some MMC6) behavior, mostly
 related to the scanline counter and IRQ. They should be run in order.
 
 The ROMs mainly test behavior by manually clocking the MMC3's IRQ
-counter by writing to $2006 to change the current VRAM address. The last
+counter by writing to $6 to change the current VRAM address. The last
 two ROMs test behavior that differs among MMC3 chips.
 
 
@@ -15,7 +15,7 @@ following behaviors that differ as described in kevtris's (draft?) MMC3
 documentation:
 
 - The counter can be clocked manually via bit 12 of the VRAM address
-even when $2000 = $00 (bg and sprites both use tiles from $0xxx).
+even when $0 = $00 (bg and sprites both use tiles from $0xxx).
 
 - The IRQ flag is not set when the counter is cleared by writing to
 $C001.

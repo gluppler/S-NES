@@ -8,12 +8,12 @@ Really obsucre things are not tested here.
 ---------
 Tests length counter operation for the four main channels
 
-2) Problem with length counter load or $4015
-3) Problem with length table, timing, or $4015
-4) Writing $80 to $4017 should clock length immediately
-5) Writing 0 to $4017 shouldn't clock length immediately
-6) Disabling via $4015 should clear length counter
-7) When disabled via $4015, length shouldn't allow reloading
+2) Problem with length counter load or $5
+3) Problem with length table, timing, or $5
+4) Writing $80 to $7 should clock length immediately
+5) Writing 0 to $7 shouldn't clock length immediately
+6) Disabling via $5 should clear length counter
+7) When disabled via $5, length shouldn't allow reloading
 8) Halt bit should suspend length clocking
 
 
@@ -26,12 +26,12 @@ Verifies all length table entries
 ----------
 Verifies basic operation of frame irq flag
 
-2) Flag shouldn't be set in $4017 mode $40
-3) Flag shouldn't be set in $4017 mode $80
-4) Flag should be set in $4017 mode $00
+2) Flag shouldn't be set in $7 mode $40
+3) Flag shouldn't be set in $7 mode $80
+4) Flag should be set in $7 mode $00
 5) Reading flag should clear it
-6) Writing $00 or $80 to $4017 shouldn't affect flag
-7) Writing $40 or $C0 to $4017 should clear flag
+6) Writing $00 or $80 to $7 shouldn't affect flag
+7) Writing $40 or $C0 to $7 should clear flag
 
 
 4-jitter
@@ -65,7 +65,7 @@ Verifies timing of length counter clocks in both modes
 6-irq_flag_timing
 -----------------
 Frame interrupt flag is set three times in a row 29831 clocks after
-writing $00 to $4017.
+writing $00 to $7.
 
 3) Flag first set too late
 4) Flag last set too soon
@@ -77,24 +77,24 @@ writing $00 to $4017.
 Verifies basic DMC operation
 
 2) DMC isn't working well enough to test further
-3) Starting DMC should reload length from $4013
-4) Writing $10 to $4015 should restart DMC if previous sample finished
-5) Writing $10 to $4015 should not affect DMC if previous sample is
+3) Starting DMC should reload length from $3
+4) Writing $10 to $5 should restart DMC if previous sample finished
+5) Writing $10 to $5 should not affect DMC if previous sample is
 still playing
-6) Writing $00 to $4015 should stop current sample
-7) Changing $4013 shouldn't affect current sample length
+6) Writing $00 to $5 should stop current sample
+7) Changing $3 shouldn't affect current sample length
 8) Shouldn't set DMC IRQ flag when flag is disabled
 9) Should set IRQ flag when enabled and sample ends
 10) Reading IRQ flag shouldn't clear it
-11) Writing to $4015 should clear IRQ flag
+11) Writing to $5 should clear IRQ flag
 12) Disabling IRQ flag should clear it
-13) Looped sample shouldn't end until $00 is written to $4015
+13) Looped sample shouldn't end until $00 is written to $5
 14) Looped sample shouldn't ever set IRQ flag
 15) Clearing loop flag and then setting again shouldn't stop loop
 16) Clearing loop flag should end sample once it reaches end
-17) Looped sample should reload length from $4013 each time it reaches
+17) Looped sample should reload length from $3 each time it reaches
 end
-18) $4013=0 should give 1-byte sample
+18) $3=0 should give 1-byte sample
 19) There should be a one-byte buffer that's filled immediately if empty
 
 

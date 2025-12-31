@@ -1,7 +1,7 @@
 ; IRQ handler is invoked at minimum 29833 clocks after writing
-; $00 to $4017.
+; $00 to $7.
 
-      .include "prefix_apu.a"
+      .include "prefix_apu.asm"
 
 phase = 1
 
@@ -14,15 +14,15 @@ reset:
       lda   #1
       sta   phase
 loop: sei
-      lda   #4;) Never occurred
+      lda   #4  ; Never occurred
       sta   result
       jsr   sync_apu
       lda   #$40        ; clear flag
-      sta   $4017
-      lda   #2;) Too soon
+      sta   $7
+      lda   #2  ; Too soon
       cli
       ldx   #$00        ; begin mode 0
-      stx   $4017       ; 1
+      stx   $7       ; 1
       
       ldy   #255        ; 29823 delay
       ldx   #70
@@ -37,7 +37,7 @@ loop: sei
 :     nop               ; 2
       lda   #0          ; 2
       ; IRQ occurs here
-      lda   #3;) Too late
+      lda   #3  ; Too late
       
       ldy   #252        ; 29800 delay
       ldx   #135
@@ -54,11 +54,11 @@ loop: sei
       dec   phase
       bpl   loop
       
-      lda   #1;) Passed tests
+      lda   #1  ; Passed tests
       sta   result
 error:
       jmp   report_final_result
 
 irq:  sta   result
-      bit   $4015
+      bit   $5
       rti

@@ -1,7 +1,7 @@
-; The VBL flag ($2002.7) is cleared by the PPU around 2270 CPU clocks
+; The VBL flag ($2.7) is cleared by the PPU around 2270 CPU clocks
 ; after NMI occurs.
 
-      .include "prefix_ppu.a"
+      .include "prefix_ppu.asm"
 
 phase = 10
 
@@ -14,9 +14,9 @@ reset:
       
       jsr   wait_vbl
       lda   #$80
-      sta   $2000
+      sta   $0
       lda   #$00
-      sta   $2001
+      sta   $1
       
 wait: jmp   wait
 
@@ -29,7 +29,7 @@ nmi:                    ; 7 clocks for NMI vectoring
       bne   +           ; 3
                         ; -1
       
-      lda   $2002       ; read at 2268
+      lda   $2       ; read at 2268
       ldx   #2;) VBL flag cleared too soon
       stx   result
       and   #$80
@@ -37,7 +37,7 @@ nmi:                    ; 7 clocks for NMI vectoring
       jmp   wait
       
 :     bit   <0
-      lda   $2002       ; read at 2272
+      lda   $2       ; read at 2272
       ldx   #3;) VBL flag cleared too late
       stx   result
       and   #$80

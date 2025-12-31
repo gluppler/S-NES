@@ -57,6 +57,8 @@ start:
    WAIT_VBLANK
 
    ; start writing to palette, starting with background color
+   ; Reset PPU address latch before writing
+   bit PPUSTATUS
    lda #>BG_COLOR
    sta PPUADDR
    lda #<BG_COLOR
@@ -72,6 +74,8 @@ start:
    sta PPUDATA ; color 3 = light white
 
    ; place "Hello, World!" string
+   ; Reset PPU address latch before writing
+   bit PPUSTATUS
    lda #>START_NT_ADDR
    sta PPUADDR
    lda #<START_NT_ADDR
@@ -86,6 +90,8 @@ start:
 
 @alphabet_line:
    ; Place alphabet on next line (START_Y + 1)
+   ; Reset PPU address latch before writing
+   bit PPUSTATUS
    lda #>(NAMETABLE_A + 32*(START_Y + 1) + START_X)
    sta PPUADDR
    lda #<(NAMETABLE_A + 32*(START_Y + 1) + START_X)
@@ -100,6 +106,8 @@ start:
 
 @numbers_line:
    ; Place numbers on next line (START_Y + 2)
+   ; Reset PPU address latch before writing
+   bit PPUSTATUS
    lda #>(NAMETABLE_A + 32*(START_Y + 2) + START_X)
    sta PPUADDR
    lda #<(NAMETABLE_A + 32*(START_Y + 2) + START_X)
@@ -114,6 +122,8 @@ start:
 
 @punctuation_line:
    ; Place punctuation on next line (START_Y + 3)
+   ; Reset PPU address latch before writing
+   bit PPUSTATUS
    lda #>(NAMETABLE_A + 32*(START_Y + 3) + START_X)
    sta PPUADDR
    lda #<(NAMETABLE_A + 32*(START_Y + 3) + START_X)
@@ -128,6 +138,8 @@ start:
 
 @setpal:
    ; set all table A tiles to palette 0
+   ; Reset PPU address latch before writing
+   bit PPUSTATUS
    lda #>ATTRTABLE_A
    sta PPUADDR
    lda #<ATTRTABLE_A
@@ -143,7 +155,9 @@ start:
    lda #0
    sta PPUSCROLL ; x = 0
    sta PPUSCROLL ; y = 0
-   ; enable display
+   ; enable NMI and display
+   lda #%10001000  ; NMI enabled, background from pattern table 0
+   sta PPUCTRL
    lda #DEFMASK
    sta PPUMASK
 
@@ -165,7 +179,8 @@ nmi:
    sta PPUSCROLL
    sta PPUSCROLL
 
-   ; keep default PPU config
+   ; keep default PPU config (NMI enabled, background from pattern table 0)
+   lda #%10001000
    sta PPUCTRL
    lda #DEFMASK
    sta PPUMASK

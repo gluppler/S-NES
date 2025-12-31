@@ -3,7 +3,7 @@
 	.include "prefix_apu.a"
 
 test_name:
-	.db "APU FRAME IRQ FLAG",0
+	..byte "APU FRAME IRQ FLAG",0
 	
 reset:
 	jsr setup_apu

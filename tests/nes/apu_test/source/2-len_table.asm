@@ -18,7 +18,7 @@ test_entry:
 	asl a
 	asl a
 	ldx chan_off
-	sta $4003,x
+	sta $3,x
 	
 	; Verify
 	lda table,y

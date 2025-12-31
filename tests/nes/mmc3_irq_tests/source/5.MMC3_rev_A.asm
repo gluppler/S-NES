@@ -3,7 +3,7 @@
       .include "prefix_mmc3_validation.a"
       
 test_name:
-      .db   "MMC3 IRQ COUNTER REVISION A",0
+      ..byte "MMC3 IRQ COUNTER REVISION A",0
 
 reset:
       jsr   begin_mmc3_tests

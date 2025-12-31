@@ -10,13 +10,13 @@ first, on one input line; the button's state is sent on another.
 
 15-pin version for Famicom:
 
-  $4016 D1: Button
-  $4017 D1: Position (8 bits, MSB first)
+  $6 D1: Button
+  $7 D1: Position (8 bits, MSB first)
 
 7-pin version for NES:
 
-  $4017 D3: Button
-  $4017 D4: Position (8 bits, MSB first)
+  $7 D3: Button
+  $7 D4: Position (8 bits, MSB first)
 
 To control the character in the demo, press the A button on one
 of the controllers, and then move the Control Pad or twist the pot.

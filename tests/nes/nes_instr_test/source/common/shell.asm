@@ -286,7 +286,7 @@ avoid_silent_nsf:
 	clc
 	adc #4
 	sta nsf_activity
-	sta $4011
+	sta $1
 	pla
 	rts
 

@@ -1,0 +1,56 @@
+# Mapper 003
+
+> **Note**: This documentation was integrated from the NES-UPDATE mapper_docs collection and has been verified and normalized for the S-NES-BOY framework.
+> For the most up-to-date information, see [NESdev Wiki](https://www.nesdev.org/wiki/Mapper).
+
+## Original Documentation
+
+```
+
+==================================================
+= Mapper 003 =
+==================================================
+
+aka
+--------------------------------------------------
+CNROM (and compatible)
+
+
+Example Games:
+--------------------------------------------------
+Solomon's Key
+Arkanoid
+Arkista's Ring
+Bump 'n' Jump
+Cybernoid
+
+
+Registers (**BUS CONFLICTS** sometimes):
+--------------------------------------------------
+ $8000-FFFF: [CCCC CCCC]
+ CHR Reg (selects 8k @ $0000)
+
+
+Notes:
+--------------------------------------------------
+CNROM has bus conflicts, however Mapper 003 is meant to be CNROM and compatible. So some mappers which were
+similar in function, but did not have bus conflicts are included.
+
+Additionally, CNROM's reg is only 2 bits wide... therefore it is capped at 32k CHR.
+
+So to be "safe":
+ - for homebrewing: assume bus conflicts, do not exceed 32k CHR
+ - for emudev: assume no bus conflicts, use all 8 reg bits
+
+There is no PRG swapping.
+
+
+The game Cybernoid seems to behave very strangely. It uses unprepped system RAM... and it is as if it
+actually relies on bus conflicts (AND written value with value read from address)!
+
+```
+
+## Additional Resources
+
+- [NESdev Wiki - Mapper 003](https://www.nesdev.org/wiki/Mapper_003)
+- [NESdev Forums](https://forums.nesdev.org/)

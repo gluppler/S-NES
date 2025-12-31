@@ -25,7 +25,7 @@ Mode 0: 4-step sequence
 Action      Envelopes &     Length Counter& Interrupt   Delay to next
 			Linear Counter  Sweep Units     Flag        NTSC     PAL
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-$4017=$00   -               -               -           7459    8315
+$7=$00   -               -               -           7459    8315
 Step 1      Clock           -               -           7456    8314
 Step 2      Clock           Clock           -           7458    8312
 Step 3      Clock           -               -           7458    8314
@@ -37,7 +37,7 @@ Mode 1: 5-step sequence
 Action      Envelopes &     Length Counter& Interrupt   Delay to next
 			Linear Counter  Sweep Units     Flag        NTSC     PAL
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-$4017=$80   -               -               -              1       1
+$7=$80   -               -               -              1       1
 Step 1      Clock           Clock           -           7458    8314
 Step 2      Clock           -               -           7456    8314
 Step 3      Clock           Clock           -           7458    8312
@@ -53,12 +53,12 @@ one clock earlier than shown. NTSC and PAL times shown for comparison.
 Tests basic length counter operation
 
 1) Passed tests
-2) Problem with length counter load or $4015
-3) Problem with length table, timing, or $4015
-4) Writing $80 to $4017 should clock length immediately
-5) Writing $00 to $4017 shouldn't clock length immediately
-6) Clearing enable bit in $4015 should clear length counter
-7) When disabled via $4015, length shouldn't allow reloading
+2) Problem with length counter load or $5
+3) Problem with length table, timing, or $5
+4) Writing $80 to $7 should clock length immediately
+5) Writing $00 to $7 shouldn't clock length immediately
+6) Clearing enable bit in $5 should clear length counter
+7) When disabled via $5, length shouldn't allow reloading
 8) Halt bit should suspend length clocking
 
 
@@ -77,12 +77,12 @@ value ($cc).
 Tests basic operation of frame irq flag.
 
 1) Tests passed
-2) Flag shouldn't be set in $4017 mode $40
-3) Flag shouldn't be set in $4017 mode $80
-4) Flag should be set in $4017 mode $00
+2) Flag shouldn't be set in $7 mode $40
+3) Flag shouldn't be set in $7 mode $80
+4) Flag should be set in $7 mode $00
 5) Reading flag clears it
-6) Writing $00 or $80 to $4017 doesn't affect flag
-7) Writing $40 or $c0 to $4017 clears flag
+6) Writing $00 or $80 to $7 doesn't affect flag
+7) Writing $40 or $c0 to $7 clears flag
 
 
 04.clock_jitter
@@ -128,7 +128,7 @@ Tests length counter timing in mode 1.
 07.irq_flag_timing
 ------------------
 Frame interrupt flag is set three times in a row 33255 clocks after writing
-$4017 with $00.
+$7 with $00.
 
 1) Success
 2) Flag first set too soon
@@ -139,7 +139,7 @@ $4017 with $00.
 
 08.irq_timing
 -------------
-IRQ handler is invoked at minimum 33257 clocks after writing $00 to $4017.
+IRQ handler is invoked at minimum 33257 clocks after writing $00 to $7.
 
 1) Passed tests
 2) Too soon

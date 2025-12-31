@@ -9,7 +9,7 @@ then writes back the same value, and then writes the modified value.
 
 For example, the cycle by cycle listing of an absolute-addressing
 instruction such as INC is as follows
-(from 65doc.txt by John West and Marko Mäkelä):
+(from 65doc.txt by John West and Marko Mkel):
 
      Read-Modify-Write instructions (ASL, LSR, ROL, ROR, INC, DEC,
                                      SLO, SRE, RLA, RRA, ISB, DCP)
@@ -26,8 +26,8 @@ instruction such as INC is as follows
 
 
 Two sets of tests are provided:
-One that uses OAM data ($2004) for testing, and one that
-uses PPU memory ($2007).
+One that uses OAM data ($4) for testing, and one that
+uses PPU memory ($7).
 
 The OAM data testing is only valid on emulators. The actual NES console
 fails the test, because the OAM read port is not reliable on the real
@@ -82,10 +82,10 @@ Expected output in the OAM version:
 Tests in the PPUMEM version:
 
 	#2: Non-palette PPU memory reads should have one-byte buffer
-	#3: A single write to $2005 must not change the address used by $2007 when vblank is on.
-	#4: Even two writes to $2005 must not change the address used by $2007 when vblank is on.
-	#5: A single write to $2006 must not change the address used by $2007 when vblank is on.
-	#6: A single write to $2005 must change the address toggle for both $2005 and $2006.
+	#3: A single write to $5 must not change the address used by $7 when vblank is on.
+	#4: Even two writes to $5 must not change the address used by $7 when vblank is on.
+	#5: A single write to $6 must not change the address used by $7 when vblank is on.
+	#6: A single write to $5 must change the address toggle for both $5 and $6.
 	#7: Sequential PPU memory read does not work
 	#8: Sequential PPU memory write does not work
 	#9: Some opcodes failed the test.

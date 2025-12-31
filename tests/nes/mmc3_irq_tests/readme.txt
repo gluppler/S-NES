@@ -11,7 +11,7 @@ It's best to run the tests in order, because some earlier ROMs test
 things that later ones assume will work properly.
 
 The ROMs mainly test behavior by manually clocking the MMC3's IRQ
-counter by writing to $2006 to change the current VRAM address. The last
+counter by writing to $6 to change the current VRAM address. The last
 two ROMs test different revisions of the MMC3, so at most only one will
 pass on a particular emulator.
 
@@ -28,7 +28,7 @@ following behaviors that differ as described in kevtris's (draft?) MMC3
 documentation:
 
 - The counter can be clocked manually via bit 12 of the VRAM address
-even when $2000 = $00 (bg and sprites both use tiles from $0xxx).
+even when $0 = $00 (bg and sprites both use tiles from $0xxx).
 
 - The IRQ flag is not set when the counter is cleared by writing to
 $C001.
@@ -64,7 +64,7 @@ Tests counter operation. Requires support for clocking via manual
 toggling of VRAM address.
 
 2) Counter/IRQ/A12 clocking isn't working at all
-3) Should decrement when A12 is toggled via $2006
+3) Should decrement when A12 is toggled via $6
 4) Writing to $C000 shouldn't cause reload
 5) Writing to $C001 shouldn't cause immediate reload
 6) Should reload (no decrement) on first clock after clear
@@ -91,9 +91,9 @@ Tests clocking via bit 12 of VRAM address.
 
 2) Shouldn't be clocked when A12 doesn't change
 3) Shouldn't be clocked when A12 changes to 0
-4) Should be clocked when A12 changes to 1 via $2006 write
-5) Should be clocked when A12 changes to 1 via $2007 read
-6) Should be clocked when A12 changes to 1 via $2007 write
+4) Should be clocked when A12 changes to 1 via $6 write
+5) Should be clocked when A12 changes to 1 via $7 read
+6) Should be clocked when A12 changes to 1 via $7 write
 
 
 4.Scanline Timing

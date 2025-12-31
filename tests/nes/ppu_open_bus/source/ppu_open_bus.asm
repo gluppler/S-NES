@@ -1,5 +1,5 @@
 ; Tests PPU "decay value", the open-bus value read back from
-; write-only registers and unimplemented bits of $2002.
+; write-only registers and unimplemented bits of $2.
 ; Takes about five seconds.
 
 .include "shell.inc"
@@ -24,23 +24,23 @@ main:
       jne test_failed
       
       set_test 3,"Decay value should become zero by one second"
-      setb $2002,$FF
+      setb $2,$FF
       delay_msec 1000
       lda PPUCTRL
       jne test_failed
       
-      set_test 4,"Read from $2007 from VRAM should set decay value to what's read"
-      set_ppuaddr $2000
+      set_test 4,"Read from $7 from VRAM should set decay value to what's read"
+      set_ppuaddr $0
       setb PPUDATA,$55
       setb PPUDATA,$AA
-      set_ppuaddr $2000
+      set_ppuaddr $0
       bit PPUDATA
       lda PPUDATA
       cmp PPUCTRL
       jne test_failed
 
       set_test 5,"Reading write-only register should not refresh decay value"
-      setb $2002,$FF
+      setb $2,$FF
       ldx #100
 :     delay_msec 10
       lda PPUCTRL
@@ -49,7 +49,7 @@ main:
       cmp #0
       jne test_failed
       
-      set_test 6,"Low 5 bits of $2002 should be from decay value"
+      set_test 6,"Low 5 bits of $2 should be from decay value"
       setb PPUSTATUS,$FF
       lda PPUSTATUS
       and #$1F
@@ -60,7 +60,7 @@ main:
       and #$1F
       jne test_failed
       
-      set_test 7,"Reading $2002 shouldn't refresh low 5 bits of decay value"
+      set_test 7,"Reading $2 shouldn't refresh low 5 bits of decay value"
       setb PPUSTATUS,$FF
       ldx #100
 :     delay_msec 10
@@ -70,7 +70,7 @@ main:
       and #$1F
       jne test_failed
 
-      set_test 8,"High 2 bits from $2007 from palette should be from decay value"
+      set_test 8,"High 2 bits from $7 from palette should be from decay value"
       set_ppuaddr $3F00
       setb PPUSTATUS,$00
       lda PPUDATA
@@ -83,7 +83,7 @@ main:
       cmp #$C0
       jne test_failed
       
-      set_test 9,"Reading palette from $2007 shouldn't refresh high 2 bits of decay value"
+      set_test 9,"Reading palette from $7 shouldn't refresh high 2 bits of decay value"
       setb PPUSTATUS,$FF
       ldx #100
 :     delay_msec 10
@@ -101,7 +101,7 @@ main:
       and #$1C
       jne test_failed
       
-      set_test 11,"Reading third byte of a sprite from $2004 should refresh all bits of decay value"
+      set_test 11,"Reading third byte of a sprite from $4 should refresh all bits of decay value"
       setb SPRADDR,2
       setb PPUSTATUS,$FF
       lda SPRDATA

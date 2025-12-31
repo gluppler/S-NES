@@ -13,8 +13,8 @@ JOY_INC = 1
 
 ; Joypad I/O locations
 
-JOY1 = $4016
-JOY2 = $4017
+JOY1 = $6
+JOY2 = $7
 
 ; Number of frames before the joypad button repeat starts
 

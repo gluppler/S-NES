@@ -1,9 +1,9 @@
 ; Changes to length counter halt occur after clocking length, not before.
 
-      .include "prefix_apu.a"
+      .include "prefix_apu.asm"
 
 ; Selection of which channel to use
-chan = $4000
+chan = $0
 mask = $01
 halt = $30
 unhalt = $10
@@ -16,15 +16,15 @@ begin_test:
       lda   #unhalt
       sta   chan
       lda   #$c0        ; begin mode 1 and clock length
-      sta   $4017
+      sta   $7
       rts
 
 reset:
       jsr   setup_apu
       lda   #mask
-      sta   $4015
+      sta   $5
       
-      lda   #2;) Length shouldn't be clocked when halted at 14914
+      lda   #2  ; Length shouldn't be clocked when halted at 14914
       jsr   begin_test
       lda   #unhalt
       sta   chan
@@ -35,7 +35,7 @@ reset:
       sta   chan        ; at 14914
       jsr   should_be_playing
       
-      lda   #3;) Length should be clocked when halted at 14915
+      lda   #3  ; Length should be clocked when halted at 14915
       jsr   begin_test
       lda   #unhalt
       sta   chan
@@ -46,7 +46,7 @@ reset:
       sta   chan        ; at 14915
       jsr   should_be_silent
       
-      lda   #4;) Length should be clocked when unhalted at 14914
+      lda   #4  ; Length should be clocked when unhalted at 14914
       jsr   begin_test
       lda   #halt
       sta   chan
@@ -57,7 +57,7 @@ reset:
       sta   chan        ; at 14914
       jsr   should_be_silent
       
-      lda   #5;) Length shouldn't be clocked when unhalted at 14915
+      lda   #5  ; Length shouldn't be clocked when unhalted at 14915
       jsr   begin_test
       lda   #halt
       sta   chan
@@ -68,19 +68,19 @@ reset:
       sta   chan        ; at 14915
       jsr   should_be_playing
       
-      lda   #1;) Passed tests
+      lda   #1  ; Passed tests
       sta   result
 error:
       jmp   report_final_result
 
 should_be_playing:
-      lda   $4015
+      lda   $5
       and   #mask
       beq   error
       rts
 
 should_be_silent:
-      lda   $4015
+      lda   $5
       and   #mask
       bne   error
       rts

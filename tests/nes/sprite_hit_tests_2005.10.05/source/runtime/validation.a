@@ -2,7 +2,7 @@
 result = $f8
 
 default_test_name:
-      .db   0
+      ..byte 0
       .default test_name = default_test_name
       
 ; Report error if last result was non-zero

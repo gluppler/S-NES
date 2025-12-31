@@ -4,12 +4,12 @@ mycount		resd 1
 irq0counter	resw 1
 
 section .data
-irq8addr	dw 8*4, 0
+irq8addr	.word 8*4, 0
 
 section .text
 
-pitvalue EQU 11
-pitrate  EQU 108471
+pitvalue = 11
+pitrate = 108471
 ; pitvalue * pitrate = 1234DDh
 
 ; _fastcall double CPUinfo(void);
@@ -85,7 +85,7 @@ TempIrq0:
 	iret
 .callold:
 	;jmp dword [oldi08]
-	db 0EAh
+	.byte 0EAh
 	oldi08 dd 0
 
 ProgramPIT:

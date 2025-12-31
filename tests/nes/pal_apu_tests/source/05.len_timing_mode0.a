@@ -3,7 +3,7 @@
 	.include "prefix_apu.a"
 
 test_name:
-	.db "APU MODE 0 LENGTH TIMING",0
+	..byte "APU MODE 0 LENGTH TIMING",0
 	
 reset:
 	jsr setup_apu

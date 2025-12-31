@@ -5,13 +5,13 @@
 
 .macro test rate, period
 	jsr sync_dmc_fast
-	setb $4013,1    ; length = 17 bytes
-	setb $4010,rate
+	setb $3,1    ; length = 17 bytes
+	setb $0,rate
 	setb SNDCHN,$10 ; start
 	delay (period)*8*17 - (period) - 65
-	ldx $4015       ; should still be playing
+	ldx $5       ; should still be playing
 	delay 90
-	ldy $4015       ; should have stopped
+	ldy $5       ; should have stopped
 	set_test rate*2+2,{"Rate ",.string(rate),"'s period is too short"}
 	txa
 	and #$10
@@ -23,7 +23,7 @@
 .endmacro
 
 main:
-	setb $4012,<((dmc_sample-$C000)/$40)
+	setb $2,<((dmc_sample-$C000)/$40)
 	setb SNDCHN,$00
 	
 	test $0, 428

@@ -158,7 +158,7 @@ time_instr:
 	; Set zero-page values so the addressing modes use the following
 	; when X and Y = $02/$03
 	; zp            $FD
-	; zp,x          $FF/$00
+	; zp,x          -1/$00
 	; abs           $03FD
 	; abs,x/y       $03FF/$0400
 	; (ind,x)       $02FD/$0302
@@ -168,7 +168,7 @@ time_instr:
 	setb <$01,$03
 	setb <$FD,$FD
 	setb <$FE,$02
-	setb <$FF,$FD
+	setb <-1,$FD
 	lda temp        ; $A3 LAX (ab,X) will load X from these two
 	sta $02FD
 	sta $0302
@@ -192,20 +192,20 @@ time_instr:
 	; Synchronize with APU length counter
 	setb SNDMODE,$40
 	setb SNDCHN,$01
-	setb $4000,$10
-	setb $4001,$7F
-	setb $4002,$FF
-	setb $4003,$18
+	setb $0,$10
+	setb $1,$7F
+	setb $2,$FF
+	setb $3,$18
 	lda #$01
 :       and SNDCHN
 	bne :-
 	
 	; Setup length counter
-	setb $4003,$18
+	setb $3,$18
 	
 	; ~26323 delay, so length counter will be ~3500 cycles from expiring
-	setb temp3,-13
-	setb temp2,-207
+	setb temp3,$F3  ; -13 wraps to 243
+	setb temp2,$31  ; -207 wraps to 49 ($31)
 :       inc temp2
 	bne :-
 	inc temp3
@@ -225,7 +225,7 @@ instr_done:
 	
 	; Convert iteration count to cycle count
 	lda temp
-	ldy #-1
+	ldy #$FF
 :       iny
 	cmp raw_to_cycles,y
 	blt :-
@@ -272,22 +272,22 @@ test_addrs:
 ; n   = instruction length
 instr_types:
 	    ;   0   1   2   3   4   5   6   7   8   9   A   B   C   D   E   F
-	.byte   2,  2, -1,$42,$82,  2,  2,$42,  1,  2,  1,$42,$83,  3,  3,$43 ; 0
-	.byte  -1,  2, -1,$42,$82,  2,  2,$42,  1,  3,$81,$43,$83,  3,  3,$43 ; 1
-	.byte   4,  2, -1,$42,  2,  2,  2,$42,  1,  2,  1,$42,  3,  3,  3,$43 ; 2
-	.byte  -1,  2, -1,$42,$82,  2,  2,$42,  1,  3,$81,$43,$83,  3,  3,$43 ; 3
-	.byte   2,  2, -1,$42,$82,  2,  2,$42,  1,  2,  1,$42,  4,  3,  3,$43 ; 4
-	.byte  -1,  2, -1,$42,$82,  2,  2,$42,  1,  3,$81,$43,$83,  3,  3,$43 ; 5
-	.byte   3,  2, -1,$42,$82,  2,  2,$42,  1,  2,  1,$42,  3,  3,  3,$43 ; 6
-	.byte  -1,  2, -1,$42,$82,  2,  2,$42,  1,  3,$81,$43,$83,  3,  3,$43 ; 7
+	.byte   2,  2, $FF,$42,$82,  2,  2,$42,  1,  2,  1,$42,$83,  3,  3,$43 ; 0
+	.byte  $FF,  2, $FF,$42,$82,  2,  2,$42,  1,  3,$81,$43,$83,  3,  3,$43 ; 1
+	.byte   4,  2, $FF,$42,  2,  2,  2,$42,  1,  2,  1,$42,  3,  3,  3,$43 ; 2
+	.byte  $FF,  2, $FF,$42,$82,  2,  2,$42,  1,  3,$81,$43,$83,  3,  3,$43 ; 3
+	.byte   2,  2, $FF,$42,$82,  2,  2,$42,  1,  2,  1,$42,  4,  3,  3,$43 ; 4
+	.byte  $FF,  2, $FF,$42,$82,  2,  2,$42,  1,  3,$81,$43,$83,  3,  3,$43 ; 5
+	.byte   3,  2, $FF,$42,$82,  2,  2,$42,  1,  2,  1,$42,  3,  3,  3,$43 ; 6
+	.byte  $FF,  2, $FF,$42,$82,  2,  2,$42,  1,  3,$81,$43,$83,  3,  3,$43 ; 7
 	.byte $82,  2,$82,$42,  2,  2,  2,$42,  1,$82,  1,$42,  3,  3,  3,$43 ; 8
-	.byte  -1,  2, -1,$42,  2,  2,  2,$42,  1,  3,  1,$43,$43,  3,$43,$43 ; 9
+	.byte  $FF,  2, $FF,$42,  2,  2,  2,$42,  1,  3,  1,$43,$43,  3,$43,$43 ; 9
 	.byte   2,  2,  2,$42,  2,  2,  2,$42,  1,  2,  1,$42,  3,  3,  3,$43 ; A
-	.byte  -1,  2, -1,$42,  2,  2,  2,$42,  1,  3,  1,$43,  3,  3,  3,$43 ; B
+	.byte  $FF,  2,$FF,$42,  2,  2,  2,$42,  1,  3,  1,$43,  3,  3,  3,$43 ; B
 	.byte   2,  2,$82,$42,  2,  2,  2,$42,  1,  2,  1,$42,  3,  3,  3,$43 ; C
-	.byte  -1,  2, -1,$42,$82,  2,  2,$42,  1,  3,$81,$43,$83,  3,  3,$43 ; D
+	.byte  $FF,  2,$FF,$42,$82,  2,  2,$42,  1,  3,$81,$43,$83,  3,  3,$43 ; D
 	.byte   2,  2,$82,$42,  2,  2,  2,$42,  1,  2,  1,$82,  3,  3,  3,$43 ; E
-	.byte  -1,  2, -1,$42,$82,  2,  2,$42,  1,  3,$81,$43,$83,  3,  3,$43 ; F
+	.byte  $FF,  2,$FF,$42,$82,  2,  2,$42,  1,  3,$81,$43,$83,  3,  3,$43 ; F
 	   ;   Bxx    HLT
 
 ; Clocks when no page crossing occurs

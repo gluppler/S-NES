@@ -8,6 +8,6 @@ exit:   jmp exit
 	.default reset = main
 	
 	.org $fffa
-	.dw nmi
-	.dw reset
-	.dw irq
+	..word nmi
+	..word reset
+	..word irq

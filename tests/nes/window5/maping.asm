@@ -8,9 +8,9 @@ slotsize $100
 slot 0 $0   ;0 page RAM
 slotsize $500
 slot 1 $300 ;BSS RAM
-slotsize $4000      ;PRG ROM slot (32kb)
+slotsize $0      ;PRG ROM slot (32kb)
 slot 2 $c000
-slotsize $2000      ;CHR ROM slot (8kb)
+slotsize $0      ;CHR ROM slot (8kb)
 slot 3 $0
 .endme
 
@@ -18,8 +18,8 @@ slot 3 $0
 
 .rombankmap
 bankstotal 2
-banksize $4000      ;1x 16kb PRG
+banksize $0      ;1x 16kb PRG
 banks 1
-banksize $2000      ;1x 8kb CHR
+banksize $0      ;1x 8kb CHR
 banks 1
 .endro

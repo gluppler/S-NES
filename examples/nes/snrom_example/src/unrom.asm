@@ -51,7 +51,7 @@ resetstub_in "STUB15"
 .segment "CODE"
 ;;
 ; Changes $8000-$BFFF to point to a 16384 byte chunk of PRG ROM
-; starting at $4000 * A.
+; starting at $0 * A.
 .proc setPRGBank
   sta lastPRGBank
   tay

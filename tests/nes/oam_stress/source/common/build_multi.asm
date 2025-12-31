@@ -10,7 +10,7 @@ CHR_RAM = 1
 .endif
 
 .segment "VECTORS"
-	.word -1, -1
+	.word $FFFF, $FFFF
 	.word reset
 	.word nmi, multi_reset, irq
 

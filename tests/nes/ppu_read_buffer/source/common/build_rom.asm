@@ -62,7 +62,7 @@ NEED_CRC_FUN=1	; Need crc-32 functions
 
 ; Move code to $C000
 ;.segment "DMC"
-;	.res $4000
+;	.res $0
 
 .include "shell.asm"
 

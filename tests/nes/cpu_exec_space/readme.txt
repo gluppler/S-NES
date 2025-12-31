@@ -12,8 +12,8 @@ In addition, two obscure side effects are tested:
    Read from 2006, ditto. Read from 2002, you get that in high 3 bits.
    Additionally, the open bus decays automatically to zero in about one
    second if not refreshed.
-   This test requires that a value written to $2003 can be read back
-   from $2001 within a time window of one or two frames.
+   This test requires that a value written to $3 can be read back
+   from $1 within a time window of one or two frames.
 
 2. One-byte opcodes must issue a dummy read to the byte immediately
    following that opcode. The CPU always does a fetch of the second
@@ -22,36 +22,36 @@ In addition, two obscure side effects are tested:
 
 Additionally, the following PPU features must be working properly:
 
-1. PPU memory writes and reads through $2006/$2007
-2. The address high/low toggle reset at $2002
-3. A single write through $2006 must not affect the address used by $2007
+1. PPU memory writes and reads through $6/$7
+2. The address high/low toggle reset at $2
+3. A single write through $6 must not affect the address used by $7
 4. NMI should fire sometimes to salvage a broken program, if the JSR/JMP
    never reaches its intended destination. (Only required in the
    test IF the CPU and/or open bus are not working properly.)
 
-The test is done FIVE times: Once with JSR $2001, again with JMP $2001,
-and then with RTS (with target address of $2001), and then with a JMP
+The test is done FIVE times: Once with JSR $1, again with JMP $1,
+and then with RTS (with target address of $1), and then with a JMP
 that expects to return with an RTI opcode. Finally, with a regular
 JSR, but the return from the code is done through a BRK instruction.
 
 Tests and results:
 
-	 #2: PPU memory access through $2007 does not work properly. (Use other tests to determine the exact problem.)
-	 #3: PPU open bus implementation is missing or incomplete: A write to $2003, followed by a read from $2001 should return the same value as was written.
-	 #4: The RTS at $2001 was never executed. (If NMI has not been implemented in the emulator, the symptom of this failure is that the program crashes and does not output either "Fail" nor "Passed").
+	 #2: PPU memory access through $7 does not work properly. (Use other tests to determine the exact problem.)
+	 #3: PPU open bus implementation is missing or incomplete: A write to $3, followed by a read from $1 should return the same value as was written.
+	 #4: The RTS at $1 was never executed. (If NMI has not been implemented in the emulator, the symptom of this failure is that the program crashes and does not output either "Fail" nor "Passed").
 	 #5: An RTS opcode should still do a dummy fetch of the next opcode.  (The same goes for all one-byte opcodes, really.)
 	 #6: I have no idea what happened, but the test did not work as supposed to. In any case, the problem is in the PPU.
-	 #7: A jump to $2001 should never execute code from $8001 / $9001 / $A001 / $B001 / $C001 / $D001 / $E001.
+	 #7: A jump to $1 should never execute code from $8001 / $9001 / $A001 / $B001 / $C001 / $D001 / $E001.
 	 #8: Okay, the test passed when JSR was used, but NOT when the opcode was JMP. I definitely did not think any emulator would trigger this result.
 	 #9: Your PPU is broken in mind-defyingly random ways.
-	 #10: RTS to $2001 never returned. This message never gets displayed.
+	 #10: RTS to $1 never returned. This message never gets displayed.
 	 #11: The test passed when JSR was used, and when JMP was used, but NOT when RTS was used. Caught ya! Paranoia wins.
 	 #12: Your PPU gave up reason at the last moment.
-	 #13: JMP to $2001 never returned. Again, this message never gets displayed.
+	 #13: JMP to $1 never returned. Again, this message never gets displayed.
 	 #14: An RTI opcode should still do a dummy fetch of the next opcode.  (The same goes for all one-byte opcodes, really.)
 	 #15: An RTI opcode should not destroy the PPU. Somehow that still appears to be the case here.
 	 #16: IRQ occurred uncalled
-	 #17: JSR to $2001 never returned. (Never displayed)
+	 #17: JSR to $1 never returned. (Never displayed)
 	 #18: The BRK instruction should issue an automatic fetch of the byte that follows right after the BRK. (The same goes for all one-byte opcodes, but with BRK it should be a bit more obvious than with others.)
 	 #19: A BRK opcode should not destroy the PPU. Somehow that still appears to be the case here.
 	 

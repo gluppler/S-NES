@@ -5,8 +5,8 @@
 ; ============================================================================
 
 ; Controller registers
-CONTROLLER1 = $4016     ; Controller 1 shift register
-CONTROLLER2 = $4017     ; Controller 2 shift register
+CONTROLLER1 = $6     ; Controller 1 shift register
+CONTROLLER2 = $7     ; Controller 2 shift register
 
 ; Button indices (for accessing controller arrays)
 BUTTON_A = 0

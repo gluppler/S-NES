@@ -3,7 +3,7 @@
       .include "prefix_ppu.a"
 
 test_name:
-      .db   "VBL CLEAR TIMING",0
+      ..byte "VBL CLEAR TIMING",0
 
 test_too_soon:
       ldy   #2          ; 2291 delay

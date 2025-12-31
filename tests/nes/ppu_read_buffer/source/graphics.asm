@@ -285,7 +285,7 @@ c_nmi_handler:
 
 	sty SPRADDR	;sprite 0
 	lda #>oam_buffer
-	sta $4014
+	sta $4
 
 	lda #$A0    ;Select background graphics page 1 & nametable 0
 	sta PPUCTRL ; & 16pix sprites & enable NMI
@@ -698,7 +698,7 @@ show_cool_graphics_size = * - show_cool_graphics_template_begin
 .segment "OAM_BUF"
  
  ; OAM cache. Sprite data is calculated into this buffer,
- ; and uploaded to the PPU using the $4014 DMA.
+ ; and uploaded to the PPU using the $4 DMA.
  .align $100
  oam_buffer: .res $100
 

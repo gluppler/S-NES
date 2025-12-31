@@ -90,16 +90,16 @@ time_code:
 	; Synchronize with APU length counter
 	setb SNDMODE,$40
 	setb SNDCHN,$01
-	setb $4000,$10
-	setb $4001,$7F
-	setb $4002,$FF
-	setb $4003,$18
+	setb $0,$10
+	setb $1,$7F
+	setb $2,$FF
+	setb $3,$18
 	lda #$01
 :       and SNDCHN
 	bne :-
 	
 	; Setup length counter
-	setb $4003,$18
+	setb $3,$18
 	
 	delay 29830-7120
 	
@@ -115,7 +115,7 @@ raw_to_cycles: ; entry i is lowest value that qualifies for i cycles
 instr_done:
 	; Convert iteration count to cycle count
 	lda temp
-	ldy #-1
+	ldy #$FF
 :       iny
 	cmp raw_to_cycles,y
 	blt :-

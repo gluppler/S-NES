@@ -5,8 +5,8 @@ PPUSCROLL = $2005
 PPUADDR = $2006
 PPUDATA = $2007
 
-P1 = $4016
-P2 = $4017
+P1 = $6
+P2 = $7
 
 
 .segment "ZEROPAGE"

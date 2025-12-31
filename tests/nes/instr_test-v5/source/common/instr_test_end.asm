@@ -17,7 +17,7 @@ irq:
 .endif
 nmi:    bit interrupt_occurred
 	bpl @interrupt
-	bit $4015
+	bit $5
 	rti
 @interrupt:
 	dec interrupt_occurred
@@ -120,7 +120,7 @@ test_instr:
 	; Disable and be sure APU IRQs are clear, since
 	; I flag gets cleared during testing.
 	setb SNDMODE,$C0 
-	setb $4010,0
+	setb $0,0
 	nop
 	lda SNDCHN
 	

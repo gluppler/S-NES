@@ -16,14 +16,14 @@ shows the effect of a read from each register:
 	Addr    Open-bus bits
 			7654 3210
 	- - - - - - - - - - - - - - - -
-	$2000   DDDD DDDD
-	$2001   DDDD DDDD
-	$2002   ---D DDDD
-	$2003   DDDD DDDD
-	$2004   ---- ----
-	$2005   DDDD DDDD
-	$2006   DDDD DDDD
-	$2007   ---- ----   non-palette
+	$0   DDDD DDDD
+	$1   DDDD DDDD
+	$2   ---D DDDD
+	$3   DDDD DDDD
+	$4   ---- ----
+	$5   DDDD DDDD
+	$6   DDDD DDDD
+	$7   ---- ----   non-palette
 			DD-- ----   palette
 
 A D means that this bit reads back as whatever is in the decay register

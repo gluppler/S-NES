@@ -9,13 +9,13 @@ begin_mmc3_tests:
       lda   #200
       jsr   delay_msec
       lda   #$c0        ; disable frame irq
-      sta   $4017
+      sta   $7
       lda   #0          ; disable PPU
-      sta   $2001
-      sta   $2000
-      bit   $2002       ; vaddr = 0
-      sta   $2006
-      sta   $2006
+      sta   $1
+      sta   $0
+      bit   $2       ; vaddr = 0
+      sta   $6
+      sta   $6
       
       ; Setup RESET handler
       ldx   $fffc
@@ -108,14 +108,14 @@ clock_counter_x:
 clock_counter:
       pha
       lda   #0
-      sta   $2006
-      sta   $2006
+      sta   $6
+      sta   $6
       lda   #$10
-      sta   $2006
-      sta   $2006
+      sta   $6
+      sta   $6
       lda   #0
-      sta   $2006
-      sta   $2006
+      sta   $6
+      sta   $6
       pla
       rts
       .code
@@ -140,12 +140,12 @@ get_count:
       nop
       nop
 :     lda   #0
-      sta   $2006
-      sta   $2006
+      sta   $6
+      sta   $6
       lda   #$10
       inx
-      sta   $2006
-      sta   $2006
+      sta   $6
+      sta   $6
       bne   -
       sei
       ldx   #$ff
@@ -156,7 +156,7 @@ irq:  pla
       pla
       pla
       lda   #0
-      sta   $2006
-      sta   $2006
+      sta   $6
+      sta   $6
       rts
       .code

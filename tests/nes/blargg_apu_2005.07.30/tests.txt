@@ -8,7 +8,7 @@ check for likely problems like one-off errors.
 
 The tests do not test clocking of the envelope, sweep, or triangle's
 linear counter. Also, only the length counter on the first square wave
-($4000-$4003) is tested.
+($0-$3) is tested.
 
 The main source code for each test is included. In the tests, remember
 that the actual read/write of sta/lda $xxxx occurs on the fourth (last)
@@ -32,12 +32,12 @@ Shay <hotpop.com@blargg> (swap to e-mail)
 Tests basic length counter operation
 
 1) Passed tests
-2) Problem with length counter load or $4015
-3) Problem with length table, timing, or $4015
-4) Writing $80 to $4017 should clock length immediately
-5) Writing $00 to $4017 shouldn't clock length immediately
-6) Clearing enable bit in $4015 should clear length counter
-7) When disabled via $4015, length shouldn't allow reloading
+2) Problem with length counter load or $5
+3) Problem with length table, timing, or $5
+4) Writing $80 to $7 should clock length immediately
+5) Writing $00 to $7 shouldn't clock length immediately
+6) Clearing enable bit in $5 should clear length counter
+7) When disabled via $5, length shouldn't allow reloading
 8) Halt bit should suspend length clocking
 
 
@@ -56,12 +56,12 @@ correct value ($cc).
 Tests basic operation of frame irq flag.
 
 1) Tests passed
-2) Flag shouldn't be set in $4017 mode $40
-3) Flag shouldn't be set in $4017 mode $80
-4) Flag should be set in $4017 mode $00
+2) Flag shouldn't be set in $7 mode $40
+3) Flag shouldn't be set in $7 mode $80
+4) Flag should be set in $7 mode $00
 5) Reading flag clears it
-6) Writing $00 or $80 to $4017 doesn't affect flag
-7) Writing $40 or $c0 to $4017 clears flag
+6) Writing $00 or $80 to $7 doesn't affect flag
+7) Writing $40 or $c0 to $7 clears flag
 
 
 04.clock_jitter
@@ -106,7 +106,7 @@ Tests length counter timing in mode 1.
 07.irq_flag_timing
 ------------------
 Frame interrupt flag is set three times in a row 29831 clocks after
-writing $4017 with $00.
+writing $7 with $00.
 
 1) Success
 2) Flag first set too soon
@@ -118,7 +118,7 @@ writing $4017 with $00.
 08.irq_timing
 -------------
 IRQ handler is invoked at minimum 29833 clocks after writing $00 to
-$4017.
+$7.
 
 1) Passed tests
 2) Too soon
@@ -128,11 +128,11 @@ $4017.
 
 09.reset_timing
 ---------------
-After reset or power-up, APU acts as if $4017 were written with $00 from
+After reset or power-up, APU acts as if $7 were written with $00 from
 9 to 12 clocks before first instruction begins.
 
 1) Success
-2) $4015 didn't read back as $00 at power-up
+2) $5 didn't read back as $00 at power-up
 3) Fourth step occurs too soon
 4) Fourth step occurs too late
 

@@ -3,7 +3,7 @@
       .include "prefix_mmc3_validation.a"
       
 test_name:
-      .db   "MMC3 IRQ COUNTER DETAILS",0
+      ..byte "MMC3 IRQ COUNTER DETAILS",0
 
 reset:
       jsr   begin_mmc3_tests
@@ -69,17 +69,17 @@ reset:
       jsr   begin_counter_test
       jsr   wait_vbl
       lda   #0
-      sta   $2005
-      sta   $2005
+      sta   $5
+      sta   $5
       lda   #$08              ; sprites use tiles at $1xxx
-      sta   $2000
+      sta   $0
       lda   #$18              ; enable bg and sprites
-      sta   $2001
+      sta   $1
       ldy   #25               ; 29800 delay
       lda   #237        
       jsr   delay_ya8
       lda   #$00              ; disable rendering
-      sta   $2001
+      sta   $1
       jsr   should_be_clear
       jsr   clock_counter
       jsr   should_be_set

@@ -16,9 +16,9 @@ MAP "/" = $3b
 		;Thoose variables are used in the NMI routine
 		;Don't do calculations with them if a VBlank is pending
 		;set them after the calculation
-SpriteDMAFlag		db	;This tells if sprite DMA is ready in a frame
-PalFlag			db	;Check if palette uploaded is needed
-NMIFlag			db	;Check if a NMI is pending or not
+SpriteDMAFlag		.byte ;This tells if sprite DMA is ready in a frame
+PalFlag			.byte ;Check if palette uploaded is needed
+NMIFlag			.byte ;Check if a NMI is pending or not
 FrameCounter		db
 NMITemp			db
 NMITemp2		db
@@ -123,16 +123,16 @@ NMI
 	pha
 	tya
 	pha
-	bit $2002
+	bit $2
 	lda M2001
-	sta $2001
+	sta $1
 	lda SpriteDMAFlag
 	beq _skipSpriteDMA	;Is the sprite buffer ready ?
 	lda #$00
 	sta SpriteDMAFlag	;Sprite buffer is read
-	sta $2003.w
+	sta $3.w
 	lda #$02
-	sta $4014.w		;Do sprite DMA at $200
+	sta $4.w		;Do sprite DMA at $200
 _skipSpriteDMA
 	lda PalFlag
 	beq +			;Do we need to update tiles ?
@@ -141,9 +141,9 @@ _skipSpriteDMA
 	jsr WritePalette
 
 +	lda #$22
-	sta $2006.w
+	sta $6.w
 	lda #$1d
-	sta $2006.w
+	sta $6.w
 
 	ldx #$00
 	lda Delay
@@ -159,20 +159,20 @@ _skipSpriteDMA
 	lda #$3f
 	bne ++
 +	adc #$0f
-++	sta $2007.w
+++	sta $7.w
 	tya
 	bne +
 	lda #$2e
 	bne ++
 +	adc #$0f
-++	sta $2007.w
+++	sta $7.w
 
 	lda ScrollH
-	sta $2005.w
+	sta $5.w
 	lda ScrollV
-	sta $2005.w		;Upload scrolling regs
+	sta $5.w		;Upload scrolling regs
 	lda M2000
-	sta $2000.w
+	sta $0.w
 	lda FrameCounter
 	eor #$01
 	sta FrameCounter
@@ -196,13 +196,13 @@ ClearVRAM
 	lda M2000		;Enable NMIs
 	ora #$80
 	sta M2000
-	sta $2000
+	sta $0
 	jsr PaletteFadeOut	;Fade out palette (trick to save a routine to clear it)
 	lda #$00
-	sta $2000
+	sta $0
 	lda #$06
 	sta M2001
-	sta $2001		;Rendering off (so that nametables can be cleared)
+	sta $1		;Rendering off (so that nametables can be cleared)
 	jsr Clr2ndNamTbl	;Clear 2 active name tables
 	jmp ClrNamTbl
 .ends
@@ -232,19 +232,19 @@ _palfadeLoop
 .section "ClrNamTbl" FREE
 Clr2ndNamTbl
 	lda #$24		;Clears the name tables
-	.db $cd
+	..byte $cd
 ClrNamTbl
 	lda #$20
 SetNamAdress
-	sta $2006		;Begin at $2000/$2400 (vertical mirroring)
+	sta $6		;Begin at $0/$2400 (vertical mirroring)
 	lda #$00
-	sta $2006
+	sta $6
 	lda #$0f
 	ldx #$1e		;Clears 30 rows with spaces ($60)
 _screenloop
 	ldy #$20
 _rowloop
-	sta $2007
+	sta $7
 	dey
 	bne _rowloop
 	dex
@@ -252,7 +252,7 @@ _rowloop
 	lda #$00
 	ldx #$40		;Clear attribute table with color $0
 _attribloop
-	sta $2007
+	sta $7
 	dex
 	bne _attribloop
 	rts
@@ -284,18 +284,18 @@ _endClrSprRam
 ;To be used only when the screen is disabled
 .section "ResetScreen" FREE
 ResetScreen
--	bit $2002
+-	bit $2
 	bpl -			;Wait for VBlank and acknownledge it (no NMI)
 	lda #$88
 	sta M2000
-	sta $2000
+	sta $0
 	lda #$00
 	sta ScrollV		;Enable NMI, enable endering, reset scrolling
 	sta ScrollH
 	lda M2001
 	ora #$1e
 	sta M2001		;Enable rendering
-	sta $2001
+	sta $1
 	rts
 .ends
 
@@ -309,10 +309,10 @@ RESET				;The programm will start here
 	ldx #$ff
 	txs				;Init stack pointer
 	inx
-	stx $2000.w
-	stx $2001.w		;Turn off rendering and interrupts
+	stx $0.w
+	stx $1.w		;Turn off rendering and interrupts
 	lda #$40
-	sta $4017.w		;Set sound clock, IRQ off
+	sta $7.w		;Set sound clock, IRQ off
 	txa
 	sta PointerL
 	tay
@@ -325,9 +325,9 @@ _initRAMloop
 	dex
 	bpl _initRAMloop
 
--	bit $2002.w
+-	bit $2.w
 	bpl -
--	bit $2002.w			;Wait for several VBlanks
+-	bit $2.w			;Wait for several VBlanks
 	bpl -
 _MMC1
 	inc _MMC1.w
@@ -343,8 +343,8 @@ _MMC1
 	jsr WriteR3
 	
 	lda #$00
-	sta $2000.w
-	sta $2001.w
+	sta $0.w
+	sta $1.w
 	jsr PaletteInit
 	jsr PrintMsg
 	jsr ResetScreen		;This will make sprites use right pattern table (important !)
@@ -423,26 +423,26 @@ PaletteInit
 	rts
 
 PalData
-	.db $01, $06, $26, $36
-	.db $01, $06, $27, $36
-	.db $01, $06, $0a, $0a
-	.db $01, $06, $0a, $0a
-	.db $01, $06, $0a, $0a
-	.db $01, $06, $0a, $0a
-	.db $01, $06, $0a, $0a
-	.db $01, $06, $0a, $0a
+	..byte $01, $06, $26, $36
+	..byte $01, $06, $27, $36
+	..byte $01, $06, $0a, $0a
+	..byte $01, $06, $0a, $0a
+	..byte $01, $06, $0a, $0a
+	..byte $01, $06, $0a, $0a
+	..byte $01, $06, $0a, $0a
+	..byte $01, $06, $0a, $0a
 .ends
 
 .section "WritePalette" FREE
 WritePalette
 	lda #$3f
-	sta $2006.w
+	sta $6.w
 	lda #$00
-	sta $2006.w
+	sta $6.w
 	tay
 _palLoop
 	lda PaletteBuffer.w,Y
-	sta $2007.w
+	sta $7.w
 	iny
 	cpy #$20
 	bne _palLoop
@@ -455,15 +455,15 @@ LoadAlphabet
 	ldy #$00
 	jsr +				;Load tileset into first pattern table
 	ldy #$10			;Load identical tileset into second pattern table
-+	sty $2006.w
++	sty $6.w
 	ldy #$00
-	sty $2006.w
+	sty $6.w
 	sty PointerL
 	ldx #$04
 	lda #>Alphabet
 	sta PointerH
 -	lda [Pointer],Y
-	sta $2007
+	sta $7
 	iny
 	bne -
 	inc PointerH
@@ -482,12 +482,12 @@ Alphabet
 .section "PrintMsg" FREE
 PrintMsg
 	lda #$21
-	sta $2006
+	sta $6
 	lda #$a0
-	sta $2006
+	sta $6
 	ldy #$00
 -	lda Msg.w,Y
-	sta $2007
+	sta $7
 	iny
 	bpl -
 	rts
@@ -511,13 +511,13 @@ DisplayTestBar
 	jsr WriteR2				;WRAM disabled when fecthing sprites, but enabled when fetchin BG (!)
 						;Now we can read $6000 as if we were reading PPU A12 directly...
 						;We can detect
--	bit $2002
+-	bit $2
 	bvs -
--	bit $2002				;Wait for sprite zero hit
+-	bit $2				;Wait for sprite zero hit
 	bvc -
 
 	lda #$1f
-	sta $2001				;Turn on grayscale mode
+	sta $1				;Turn on grayscale mode
 	ldx Delay
 _delayLoop
 -	lda $6000
@@ -533,7 +533,7 @@ _delayLoop
 
 
 	lda #$1e
-	sta $2001
+	sta $1
 	lda #$00
 	jsr WriteR2				;WRAM always enabled
 	sta $6000
@@ -546,7 +546,7 @@ _delayLoop
 
 .orga $fffa
 .section "vectors" FORCE
-.dw NMI
-.dw RESET			;Thoose are the actual interupts vectors
-.dw IRQ
+..word NMI
+..word RESET			;Thoose are the actual interupts vectors
+..word IRQ
 .ends

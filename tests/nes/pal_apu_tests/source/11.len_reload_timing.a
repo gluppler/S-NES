@@ -8,7 +8,7 @@ reload = $4003
 mask   = $01
 
 test_name:
-	.db "APU LENGTH RELOAD TIMING",0
+	..byte "APU LENGTH RELOAD TIMING",0
 
 reset:
 	jsr setup_apu

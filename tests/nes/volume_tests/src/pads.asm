@@ -21,8 +21,8 @@
 ; changes to it. 
 
 
-JOY1      = $4016
-JOY2      = $4017
+JOY1      = $6
+JOY2      = $7
 
 
 .export read_pads

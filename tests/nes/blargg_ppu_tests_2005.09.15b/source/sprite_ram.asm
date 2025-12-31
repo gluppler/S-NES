@@ -1,6 +1,6 @@
-; Tests sprite RAM access via $2003, $2004, and $4014
+; Tests sprite RAM access via $3, $4, and $4
 
-      .include "prefix_ppu.a"
+      .include "prefix_ppu.asm"
 
 sprites = $200
 
@@ -10,63 +10,63 @@ reset:
       
       jsr   wait_vbl
       lda   #0
-      sta   $2000
-      sta   $2001
+      sta   $0
+      sta   $1
       
       lda   #2;) Basic read/write doesn't work
       sta   result
       lda   #0
-      sta   $2003
+      sta   $3
       lda   #$12
-      sta   $2004
+      sta   $4
       lda   #0
-      sta   $2003
-      lda   $2004
+      sta   $3
+      lda   $4
       cmp   #$12
       jsr   error_if_ne
       
-      lda   #3;) Address should increment on $2004 write
+      lda   #3;) Address should increment on $4 write
       sta   result
       lda   #0
-      sta   $2003
+      sta   $3
       lda   #$12
-      sta   $2004
+      sta   $4
       lda   #$34
-      sta   $2004
+      sta   $4
       lda   #1
-      sta   $2003
-      lda   $2004
+      sta   $3
+      lda   $4
       cmp   #$34
       jsr   error_if_ne
       
-      lda   #4;) Address should not increment on $2004 read
+      lda   #4;) Address should not increment on $4 read
       sta   result
       lda   #0
-      sta   $2003
+      sta   $3
       lda   #$12
-      sta   $2004
+      sta   $4
       lda   #$34
-      sta   $2004
+      sta   $4
       lda   #0
-      sta   $2003
-      lda   $2004
-      lda   $2004
+      sta   $3
+      lda   $4
+      lda   $4
       cmp   #$34
       jsr   error_if_eq
       
       lda   #5;) Third sprite bytes should be masked with $e3 on read 
       sta   result
       lda   #3
-      sta   $2003
+      sta   $3
       lda   #$ff
-      sta   $2004
+      sta   $4
       lda   #3
-      sta   $2003
-      lda   $2004
+      sta   $3
+      lda   $4
       cmp   #$e3
       jsr   error_if_eq
       
-      lda   #6;) $4014 DMA copy doesn't work at all
+      lda   #6;) $4 DMA copy doesn't work at all
       sta   result
       ldx   #0          ; set up data to copy from
 :     lda   test_data,x
@@ -75,19 +75,19 @@ reset:
       cpx   #4
       bne   -
       lda   #0          ; dma copy
-      sta   $2003
+      sta   $3
       lda   #$02
-      sta   $4014
+      sta   $4
       ldx   #0          ; set up data to copy from
-:     stx   $2003
-      lda   $2004
+:     stx   $3
+      lda   $4
       cmp   test_data,x
       jsr   error_if_ne
       inx
       cpx   #4
       bne   -
       
-      lda   #7;) $4014 DMA copy should start at value in $2003 and wrap
+      lda   #7;) $4 DMA copy should start at value in $3 and wrap
       sta   result
       ldx   #0          ; set up data to copy from
 :     lda   test_data,x
@@ -96,29 +96,29 @@ reset:
       cpx   #4
       bne   -
       lda   #1          ; dma copy
-      sta   $2003
+      sta   $3
       lda   #$02
-      sta   $4014
+      sta   $4
       ldx   #1          ; set up data to copy from
-:     stx   $2003
-      lda   $2004
+:     stx   $3
+      lda   $4
       cmp   sprites - 1,x
       jsr   error_if_ne
       inx
       cpx   #5
       bne   -
       
-      lda   #8;) $4014 DMA copy should leave value in $2003 intact
+      lda   #8;) $4 DMA copy should leave value in $3 intact
       sta   result
       lda   #1          ; dma copy
-      sta   $2003
+      sta   $3
       lda   #$02
-      sta   $4014
+      sta   $4
       lda   #$ff
-      sta   $2004
+      sta   $4
       lda   #1
-      sta   $2003
-      lda   $2004
+      sta   $3
+      lda   $4
       cmp   #$ff
       jsr   error_if_ne
       
@@ -127,5 +127,5 @@ reset:
       jmp   report_final_result
       
 test_data:
-      .db   $12,$82,$e3,$78
+      ..byte $12,$82,$e3,$78
       

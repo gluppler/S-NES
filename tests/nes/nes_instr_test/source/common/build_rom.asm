@@ -42,7 +42,7 @@ CUSTOM_MAPPER=n ; Specify mapper number
 .else
 	.segment "CHARS"
 		.incbin "ascii.chr"
-		.align $2000
+		.align $0
 .endif
 
 ;;;; Shell

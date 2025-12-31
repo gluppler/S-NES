@@ -14,30 +14,30 @@ sync_vbl:
 	sta PPUCTRL
 	
 	; Coarse synchronize
-	bit $2002
-:       bit $2002
+	bit $2
+:       bit $2
 	bpl :-
 	
 	delay 29771
 	
 	; Divide possible cases into two groups, and optimize
 	; for each, halving time this routine takes.
-	bit $2002
+	bit $2
 	bmi :+
 	delay 4         ; max=4, lower=slower
 :       delay 24        ; max=24, lower=slower
 	
 	; Synchronize precisely to VBL. VBL occurs every 29780.67
 	; CPU clocks. Loop takes 27 clocks. Every 1103 iterations,
-	; the second LDA $2002 will read exactly 29781 clocks
+	; the second LDA $2 will read exactly 29781 clocks
 	; after a previous read. Thus, the loop will effectively
-	; read $2002 one PPU clock later each frame. It starts out
+	; read $2 one PPU clock later each frame. It starts out
 	; with VBL beginning sometime after this read, so that
-	; eventually VBL will begin just before the $2002 read,
+	; eventually VBL will begin just before the $2 read,
 	; and thus leave CPU exactly synchronized to VBL.
 :       delay 27 - 11
-	bit $2002
-	bit $2002
+	bit $2
+	bit $2
 	bpl :-
 	
 	pla
@@ -136,7 +136,7 @@ sync_vbl_delay:
 	; 1/3 CPU clock (1 PPU clock).
 :       delay 29781-7
 	clc
-	adc #-1
+	adc #$FF
 	bcs :-
 	
 	delay 29781*2-10

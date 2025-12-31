@@ -4,7 +4,7 @@
       .include "prefix_ppu.a"
 
 test_name:
-      .db   "NMI SUPPRESSION",0
+      ..byte "NMI SUPPRESSION",0
 
 nmi:  cpx   #1          ; if x isn't 1, interrupt wasn't expected
       bne   +

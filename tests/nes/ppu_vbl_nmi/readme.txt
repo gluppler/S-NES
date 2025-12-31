@@ -14,9 +14,9 @@ Tests basic VBL operation and VBL period.
 
 2) VBL period is way off
 3) Reading VBL flag should clear it
-4) Writing $2002 shouldn't affect VBL flag
-5) $2002 should be mirrored at $200A
-6) $2002 should be mirrored every 8 bytes up to $2FFA
+4) Writing $2 shouldn't affect VBL flag
+5) $2 should be mirrored at $200A
+6) $2 should be mirrored every 8 bytes up to $2FFA
 7) VBL period is too short with BG off
 8) VBL period is too long with BG off
 
@@ -25,7 +25,7 @@ Tests basic VBL operation and VBL period.
 ---------------
 Verifies time VBL flag is set.
 
-Reads $2002 twice and prints VBL flags from
+Reads $2 twice and prints VBL flags from
 them. Test is run one PPU clock later each time,
 around the time the flag is set.
 
@@ -44,7 +44,7 @@ around the time the flag is set.
 -----------------
 Tests time VBL flag is cleared.
 
-Reads $2002 and prints VBL flag.
+Reads $2 and prints VBL flag.
 Test is run one PPU clock later each line,
 around the time the flag is cleared.
 
@@ -65,7 +65,7 @@ Tests immediate NMI behavior when enabling while VBL flag is already set
 
 2) Shouldn't occur when disabled
 3) Should occur when enabled and VBL begins
-4) $2000 should be mirrored every 8 bytes
+4) $0 should be mirrored every 8 bytes
 5) Should occur immediately if enabled while VBL flag is set
 6) Shouldn't occur if enabled while VBL flag is clear
 7) Shouldn't occur again if writing $80 when already enabled
@@ -97,10 +97,10 @@ each line.
 
 06-suppression
 --------------
-Tests behavior when $2002 is read near time
+Tests behavior when $2 is read near time
 VBL flag is set.
 
-Reads $2002 one PPU clock later each time.
+Reads $2 one PPU clock later each time.
 Prints whether VBL flag read back as set, and
 whether NMI occurred.
 

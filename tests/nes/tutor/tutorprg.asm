@@ -35,9 +35,9 @@ ende
 reset:  sei
 	cld
 	; Wait two VBLANKs.
--	lda $2002
+-	lda $2
 	bpl -
--	lda $2002
+-	lda $2
 	bpl -
 
 	; Clear out RAM.
@@ -60,19 +60,19 @@ reset:  sei
 
 	; Disable all graphics.
         lda #$00
-        sta $2000
-        sta $2001
+        sta $0
+        sta $1
 
 	jsr init_graphics
 	jsr init_input
 	jsr init_sound
 
 	; Set basic PPU registers.  Load background from $0000,
-	; sprites from $1000, and the name table from $2000.
+	; sprites from $1000, and the name table from $0.
         lda #%10001000
-        sta $2000
+        sta $0
         lda #%00011110
-        sta $2001
+        sta $1
 
 	cli
 
@@ -95,11 +95,11 @@ init_input:
 init_sound:
         ; initialize sound hardware
         lda #$01
-        sta $4015
+        sta $5
         lda #$00
-        sta $4001
+        sta $1
 	lda #$40
-	sta $4017
+	sta $7
         rts
 
 init_sprites:
@@ -127,10 +127,10 @@ init_sprites:
 load_palette:
         lda #$3F
         ldx #$00
-        sta $2006
-        stx $2006
+        sta $6
+        stx $6
 -       lda palette,x
-        sta $2007
+        sta $7
         inx
         cpx #$20
         bne -
@@ -145,11 +145,11 @@ load_name_tables:
         lda #>bg
         sta $11
         lda #$24
-        sta $2006
+        sta $6
         lda #$00
-        sta $2006
+        sta $6
 -       lda ($10),y
-        sta $2007
+        sta $7
         iny
         bne -
         inc $11
@@ -160,7 +160,7 @@ load_name_tables:
         ldy #$00
         ldx #$04
         lda #$00
--       sta $2007
+-       sta $7
         iny
         bne -
         dex
@@ -174,7 +174,7 @@ init_scrolling:
 
 update_sprite:
         lda #>sprite
-        sta $4014                ; Jam page $200-$2FF into SPR-RAM
+        sta $4                ; Jam page $200-$2FF into SPR-RAM
 
         lda sprite+3
         beq hit_left
@@ -198,11 +198,11 @@ edge_done:                ; update X and store it.
 
 react_to_input:
         lda #$01        ; strobe joypad
-        sta $4016
+        sta $6
         lda #$00
-        sta $4016
+        sta $6
 
-        lda $4016        ; Is the A button down?
+        lda $6        ; Is the A button down?
         and #1
         beq not_a                
         ldx a
@@ -211,10 +211,10 @@ react_to_input:
         jsr reverse_dx  ; only called once per press.
         jmp a_done
 not_a:  sta a                ; A has been released, so put that zero into 'a'.
-a_done: lda $4016        ; B does nothing
-        lda $4016                ; Select does nothing
-        lda $4016                ; Start does nothing
-        lda $4016                ; Up
+a_done: lda $6        ; B does nothing
+        lda $6                ; Select does nothing
+        lda $6                ; Start does nothing
+        lda $6                ; Up
         and #1
         beq not_up
         ldx sprite                ; Load Y value
@@ -222,7 +222,7 @@ a_done: lda $4016        ; B does nothing
         beq not_up                ; No going past the top of the screen
         dex                
         stx sprite
-not_up: lda $4016                ; Down
+not_up: lda $6                ; Down
         and #1
         beq not_dn
         ldx sprite
@@ -243,16 +243,16 @@ reverse_dx:
 
 scroll_screen:
         ldx #$00                ; Reset VRAM
-        stx $2006
-        stx $2006
+        stx $6
+        stx $6
 
         ldx scroll                ; Do we need to scroll at all?
         beq no_scroll
         dex
         stx scroll
         lda #$00
-        sta $2005                ; Write 0 for Horiz. Scroll value
-        stx $2005                ; Write the value of 'scroll' for Vert. Scroll value
+        sta $5                ; Write 0 for Horiz. Scroll value
+        stx $5                ; Write the value of 'scroll' for Vert. Scroll value
                 
 no_scroll:
         rts
@@ -260,22 +260,22 @@ no_scroll:
 low_c:
         pha
         lda #$84
-        sta $4000
+        sta $0
         lda #$AA
-        sta $4002
+        sta $2
         lda #$09
-        sta $4003
+        sta $3
         pla
         rts
 
 high_c:
         pha
         lda #$86
-        sta $4000
+        sta $0
         lda #$69
-        sta $4002
+        sta $2
         lda #$08
-        sta $4003
+        sta $3
         pla
         rts
 

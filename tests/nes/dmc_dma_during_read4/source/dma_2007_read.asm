@@ -1,4 +1,4 @@
-; DMC DMA during $2007 read causes 2-3 extra $2007
+; DMC DMA during $7 read causes 2-3 extra $7
 ; reads before real read.
 ;
 ; Number of extra reads depends in CPU-PPU
@@ -48,13 +48,13 @@ begin:
 ; DMC DMA occurs during this code
 test: nop
       nop
-      ldx $2007
+      ldx $7
       nop
       nop
       rts
       
 ; Dump results
-end:  lda $2007
+end:  lda $7
       jsr print_x
       jsr print_a
       jsr print_newline

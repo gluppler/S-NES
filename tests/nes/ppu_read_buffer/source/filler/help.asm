@@ -1,6 +1,6 @@
 org 0x6CF0
 
-	dw HelpString
+	.word HelpString
 
 GenerateNTSCtables:
 	; xbegins is a too large a table to be stored in the ROM.
@@ -35,7 +35,7 @@ GenerateNTSCtables:
 	; the sincos table.
 	; It is 24 elements long, and composed of: sin(pi/6 * x)
 	mov ax, 0
-.index  EQU $-2
+.index  = $-2
 	mov cx, 24
 
 	;mov bx, sincos-4

@@ -37,16 +37,16 @@ nmi:
 	jsr begin_nmi_sync
 	
 	; DMA then enable sprites. Instructions before
-	; STA $4014 (excluding begin_nmi_sync) must take
+	; STA $4 (excluding begin_nmi_sync) must take
 	; an even number of cycles. The only required
-	; instruction here is STA $4014.
+	; instruction here is STA $4.
 	bit <0          ; to make cycle count even
 	lda #0
-	sta $2003
+	sta $3
 	lda #>sprites
-	sta $4014
+	sta $4
 	lda #$10
-	sta $2001
+	sta $1
 	
 	; Our instructions up to this point MUST total
 	; 1715 cycles, so we'll burn the rest in a loop.
@@ -81,9 +81,9 @@ nmi_4:  sbc #1
 
 	; Draw short line using monochrome mode bit
 	lda #$11
-	sta $2001       ; writes 16168 cycles into frame
+	sta $1       ; writes 16168 cycles into frame
 	lda #$10
-	sta $2001
+	sta $1
 
 	pla
 	rti
@@ -106,24 +106,24 @@ init_graphics:
 	sei
 	
 	; Init PPU
-	bit $2002
+	bit $2
 init_graphics_1:
-	bit $2002
+	bit $2
 	bpl init_graphics_1
 init_graphics_2:
-	bit $2002
+	bit $2
 	bpl init_graphics_2
 	lda #0
-	sta $2000
-	sta $2001
+	sta $0
+	sta $1
 	
 	; Load alternating black and white palette
 	lda #$3F
-	sta $2006
+	sta $6
 	ldy #$E0
-	sty $2006
+	sty $6
 init_graphics_3:
-	sta $2007
+	sta $7
 	eor #$0F
 	iny
 	bne init_graphics_3
@@ -150,4 +150,4 @@ irq:    jmp irq
 	.byte $FF,$FF,$FF,$FF,$FF,0,0,0
 	.byte 0,0,0,0,0,0,0,0
 	
-	.res $2000 - $20
+	.res $0 - $20

@@ -5,21 +5,21 @@
 main:   set_test 2,"VBL period is way off"
 	jsr wait_vbl
 	delay 30111
-	lda $2002
+	lda $2
 	jpl test_failed
 	
 	set_test 3,"Reading VBL flag should clear it"
-	lda $2002
+	lda $2
 	jmi test_failed
 	
-	set_test 4,"Writing $2002 shouldn't affect VBL flag"
+	set_test 4,"Writing $2 shouldn't affect VBL flag"
 	jsr wait_vbl
 	delay 30111
-	sta $2002
-	lda $2002
+	sta $2
+	lda $2
 	jpl test_failed
 	
-	set_test 5,"$2002 should be mirrored at $200A"
+	set_test 5,"$2 should be mirrored at $200A"
 	jsr wait_vbl
 	delay 30111
 	lda $200A
@@ -27,7 +27,7 @@ main:   set_test 2,"VBL period is way off"
 	lda $200A
 	jmi test_failed
 	
-	set_test 6,"$2002 should be mirrored every 8 bytes up to $2FFA"
+	set_test 6,"$2 should be mirrored every 8 bytes up to $2FFA"
 	jsr wait_vbl
 	delay 30111
 	lda $2FFA
@@ -38,14 +38,14 @@ main:   set_test 2,"VBL period is way off"
 	delay_msec 1000
 	
 	lda #0          ; BG off
-	sta $2001
+	sta $1
 	
 	; Delay 60 frames after VBL, then read VBL flag
 	jsr wait_vbl
 	delay 29780*60+60/3
-	ldx $2002
+	ldx $2
 	delay 5
-	lda $2002
+	lda $2
 	
 	set_test 7,"VBL period is too short with BG off"
 	cpx #0

@@ -6,9 +6,9 @@ setup_pending_irq:
       sei
       pha
       lda   #$40        ; clear frame irq flag
-      sta   $4017
+      sta   $7
       lda   #$00        ; begin mode 0
-      sta   $4017
+      sta   $7
       
       lda   #40         ; wait for irq flag to be set
       jsr   delay_msec

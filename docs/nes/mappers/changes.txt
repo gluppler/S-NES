@@ -1,0 +1,50 @@
+v0.7 (Bregalad)
+==================================================
+- Imported changes from NESDEV wiki:
+ - Mapper 005 : - Correct info for mode B CHR switching in 8k mode
+ - Add info about Bandits king of Ancient China's emulation
+ - Add info for sound
+ - Fixes misspelling
+ - Mapper 021 : A fixes about IRQ operation
+ - Mapper 022 : Combined with Mapper 025
+ - Mapper 032 : A game requires an NES2.0 sumbapper, not all registers uses all bits
+ - Mapper 072 : Major changes in explanation how the command/data works
+ - Mapper 076 : Major changes in PRG banking explanation
+ - Mapper 077 : Major changes in how CHR-RAM and NT-RAM works
+ - Mapper 080 : Added info about 128 bytes internal RAM
+ - Mapper 085 : Added extended information about sound (also by Disch).
+ - Mapper 091 : One more example game
+ - Mapper 113 : Changed example games
+ - Mapper 184 : High bit of 4 is always set in hardware
+ - Mapper 185 : Add note about open bus pattern table
+ - Mapper 207 : Is Mapper 080 with mirroring handled differently
+ - Mapper 234 : Better wording of explanations of the strange way the regs are accessed
+- Mappers 072, 077, 078, 089, 093, 094, 152, 180 and 185 are confirmed to have bus conflicts
+- Did some spelling and corrects two errors in Mapper 001
+
+v0.6.1
+==================================================
+- Fixed minor goof in 189
+- made 4x4 bit RAM more clear in 225,228
+- fixed various spelling goofs
+- added info about vertical scrolling in 005's split screen mode
+- added some info about a common noob error in the main readme
+- added technical correction in 005 about PRG-RAM chip select
+- fixed some Mapper 034 stuff (BxROM and compatible)
+- fixed Mapper 067 IRQ info. Had first/second writes backwards.
+- fixed Mapper 073 IRQ info. Had modes backwards.
+- fixed 049 -- had PRG modes mixed up
+- fixed error in 090 -- had CHR block modes backwards
+- fixed 203
+- additional notes and crap for 233
+- alternative freq formula for N106 audio was wrong. Fixed it.
+- clarified 230
+- changed D:# naming convention to R:# to avoid confusion
+ (d is often used for bit positions)
+
+Still 111 mapper numbers (more coming, I swear!)
+
+
+v0.6
+==================================================
+First real release (111 mapper numbers)

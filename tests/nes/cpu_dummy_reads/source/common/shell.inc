@@ -295,7 +295,7 @@ CUSTOM_HEADER=1
 	.byte $31 ; CNROM, vertical mirroring
 .segment "CHARS"
 	.incbin "ascii.chr"
-	.align $2000
+	.align $0
 .endif
 .segment "VECTORS"
 	.word 0,0,0, nmi, reset, irq

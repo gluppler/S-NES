@@ -3,31 +3,31 @@
 ;Binary created using DAsm 2.12 running on WinUAE.
 
    PROCESSOR   6502
-OVERFLOWF	EQU   #$0006		;To check the V-flag
-TMPCOUNT	EQU   #$0007		;Temporary Counter
-READY		EQU   #$000E		;Is the game ready for the player's input?
-CONTROLLER1	EQU   #$0010		;Controller 1 data
-CONTROLLER2	EQU   #$0011		;Controller 2 data
-CONTROLLER3	EQU   #$0012		;Controller 3 data
-CONTROLLER4	EQU   #$0013		;Controller 4 data
-CONTROLER1X	EQU   #$0014		;Controller 1 Xdata
-CONTROLER2X	EQU   #$0015		;Controller 2 Xdata
-P1RANDBASE	EQU   #$0018		;Random number storage for player 1's position
-P2RANDBASE	EQU   #$0019		;Random number storage for player 2's position
-FADESTATUS	EQU   #$001B		;Controls fading
+OVERFLOWF = #$0006		;To check the V-flag
+TMPCOUNT = #$0007		;Temporary Counter
+READY = #$000E		;Is the game ready for the player's input?
+CONTROLLER1 = #$0010		;Controller 1 data
+CONTROLLER2 = #$0011		;Controller 2 data
+CONTROLLER3 = #$0012		;Controller 3 data
+CONTROLLER4 = #$0013		;Controller 4 data
+CONTROLER1X = #$0014		;Controller 1 Xdata
+CONTROLER2X = #$0015		;Controller 2 Xdata
+P1RANDBASE = #$0018		;Random number storage for player 1's position
+P2RANDBASE = #$0019		;Random number storage for player 2's position
+FADESTATUS = #$001B		;Controls fading
 ;-----------------------
-PALETTEPTR	EQU   #$24			;Pointer to Current Palette.
-SCORE		EQU   #$30			;Score on the test.
-SCORE_T		EQU   #$32			;Temp reg for score.
+PALETTEPTR = #$24			;Pointer to Current Palette.
+SCORE = #$30			;Score on the test.
+SCORE_T = #$32			;Temp reg for score.
 ;-----------------------
-VBWAIT		EQU   #$0050		;Delays updating of game data
-VBDELAY		EQU   #$0051		;Timing for fades...
-VBPASS		EQU   #$0052		;Flag that VB has passed.
-VBODD		EQU   #$0053		;Flag for even/odd VBs.
-PPU2000		EQU   #$0058		;$2000 of PPU
+VBWAIT = #$0050		;Delays updating of game data
+VBDELAY = #$0051		;Timing for fades...
+VBPASS = #$0052		;Flag that VB has passed.
+VBODD = #$0053		;Flag for even/odd VBs.
+PPU2000 = #$0058		;$0 of PPU
 
 ;-------------------------------------------------------
-GAMESCREEN  EQU   #$0059      ;ID for which game screen is running...
+GAMESCREEN = #$0059      ;ID for which game screen is running...
                               ;.. sometimes also for what CHR-ROM in use...
                               ;0 = Tanks Screen
                               ;1 = Planets Screen
@@ -37,38 +37,39 @@ GAMESCREEN  EQU   #$0059      ;ID for which game screen is running...
                               ;5 = Credits Screen
                               ;6 = Victory Screen
 ;---------------------------------------
-PLANETCHANGE EQU  #$005A      ;Flag to change planets on selection screen.
+PLANETCHANGE = #$005A      ;Flag to change planets on selection screen.
 
-IOREADS     EQU   #$0500		;Storage of reads from $4016, 48 bytes.
+IOREADS = #$0500		;Storage of reads from $6, 48 bytes.
 
-TEMPPAL     EQU   #$0600		;Temporary storage for palette.
-SOFTTERRAIN EQU   #$06BF		;$700-64-1
+TEMPPAL = #$0600		;Temporary storage for palette.
+SOFTTERRAIN = #$06BF		;$700-64-1
 
 ;----------------------
 ;Sprite-RAM
 ;----------------------
-BALLCHR     EQU   #$0701		;Ball's Sprite
-P1VHIY      EQU   #$0711		;Sprites for Y,X Initial Velocity
-P1VLOY      EQU   #$0715
-P1VHIX      EQU   #$0719
-P1VLOX      EQU   #$071D
-P2VHIY      EQU   #$0721		;Sprites for Y,X Initial Velocity
-P2VLOY      EQU   #$0725
-P2VHIX      EQU   #$0729
-P2VLOX      EQU   #$072D
-P1SCRSCORE  EQU   #$0731		;Score on-screen
-P2SCRSCORE  EQU   #$0735
-P1CHRPOSY   EQU   #$0750		;Sprites for tank's position
-P1CHRPOSX   EQU   #$0753
-P2CHRPOSY   EQU   #$0758
-P2CHRPOSX   EQU   #$075B
-EXPLSPR1    EQU   #$0741		;Sprites for explosions
-EXPLSPR2    EQU   #$0745		;"       "
-EXPLSPR3    EQU   #$0749		;"       "
-EXPLSPR4    EQU   #$074D		;"       "
+BALLCHR = #$0701		;Ball's Sprite
+P1VHIY = #$0711		;Sprites for Y,X Initial Velocity
+P1VLOY = #$0715
+P1VHIX = #$0719
+P1VLOX = #$071D
+P2VHIY = #$0721		;Sprites for Y,X Initial Velocity
+P2VLOY = #$0725
+P2VHIX = #$0729
+P2VLOX = #$072D
+P1SCRSCORE = #$0731		;Score on-screen
+P2SCRSCORE = #$0735
+P1CHRPOSY = #$0750		;Sprites for tank's position
+P1CHRPOSX = #$0753
+P2CHRPOSY = #$0758
+P2CHRPOSX = #$075B
+EXPLSPR1 = #$0741		;Sprites for explosions
+EXPLSPR2 = #$0745		;"       "
+EXPLSPR3 = #$0749		;"       "
+EXPLSPR4 = #$074D		;"       "
 
 
-   ORG   $8000    ;32Kb PRG-ROM, 8Kb CHR-ROM
+.segment "CODE"
+.org $8000
 
     dc.b  "FluBBa YaDa YaDa"
 
@@ -77,20 +78,20 @@ Reset_Routine  SUBROUTINE
    cld					;Clear decimal flag
    sei					;Disable interrupts
 ;----------------------------------------------------------
-   lda   $2002
+   lda   $2
    sta   P1RANDBASE        ;Randomize Stuff???
-   lda   $4016
+   lda   $6
    sta   P2RANDBASE
 
 
 ;----------------------------------------------------------
 
-.WaitV01   lda $2002
+.WaitV01   lda $2
    bpl .WaitV01     	;Wait for vertical blanking interval
    ldx #$00
-   stx $2000
+   stx $0
    stx PPU2000
-   stx $2001			;Screen display off, amongst other things
+   stx $1			;Screen display off, amongst other things
    dex
    txs					;Top of stack at $1FF
 
@@ -120,11 +121,11 @@ Reset_Routine  SUBROUTINE
    lda   #$02
    sta   GAMESCREEN        ;Set CHR-ROM for mapper 3??
 
-TITLESCROLL   EQU   $0000
-TITLESCROLL1  EQU   $0001
-TITLESCROLL2  EQU   $0002
-TITLESELECT   EQU   $0003
-BUTTONDOWN    EQU   $0006
+TITLESCROLL = $0000
+TITLESCROLL1 = $0001
+TITLESCROLL2 = $0002
+TITLESELECT = $0003
+BUTTONDOWN = $0006
 
    lda   #$0D
    jsr   SetPalette
@@ -137,7 +138,7 @@ BUTTONDOWN    EQU   $0006
    jsr   PrintFullScreen
 
    lda   #$00
-   sta   $2003
+   sta   $3
    lda   #$4E              ;Copy sprite to SPR-RAM?
    sta   $0700
    lda   #$01
@@ -157,8 +158,8 @@ BUTTONDOWN    EQU   $0006
    sta   $0707
 
    lda   #$00
-   sta   $2005
-   sta   $2005
+   sta   $5
+   sta   $5
 
    sta   TITLESCROLL
    sta   TITLESCROLL1
@@ -172,20 +173,20 @@ BUTTONDOWN    EQU   $0006
 
 ;Enable vblank interrupts, etc.
    lda   #%10001000
-   sta   $2000
+   sta   $0
    lda   #%00011110        ;Screen on, sprites on, show leftmost 8 pixels, colour
-   sta   $2001
+   sta   $1
 
 .TitleLoop
    lda   VBPASS
    beq   .TitleLoop        ;Wait for VBlank to pass...
 
 .TitleLoop0
-   lda   $2002
+   lda   $2
    bmi   .TitleLoop0       ;Yet again....
 
 .TitleLoop0A
-   lda   $2002
+   lda   $2
    and   #$40
    bne   .TitleLoop0A      ;Wait for sprite 0 clear...
 
@@ -197,7 +198,7 @@ BUTTONDOWN    EQU   $0006
 
 
 .TitleLoop1
-   lda   $2002
+   lda   $2
    and   #%00010000
    bne   .TitleLoop1
 
@@ -215,9 +216,9 @@ BUTTONDOWN    EQU   $0006
    sta   TITLESCROLL2
 
    lda   .TitleSINTAB,X    ;Set up wavy scrolling.
-   sta   $2005
+   sta   $5
    lda   #$00
-   sta   $2005
+   sta   $5
    inx
    cpx   #$40
    bne   .NoUpdateTitleScroll
@@ -225,13 +226,13 @@ BUTTONDOWN    EQU   $0006
 .NoUpdateTitleScroll
 
 .TitleLoop0B
-   lda   $2002
+   lda   $2
    and   #$40
    beq   .TitleLoop1       ;Test for sprite 0 hit yet.
 
    lda   #$00
-   sta   $2005
-   sta   $2005
+   sta   $5
+   sta   $5
 
    lda   CONTROLLER1
    and   #%00100000
@@ -267,7 +268,7 @@ BUTTONDOWN    EQU   $0006
 
 .TitleSINTAB
 	dc.b	1,3,7,13,20,30,40,50,60,70,80,90,95,100,101,102,103,103,104,103,100,90,85,80,74,67,59,49,36
-   INCLUDE FireWave.asm
+   .include FireWave.asm
 
 .TitleMap
 	dc.b	"01234      First line      78901"
@@ -302,11 +303,11 @@ BUTTONDOWN    EQU   $0006
 	dc.b	"01234       Last Line      78901"
 
 
-   INCLUDE SolarTitleNAM.asm
+   .include SolarTitleNAM.asm
 
 .Mess000
 	dc.b	"--------------------------------",$0A
-	dc.b	" * PPU Test 1: $2005/6/7.     * ",$0A
+	dc.b	" * PPU Test 1: $5/6/7.     * ",$0A
 	dc.b	"--------------------------------",$0A,$0A
 
 	dc.b	" PPU Normal write/read:",$0A
@@ -316,7 +317,7 @@ BUTTONDOWN    EQU   $0006
 	dc.b	" PPU Mixed adr/data write:",$0A
 	dc.b	" PPU $3000 Mirroring:",$0A
 	dc.b	" PPU $3FFF-$0000 boundary:",$0A
-	dc.b	" Mix writes to $2005/6:",$0A
+	dc.b	" Mix writes to $5/6:",$0A
 	dc.b	" PPU Palette write/read:",$0A,$0A
 
 	dc.b	" Score:   /9",$0A,$0A
@@ -341,7 +342,7 @@ BUTTONDOWN    EQU   $0006
 
 .Mess020
 	dc.b	"--------------------------------",$0A
-	dc.b	" * PPU Test 3: VBl ($2002).   * ",$0A
+	dc.b	" * PPU Test 3: VBl ($2).   * ",$0A
 	dc.b	"--------------------------------",$0A,$0A
 
 	dc.b	" Bit 7 cleared after read:",$0A,$0A,$0A,$0A,$0A,$0A,$0A,$0A,$0A,$0A,$0A,$0A,$0A,$0A,$0A,$0A,$0A,$0A,$0A
@@ -353,7 +354,7 @@ BUTTONDOWN    EQU   $0006
 
 .Mess040
 	dc.b	"--------------------------------",$0A
-	dc.b	" * pAPU Test 1: $4000-$4003.  * ",$0A
+	dc.b	" * pAPU Test 1: $0-$3.  * ",$0A
 	dc.b	"--------------------------------",$0A,$0A
 .Mess041
 	dc.b	$0A,$0A,$0A,$0A,$0A,$0A,$0A,$0A,$0A,$0A,$0A,$0A,$0A,$0A,$0A,$0A,$0A,$0A,$0A
@@ -444,14 +445,14 @@ BUTTONDOWN    EQU   $0006
 
 .Mess0C0
 	dc.b	"--------------------------------",$0A
-	dc.b	" * IO Test 1: $4016, $4017.   * ",$0A
+	dc.b	" * IO Test 1: $6, $7.   * ",$0A
 	dc.b	"--------------------------------",$0A,$0A,$0A
 .Mess0C1
-	dc.b	" $4016",$0A
+	dc.b	" $6",$0A
 	dc.b	" Read 1-8:",$0A
 	dc.b	" Read 9-16:",$0A
 	dc.b	" Read 17-24:",$0A,$0A
-	dc.b	" $4017",$0A
+	dc.b	" $7",$0A
 	dc.b	" Read 1-8:",$0A
 	dc.b	" Read 9-16:",$0A
 	dc.b	" Read 17-24:",$0A,$0A
@@ -542,11 +543,11 @@ StartIOTest
 IOTest				;Test IO-ports (controllers)
 
 .WaitV10
-   lda $2002
+   lda $2
    bpl .WaitV10		;Wait for vertical blanking interval
    ldx #$00
-   stx $2000
-   stx $2001		;Screen display off, amongst other things
+   stx $0
+   stx $1		;Screen display off, amongst other things
 
 
    jsr   WipePPU
@@ -562,9 +563,9 @@ IOTest				;Test IO-ports (controllers)
    jsr   NESWriter0
 ;-----------------------------
    lda   #%10001000
-   sta   $2000
+   sta   $0
    lda   #%00011110        ;Screen on, sprites on, show leftmost 8 pixels, colour
-   sta   $2001
+   sta   $1
 
    lda   #$00
    sta   TMPCOUNT
@@ -575,7 +576,7 @@ IOTest				;Test IO-ports (controllers)
 
    clc
    lda   #$21				;Set PPU address for the first 24 values.
-   sta   $2006
+   sta   $6
    lda   TMPCOUNT
    asl
    asl
@@ -584,7 +585,7 @@ IOTest				;Test IO-ports (controllers)
    adc   #$40
 .SkipRow
    adc   #$0C
-   sta   $2006
+   sta   $6
 
    lda   TMPCOUNT
    clc
@@ -600,11 +601,11 @@ IOTest				;Test IO-ports (controllers)
    lsr
    clc
    adc   #$30
-   sta   $2007
+   sta   $7
    lda   $500,x
    and   #$0F
    adc   #$30
-   sta   $2007
+   sta   $7
    dey
    bne   .IOLoop1_0
 
@@ -622,8 +623,8 @@ IOTest				;Test IO-ports (controllers)
 .IOSkipBig
    lda   #$00
    sta   VBPASS
-   sta   $2005
-   sta   $2005
+   sta   $5
+   sta   $5
 
    lda   CONTROLLER1
    eor   #$30				; Check for both [Select] and [Start].
@@ -638,11 +639,11 @@ IO1_End
 
 ;-----------------------------
 .WaitV11
-   lda $2002
+   lda $2
    bpl .WaitV11		;Wait for vertical blanking interval
    ldx #$00
-   stx $2000
-   stx $2001		;Screen display off, amongst other things
+   stx $0
+   stx $1		;Screen display off, amongst other things
 
 
    jsr   WipePPU
@@ -658,67 +659,67 @@ IO1_End
    jsr   NESWriter0
 ;-----------------------------
    lda   #%10001000
-   sta   $2000
+   sta   $0
    lda   #%00011110        ;Screen on, sprites on, show leftmost 8 pixels, colour
-   sta   $2001
+   sta   $1
 .IOTest20
    lda   VBPASS
    beq   .IOTest20			;Wait for VBlank to pass...
 
 .IOLoop2
    lda   #$20				;Set PPU address.
-   sta   $2006
+   sta   $6
    lda   #$64
-   sta   $2006
+   sta   $6
    ldx   #"^"
    lda   $503				;Check Cont1 Up
    and   #1
    beq   .NoCont1Up
    ldx   #1
 .NoCont1Up
-   stx   $2007
+   stx   $7
 
    lda   #$20				;Set PPU address.
-   sta   $2006
+   sta   $6
    lda   #$83
-   sta   $2006
+   sta   $6
    ldx   #"<"
    lda   $501				;Check Cont1 Left
    and   #1
    beq   .NoCont1Left
    ldx   #1
 .NoCont1Left
-   stx   $2007
+   stx   $7
 
    lda   #$20				;Set PPU address.
-   sta   $2006
+   sta   $6
    lda   #$85
-   sta   $2006
+   sta   $6
    ldx   #">"
    lda   $500				;Check Cont1 Right
    and   #1
    beq   .NoCont1Right
    ldx   #1
 .NoCont1Right
-   stx   $2007
+   stx   $7
 
    lda   #$20				;Set PPU address.
-   sta   $2006
+   sta   $6
    lda   #$A4
-   sta   $2006
+   sta   $6
    ldx   #"V"
    lda   $502				;Check Cont1 Down
    and   #1
    beq   .NoCont1Down
    ldx   #1
 .NoCont1Down
-   stx   $2007
+   stx   $7
 
 
    lda   #$00
    sta   VBPASS
-   sta   $2005
-   sta   $2005
+   sta   $5
+   sta   $5
 
    lda   CONTROLLER1
    eor   #$30				; Check for both [Select] and [Start].
@@ -742,12 +743,12 @@ IO1_End
 CPUTest				;Test Aritmethic operations
 
 .WaitV04
-   lda $2002
+   lda $2
    bpl .WaitV04     ;Wait for vertical blanking interval
    ldx #$00
-   stx $2000
+   stx $0
    stx PPU2000
-   stx $2001      ;Screen display off, amongst other things
+   stx $1      ;Screen display off, amongst other things
 
    jsr   WipePPU
 
@@ -762,7 +763,7 @@ CPUTest				;Test Aritmethic operations
    jsr   NESWriter0
 
    lda   #%00011110        ;Background on, sprites on, show leftmost 8 pixels, colour
-   sta   $2001
+   sta   $1
 ;-----------------------------
 .CPUTest00			;CMP
    lda   #$21		;Where the msg prints.
@@ -1593,11 +1594,11 @@ CPU1_End
 CPUTest_2				;Test Logical operations
 
 .WaitV05
-   lda $2002
+   lda $2
    bpl .WaitV05     ;Wait for vertical blanking interval
    ldx #$00
-   stx $2000
-   stx $2001      ;Screen display off, amongst other things
+   stx $0
+   stx $1      ;Screen display off, amongst other things
 
 
    jsr   WipePPU
@@ -1613,7 +1614,7 @@ CPUTest_2				;Test Logical operations
    jsr   NESWriter0
 
    lda   #%00011110        ;Background on, sprites on, show leftmost 8 pixels, colour
-   sta   $2001
+   sta   $1
 ;-----------------------------
 .CPUTest20			;LDA
    lda   #$20		;Where the msg prints.
@@ -2506,11 +2507,11 @@ CPU2_End
 CPUTest4			;Test Address CPU operations
 
 .WaitVBl
-   lda $2002
+   lda $2
    bpl .WaitVBl     ;Wait for vertical blanking interval
    ldx #$00
-   stx $2000
-   stx $2001      ;Screen display off, amongst other things
+   stx $0
+   stx $1      ;Screen display off, amongst other things
 
 
    jsr   WipePPU
@@ -2526,7 +2527,7 @@ CPUTest4			;Test Address CPU operations
    jsr   NESWriter0
 
    lda   #%00011110        ;Background on, sprites on, show leftmost 8 pixels, colour
-   sta   $2001
+   sta   $1
 ;-----------------------------
 .CPUTest40			;Adr Imediate
    lda   #$20		;Where the msg prints.
@@ -2998,11 +2999,11 @@ CPU4End
 CPUTest6			;Test Misc CPU operations
 
 .WaitVBl1
-   lda $2002
+   lda $2
    bpl .WaitVBl1     ;Wait for vertical blanking interval
    ldx #$00
-   stx $2000
-   stx $2001      ;Screen display off, amongst other things
+   stx $0
+   stx $1      ;Screen display off, amongst other things
 
 
    jsr   WipePPU
@@ -3018,7 +3019,7 @@ CPUTest6			;Test Misc CPU operations
    jsr   NESWriter0
 
    lda   #%00011110        ;Background on, sprites on, show leftmost 8 pixels, colour
-   sta   $2001
+   sta   $1
 ;-----------------------------
 .CPUTest60			;Test SR
    lda   #$20		;Where the msg prints.
@@ -3329,12 +3330,12 @@ CPU6End
 pAPUTest
 
 .WaitV03
-   lda $2002
+   lda $2
    bpl .WaitV03     ;Wait for vertical blanking interval
    ldx #$00
-   stx $2000
+   stx $0
    stx PPU2000
-   stx $2001      ;Screen display off, amongst other things
+   stx $1      ;Screen display off, amongst other things
 
 
    jsr   WipePPU
@@ -3369,12 +3370,12 @@ APUEnd
 PPUTest
 
 .WaitV02
-   lda $2002
+   lda $2
    bpl .WaitV02     ;Wait for vertical blanking interval
    ldx #$00
-   stx $2000
+   stx $0
    stx PPU2000
-   stx $2001      ;Screen display off, amongst other things
+   stx $1      ;Screen display off, amongst other things
 
 
    jsr   WipePPU
@@ -3394,34 +3395,34 @@ PPUTest
 ;----------------------------------
 .PPUTest0
    lda   #$20
-   sta   $2006
+   sta   $6
    lda   #$21
-   sta   $2006
+   sta   $6
 
    ldx   #$30
 .PPUWriteLoop0
-   stx   $2007
+   stx   $7
    inx
    cpx   #$3a
    bne   .PPUWriteLoop0
 
 
    lda   #$20
-   sta   $2006
+   sta   $6
    lda   #$21
-   sta   $2006
+   sta   $6
 
    ldx   #$30
    stx   $04
    ldy   #10
-   lda   $2007
+   lda   $7
 
    lda   #$21		;Where the msg prints.
    sta   $02
    lda   #$FB
    sta   $03
 .PPUReadLoop0
-   lda   $2007
+   lda   $7
    cmp   $04
    bne   .PPUError0
    inc   $04
@@ -3439,20 +3440,20 @@ PPUTest
 ;-----------------------------
 .PPUTest1
    lda   #$20
-   sta   $2006
+   sta   $6
    lda   #$41
-   sta   $2006
+   sta   $6
 
    ldx   #$30
 .PPUWriteLoop1
-   stx   $2007
+   stx   $7
    inx
    cpx   #$35
    bne   .PPUWriteLoop1
-   lda   $2007
+   lda   $7
    inx
 .PPUWriteLoop1_1
-   stx   $2007
+   stx   $7
    inx
    cpx   #$3a
    bne   .PPUWriteLoop1_1
@@ -3460,9 +3461,9 @@ PPUTest
 
 
    lda   #$20
-   sta   $2006
+   sta   $6
    lda   #$46
-   sta   $2006
+   sta   $6
 
    lda   #$22		; Where the msg prints.
    sta   $02
@@ -3472,12 +3473,12 @@ PPUTest
    ldx   #$36
    stx   $04
    ldy   #04
-   lda   $2007
-   lda   $2007
+   lda   $7
+   lda   $7
    cmp   #0
    bne   .PPUError1
 .PPUReadLoop1
-   lda   $2007
+   lda   $7
    cmp   $04
    bne   .PPUError1
    inc   $04
@@ -3497,35 +3498,35 @@ PPUTest
 ;-----------------------------
 .PPUTest2
    lda   #$20
-   sta   $2006
+   sta   $6
    lda   #$60
-   sta   $2006
-   lda   $2007
+   sta   $6
+   lda   $7
 
    ldx   #$30
 .PPUWriteLoop2
-   stx   $2007
+   stx   $7
    inx
    cpx   #$3a
    bne   .PPUWriteLoop2
 
 
    lda   #$20
-   sta   $2006
+   sta   $6
    lda   #$61
-   sta   $2006
+   sta   $6
 
    ldx   #$30
    stx   $04
    ldy   #9
-   lda   $2007
+   lda   $7
 
    lda   #$22		; Where the msg prints.
    sta   $02
    lda   #$3b
    sta   $03
 .PPUReadLoop2
-   lda   $2007
+   lda   $7
    cmp   $04
    bne   .PPUError2
    inc   $04
@@ -3543,40 +3544,40 @@ PPUTest
 ;-----------------------------
 .PPUTest3
    lda   #$20
-   sta   $2006
+   sta   $6
    lda   #$81
-   sta   $2006
+   sta   $6
 
    ldx   #$30
 .PPUWriteLoop3
-   stx   $2007
+   stx   $7
    inx
    cpx   #$39
    bne   .PPUWriteLoop3
 
-   ldx   $2007
+   ldx   $7
    lda   #$20
-   sta   $2006
+   sta   $6
    lda   #$8a
-   sta   $2006
-   stx   $2007
+   sta   $6
+   stx   $7
 
    lda   #$20
-   sta   $2006
+   sta   $6
    lda   #$81
-   sta   $2006
+   sta   $6
 
    ldx   #$30
    stx   $04
    ldy   #10
-   lda   $2007
+   lda   $7
 
    lda   #$22		; Where the msg prints.
    sta   $02
    lda   #$5B
    sta   $03
 .PPUReadLoop3
-   lda   $2007
+   lda   $7
    cmp   $04
    bne   .PPUError3
    inc   $04
@@ -3594,41 +3595,41 @@ PPUTest
 ;-----------------------------
 .PPUTest4
    lda   #$20
-   sta   $2006
+   sta   $6
    lda   #$A1
-   sta   $2006
+   sta   $6
 
    ldx   #$30
 .PPUWriteLoop4
-   stx   $2007
+   stx   $7
    inx
    cpx   #$35
    bne   .Not5
    lda   #$26		; 1st Adr byte.
-   sta   $2006
+   sta   $6
 .Not5
    cpx   #$3A
    bne   .PPUWriteLoop4
 
    lda   #$01		; 2nd adr byte.
-   sta   $2006
+   sta   $6
 
    lda   #$20
-   sta   $2006
+   sta   $6
    lda   #$A1
-   sta   $2006
+   sta   $6
 
    ldx   #$30
    stx   $04
    ldy   #10
-   lda   $2007
+   lda   $7
 
    lda   #$22		; Where the msg prints.
    sta   $02
    lda   #$7B
    sta   $03
 .PPUReadLoop4
-   lda   $2007
+   lda   $7
    cmp   $04
    bne   .PPUError4
    inc   $04
@@ -3646,34 +3647,34 @@ PPUTest
 ;----------------------------------
 .PPUTest5
    lda   #$30
-   sta   $2006
+   sta   $6
    lda   #$C1
-   sta   $2006
+   sta   $6
 
    ldx   #$30
 .PPUWriteLoop5
-   stx   $2007
+   stx   $7
    inx
    cpx   #$3a
    bne   .PPUWriteLoop5
 
 
    lda   #$20
-   sta   $2006
+   sta   $6
    lda   #$C1
-   sta   $2006
+   sta   $6
 
    ldx   #$30
    stx   $04
    ldy   #10
-   lda   $2007
+   lda   $7
 
    lda   #$22		;Where the msg prints.
    sta   $02
    lda   #$9B
    sta   $03
 .PPUReadLoop5
-   lda   $2007
+   lda   $7
    cmp   $04
    bne   .PPUError5
    inc   $04
@@ -3691,47 +3692,47 @@ PPUTest
 ;----------------------------------
 .PPUTest6
    lda   #$3E		;Where to print test pattern.
-   sta   $2006
+   sta   $6
    lda   #$E1
-   sta   $2006
+   sta   $6
 
    lda   #$04		;Set 32 byte increment for PPU.
-   sta   $2000
+   sta   $0
 
    ldx   #$88
 .PPUIncLoop6
-   lda   $2007
-   lda   $2007
+   lda   $7
+   lda   $7
    dex
    bne   .PPUIncLoop6
 
    lda   #$00		;Set 1 byte increment for PPU.
-   sta   $2000
+   sta   $0
 
 
    ldx   #$30
 .PPUWriteLoop6
-   stx   $2007
+   stx   $7
    inx
    cpx   #$3a
    bne   .PPUWriteLoop6
 
    lda   #$20		;Where to read pattern.
-   sta   $2006
+   sta   $6
    lda   #$E1
-   sta   $2006
+   sta   $6
 
    ldx   #$30
    stx   $04
    ldy   #10
-   lda   $2007
+   lda   $7
 
    lda   #$22		;Where the msg prints.
    sta   $02
    lda   #$BB
    sta   $03
 .PPUReadLoop6
-   lda   $2007
+   lda   $7
    cmp   $04
    bne   .PPUError6
    inc   $04
@@ -3749,33 +3750,33 @@ PPUTest
 ;-----------------------------
 .PPUTest7
    lda   #$24
-   sta   $2006
+   sta   $6
    lda   #$05
-   sta   $2006
+   sta   $6
 
    ldx   #$33
 .PPUWriteLoop7
-   stx   $2007
+   stx   $7
    inx
    cpx   #$43
    bne   .PPUWriteLoop7
 
    lda   #$25
-   sta   $2006
+   sta   $6
    lda   #$1D
-   sta   $2006
+   sta   $6
 
    ldx   #$01
 .PPUWriteLoop7b
-   stx   $2007
+   stx   $7
    inx
    cpx   #$11
    bne   .PPUWriteLoop7b
 
    lda   #$24
-   sta   $2005
+   sta   $5
    lda   #$05
-   sta   $2006
+   sta   $6
 
    ldx   #$33
    stx   $04
@@ -3786,9 +3787,9 @@ PPUTest
    lda   #$DB
    sta   $03
 
-   lda   $2007
+   lda   $7
 .PPUReadLoop7
-   lda   $2007
+   lda   $7
    cmp   $04
    bne   .PPU2Latches7
    inc   $04
@@ -3806,17 +3807,17 @@ PPUTest
 
 .PPU2Latches7
    lda   #$00
-   sta   $2005
+   sta   $5
    lda   #$00
-   sta   $2006
+   sta   $6
    lda   #$24
-   sta   $2006
+   sta   $6
    lda   #$05
-   sta   $2006
-   lda   $2007
+   sta   $6
+   lda   $7
 
 .PPUReadLoop7b
-   lda   $2007
+   lda   $7
    cmp   $04
    bne   .PPUError7
    inc   $04
@@ -3836,21 +3837,21 @@ PPUTest
 ;-----------------------------
 .PPUTest8
    lda   #$3F
-   sta   $2006
+   sta   $6
    lda   #$05
-   sta   $2006
+   sta   $6
 
    ldx   #$33
 .PPUWriteLoop8
-   stx   $2007
+   stx   $7
    inx
    cpx   #$3A
    bne   .PPUWriteLoop8
 
    lda   #$3F
-   sta   $2006
+   sta   $6
    lda   #$25
-   sta   $2006
+   sta   $6
 
    ldx   #$33
    stx   $04
@@ -3861,7 +3862,7 @@ PPUTest
    lda   #$FB
    sta   $03
 .PPUReadLoop8
-   lda   $2007
+   lda   $7
    cmp   $04
    bne   .PPUPalNES8
    inc   $04
@@ -3879,7 +3880,7 @@ PPUTest
    jmp   PPU1_End
 
 .PPUPalNES8
-   lda   $2007
+   lda   $7
    cmp   $04
    bne   .PPUError8
    inc   $04
@@ -3906,11 +3907,11 @@ PPU1_End
 PPUTest_2			; ! Test Sprites !
 
 .WaitV06
-   lda $2002
+   lda $2
    bpl .WaitV06     ;Wait for vertical blanking interval
    ldx #$00
-   stx $2000
-   stx $2001      ;Screen display off, amongst other things
+   stx $0
+   stx $1      ;Screen display off, amongst other things
 
 
    jsr   WipePPU
@@ -3937,25 +3938,25 @@ PPUTest_2			; ! Test Sprites !
    lda   #200			;New y pos for spr0
    sta   $700
    lda   #$07
-   sta   $4014			;Copy $700 to Spr-RAM
+   sta   $4			;Copy $700 to Spr-RAM
 
    lda   #$18
-   sta   $2001		; Sprite & Display On
+   sta   $1		; Sprite & Display On
 
    ldx   #0
 .WaitV08
-   lda $2002
+   lda $2
    bpl .WaitV08     ;Wait for vertical blanking interval
-   stx   $2005
-   stx   $2005
-   stx   $2006
-   stx   $2006
+   stx   $5
+   stx   $5
+   stx   $6
+   stx   $6
 .WaitV09
-   lda $2002
+   lda $2
    bmi .WaitV09     ; Stupid fix for bad emus.
 
 .PPUTestLoop20
-   lda   $2002
+   lda   $2
    asl
    bmi   .PPUError20
    bcc   .PPUTestLoop20     ; Loop for one whole frame
@@ -3963,48 +3964,48 @@ PPUTest_2			; ! Test Sprites !
    lda   #80			;New y pos for spr0
    sta   $700
    lda   #$07
-   sta   $4014			;Copy $700 to Spr-RAM
+   sta   $4			;Copy $700 to Spr-RAM
 
-   stx   $2005
-   stx   $2005
-   stx   $2006
-   stx   $2006
+   stx   $5
+   stx   $5
+   stx   $6
+   stx   $6
 .WaitV0A
-   lda $2002
+   lda $2
    bmi .WaitV0A     ; Stupid fix for bad emus.
 
 .PPUTestLoop20_1
-   lda   $2002
+   lda   $2
    asl
    bmi   .PPUOk20
    bcc   .PPUTestLoop20_1     ; Loop for one whole frame
    jmp   .PPUError20
 
    lda   #$08
-   sta   $2001		; Sprite Off, Display On
-   stx   $2005
-   stx   $2005
-   stx   $2006
-   stx   $2006
+   sta   $1		; Sprite Off, Display On
+   stx   $5
+   stx   $5
+   stx   $6
+   stx   $6
 .WaitV0B
-   lda $2002
+   lda $2
    bmi .WaitV0B     ; Stupid fix for bad emus.
 
 .PPUTestLoop20_2
-   lda   $2002
+   lda   $2
    asl
    bmi   .PPUError20
    bcc   .PPUTestLoop20_2     ; Loop for one whole frame
 
 
 .PPUOk20
-   stx   $2001		; Sprite & Display Off
+   stx   $1		; Sprite & Display Off
    jsr   WriteOk
    inc   SCORE
    jmp   .PPUTest21
 
 .PPUError20
-   stx   $2001		; Sprite & Display Off
+   stx   $1		; Sprite & Display Off
    jsr   WriteError
 ;-----------------------------
 .PPUTest21			; Test Sprite Overflow ;-)
@@ -4015,18 +4016,18 @@ PPUTest_2			; ! Test Sprites !
 
    ldx   #$00
    lda   #$18
-   sta   $2001		; Sprite & Display On
+   sta   $1		; Sprite & Display On
 
 .WaitV0C
-   lda $2002
+   lda $2
    bpl .WaitV0C     ;Wait for vertical blanking interval
 
 .WaitV0D
-   lda $2002
+   lda $2
    bmi .WaitV0D     ; Stupid fix for bad emus.
 
 .PPUTestLoop21
-   lda   $2002
+   lda   $2
    tay
    and   #$20
    bne   .PPUError21
@@ -4044,18 +4045,18 @@ PPUTest_2			; ! Test Sprites !
    sta   $720
 
    lda   #$07
-   sta   $4014			;Copy $700 to Spr-RAM
+   sta   $4			;Copy $700 to Spr-RAM
 
 .WaitV0E
-   lda $2002
+   lda $2
    bpl .WaitV0E     ;Wait for vertical blanking interval
 
 .WaitV0F
-   lda $2002
+   lda $2
    bmi .WaitV0F     ; Stupid fix for bad emus.
 
 .PPUTestLoop21_1
-   lda   $2002
+   lda   $2
    tay
    and   #$20
    bne   .PPUOk21
@@ -4064,13 +4065,13 @@ PPUTest_2			; ! Test Sprites !
    jmp   .PPUError21
 
 .PPUOk21
-   stx   $2001		; Sprite & Display Off
+   stx   $1		; Sprite & Display Off
    jsr   WriteOk
    inc   SCORE
    jmp   .PPUTest22
 
 .PPUError21
-   stx   $2001		; Sprite & Display Off
+   stx   $1		; Sprite & Display Off
    jsr   WriteError
 ;-----------------------------
 .PPUTest22
@@ -4080,16 +4081,16 @@ PPUTest_2			; ! Test Sprites !
    sta   $03
 
    ldx   #$00
-   stx   $2003
+   stx   $3
 .PPUWriteLoop22
-   stx   $2004
+   stx   $4
    inx
    bne   .PPUWriteLoop22
 
    stx   $04
-   stx   $2003
+   stx   $3
 .PPUReadLoop22
-   lda   $2004
+   lda   $4
    cmp   $04
    bne   .PPUError22
    inc   $04
@@ -4112,7 +4113,7 @@ PPUTest_2			; ! Test Sprites !
    sta   $03
 
    ldx   #$00
-   stx   $2003
+   stx   $3
    txa
    clc
 .PPUWriteLoop23
@@ -4121,12 +4122,12 @@ PPUTest_2			; ! Test Sprites !
    inx
    bne   .PPUWriteLoop23
    lda   #$05
-   sta   $4014
+   sta   $4
 
    stx   $04
-   stx   $2003
+   stx   $3
 .PPUReadLoop23
-   lda   $2004
+   lda   $4
    cmp   $04
    bne   .PPUError23
    inc   $04
@@ -4149,7 +4150,7 @@ PPUTest_2			; ! Test Sprites !
    sta   $03
 
    lda   #$24
-   sta   $2003
+   sta   $3
    ldx   #$00
    txa
    clc
@@ -4159,13 +4160,13 @@ PPUTest_2			; ! Test Sprites !
    inx
    bne   .PPUWriteLoop24
    lda   #$05
-   sta   $4014
+   sta   $4
 
    stx   $04
    lda   #$24
-   sta   $2003
+   sta   $3
 .PPUReadLoop24
-   lda   $2004
+   lda   $4
    cmp   $04
    bne   .PPUError24
    inc   $04
@@ -4192,11 +4193,11 @@ PPU2_End
 PPUTest_3			; VBl clear after read.
 ;-----------------------------
 .WaitV07
-   lda $2002
+   lda $2
    bpl .WaitV07     ;Wait for vertical blanking interval
    ldx #$00
-   stx $2000
-   stx $2001      ;Screen display off, amongst other things
+   stx $0
+   stx $1      ;Screen display off, amongst other things
 
 
    jsr   WipePPU
@@ -4213,7 +4214,7 @@ PPUTest_3			; VBl clear after read.
 ;-----------------------------
 .PPUTest14
    lda   #$08
-   sta   $2001		; Display On
+   sta   $1		; Display On
 
    lda   #$20		; Where the msg prints.
    sta   $02
@@ -4221,12 +4222,12 @@ PPUTest_3			; VBl clear after read.
    sta   $03
 
 .PPUTestLoop14
-   lda   $2002
+   lda   $2
    bpl   .PPUTestLoop14
 
    lda   #$00
-   sta   $2001		; Display Off
-   lda   $2002
+   sta   $1		; Display Off
+   lda   $2
    bmi   .PPUError14
 
 
@@ -4299,9 +4300,9 @@ PrintScore SUBROUTINE	; need X & Y for pos.
 TestEnd
 ;Enable vblank interrupts, etc.
    lda   #%10001000
-   sta   $2000
+   sta   $0
    lda   #%00011110        ;Screen on, sprites on, show leftmost 8 pixels, colour
-   sta   $2001
+   sta   $1
 
 
 
@@ -4321,9 +4322,9 @@ TestEnd
 ScrOnWaitKey SUBROUTINE
 ;Enable vblank interrupts, etc.
    lda   #%10001000
-   sta   $2000
+   sta   $0
    lda   #%00011110        ;Screen on, sprites on, show leftmost 8 pixels, colour
-   sta   $2001
+   sta   $1
 
 .TestNoKey
    lda   CONTROLLER1
@@ -4341,22 +4342,22 @@ ScrOnWaitKey SUBROUTINE
 
 WipePPU SUBROUTINE
    lda   #$20
-   sta   $2006
+   sta   $6
    lda   #$00
-   sta   $2006
+   sta   $6
 
    ldx   #$00
    ldy   #$10
-.ClearPPU sta $2007
+.ClearPPU sta $7
    dex
    bne   .ClearPPU
    dey
    bne   .ClearPPU
 
    lda   #$00
-   sta   $2003
+   sta   $3
    tay
-.ClearSpr sta   $2004
+.ClearSpr sta   $4
    dey
    bne   .ClearSpr
    rts
@@ -4365,9 +4366,9 @@ WipePPU SUBROUTINE
 ClearSPRRAM SUBROUTINE		; Needs fill value in A
 
    ldx   #$08
-   stx   $2003
+   stx   $3
 .ClearSPRRAM   sta   $0700,X        ;$700 FOR NOW!!!!
-   sta   $2004
+   sta   $4
    inx
    bne   .ClearSPRRAM
 
@@ -4384,16 +4385,16 @@ PrintFullScreen SUBROUTINE
    asl
    asl
    adc   #$20        ;Load Name and Attribute Table
-   sta   $2006
+   sta   $6
    lda   #$00
-   sta   $2006
+   sta   $6
 
    ldy   #$00
    ldx   #$04
 
 .LoadTitle
    lda   ($00),Y  ;Load Title Image
-   sta   $2007
+   sta   $7
    iny
    bne   .LoadTitle
    inc   $01
@@ -4504,12 +4505,12 @@ WriteErrorW SUBROUTINE
 ;--------------------------------------------------
 NESWriterS SUBROUTINE	;S as in Safe
 .WriteLoopS
-   lda $2002
+   lda $2
    bpl .WriteLoopS		;Wait for vertical blanking interval
    jsr NESWriter0
    lda   #$00
-   sta   $2005
-   sta   $2005
+   sta   $5
+   sta   $5
    rts
 ;--------------------------------------------------
 NESWriter0 SUBROUTINE
@@ -4517,9 +4518,9 @@ NESWriter0 SUBROUTINE
 ; Needs $00 & $01 as address to text, $02 & $03 as PPU destination address.
 ;--------------------------------------------------------------------------
    lda   $02
-   sta   $2006
+   sta   $6
    lda   $03
-   sta   $2006
+   sta   $6
 
    ldy   #$00
 .WriteChr
@@ -4527,7 +4528,7 @@ NESWriter0 SUBROUTINE
    beq   .WriteEnd
    cmp   #$0A
    beq   .NewRow
-   sta   $2007
+   sta   $7
 .WriteLoop
    iny
    bne   .WriteChr
@@ -4545,9 +4546,9 @@ NESWriter0 SUBROUTINE
 .NewRow2
    and   #$e0
    ldx   $02
-   stx   $2006
+   stx   $6
    sta   $03
-   sta   $2006
+   sta   $6
    jmp   .WriteLoop
 ;--------------------------------------------------
 
@@ -4578,14 +4579,14 @@ SetPalette SUBROUTINE
 
 .NoAddPalette
    ldx   #$3F
-   stx   $2006
+   stx   $6
    ldx   #$00
-   stx   $2006
+   stx   $6
 
    ldy   #$00
    ldx   #$20     ;Set BG & Sprite palettes.
 .InitPal lda   (PALETTEPTR),Y
-   sta   $2007
+   sta   $7
    sta   TEMPPAL,Y               ;Store to palette copy
    iny
    dex
@@ -4594,7 +4595,7 @@ SetPalette SUBROUTINE
 
 ;*********************************************************
 .Palette
-   INCLUDE  TanksPal.ASM
+   .include TanksPal.ASM
 ;*********************************************************
 
 
@@ -4635,9 +4636,9 @@ ToDecimal SUBROUTINE
 ;--------------------------------------------------
 Fadeout SUBROUTINE
    lda   #$3F
-   sta   $2006
+   sta   $6
    lda   #$00
-   sta   $2006
+   sta   $6
 
    ldx   #$00
    stx   $0100
@@ -4647,7 +4648,7 @@ Fadeout SUBROUTINE
    lda   TEMPPAL,X
    tax
    lda   .FadeIndex,X   ;Get Fade info.
-   sta   $2007
+   sta   $7
    ldx   $0100
    sta   TEMPPAL,X
    inc   $0100
@@ -4656,19 +4657,19 @@ Fadeout SUBROUTINE
 
    dec   FADESTATUS
    lda   #$00
-   sta   $2005
-   sta   $2005
+   sta   $5
+   sta   $5
    lda   #%10001000
    ora   PPU2000
    sta   PPU2000
-   sta   $2000
+   sta   $0
 ;   lda   #%00011110
-;   sta   $2001
+;   sta   $1
 
    rts
 ;--------------------------------------------------
 .FadeIndex
-   INCLUDE TanksFadePal.ASM
+   .include TanksFadePal.ASM
 ;--------------------------------------------------
 
 
@@ -4693,9 +4694,9 @@ NMI_Routine SUBROUTINE
 ;---------- READ JOYPAD -----------------------
 
    ldx   #$01
-   stx   $4016
+   stx   $6
    dex
-   stx   $4016
+   stx   $6
    stx   CONTROLLER1
    stx   CONTROLLER2
    stx   CONTROLLER3
@@ -4708,9 +4709,9 @@ NMI_Routine SUBROUTINE
    sty   $04
 
 .ReadCont1_0
-   ldy   #8-1				; Read 3 x 8 bits from $4016
+   ldy   #8-1				; Read 3 x 8 bits from $6
 .ReadCont1
-   lda   $4016				; Read controller port.
+   lda   $6				; Read controller port.
    sta   ($04),y
    ror
    lda   CONTROLLER1,x
@@ -4759,8 +4760,8 @@ NMI_Routine SUBROUTINE
 
 .PlanetChangeEnd
    lda   #$00
-   sta   $2005
-   sta   $2005
+   sta   $5
+   sta   $5
 
    jmp   .VBEnd
 
@@ -4769,8 +4770,8 @@ NMI_Routine SUBROUTINE
    bne   .NotGameScreenTitle
    lda   #$00
    sta   TITLESCROLL2
-   sta   $2005
-   sta   $2005
+   sta   $5
+   sta   $5
    inc   TITLESCROLL1
    lda   TITLESCROLL1
    cmp   #$02
@@ -4790,22 +4791,22 @@ NMI_Routine SUBROUTINE
 
 
 ;   lda   #$07
-;   sta   $4014             ;Copy $700 to Spr-RAM
+;   sta   $4             ;Copy $700 to Spr-RAM
 
 ;--- SET SCROLLING ----------
    lda   #$40
    lda   #%10001001
 .SaveScrolling
-   sta   $2000
+   sta   $0
    sta   PPU2000
    lda   #$00
-   sta   $2005
-   sta   $2005
+   sta   $5
+   sta   $5
 
 .VBEnd
 
    lda   #$07
-   sta   $4014
+   sta   $4
    pla
    tay
    pla
@@ -4825,25 +4826,27 @@ IRQ_Routine
    rti
 
 
-   ORG   $FC00,0
+.segment "CODE"
+.org $FC00
 JmpTstFail
    jmp   CPUError49W
 
-   ORG   $FD00,0
+.org $FD00
 JmpTstOk
    jmp   CPUOk49
-   ORG   $FDFC,0
+.org $FDFC
    jmp   CPUError49W
 
 
-   ORG   $FE00,0
+.segment "CODE"
+.org $FE00
 Ind_Values1
    dc.b  $FF
    dc.b  $88
    dc.b  $44
    dc.b  $BB
 
-   ORG   $FEFE,0
+.org $FEFE
 Ind_Values2
    dc.b  $AA
    dc.b  $55
@@ -4852,7 +4855,8 @@ Ind_Values2
 
 ;That's all the code. Now we just need to set the vector table approriately.
 
-   ORG   $FFFA,0
+.segment "CODE"
+.org $FFFA
    dc.w  NMI_Routine
    dc.w  Reset_Routine
    dc.w  IRQ_Routine    ;Used to test the BRK instruction.

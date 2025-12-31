@@ -19,7 +19,7 @@
 	ldy #0
 	lda (pkb_src), y
 	bpl literal
-	cmp #-128
+	cmp #$FF28
 	beq done
 
 	; Write out repeated data

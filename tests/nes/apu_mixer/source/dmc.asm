@@ -7,24 +7,24 @@
 .include "vol_shell.inc"
 
 test_main:
-	setb $4000,$BF  ; max volume
-	setb $4001,$7F  ; disable sweep
-	setb $4002,0    ; period = 0
-	setb $4003,0
+	setb $0,$BF  ; max volume
+	setb $1,$7F  ; disable sweep
+	setb $2,0    ; period = 0
+	setb $3,0
 	delay 5000      ; allow period to settle in
-	setb $4015,$01
+	setb $5,$01
 	
 	ldx #82
 	ldy #0
 	
-	setb $4002,$6F  ; period = 896*2
-	setb $4003,0
+	setb $2,$6F  ; period = 896*2
+	setb $3,0
 	delay 216-6
 @1:     delay 6
-@2:     stx $4011
+@2:     stx $1
 	delay 896-4-4
 	lda vols,x
-	sta $4011
+	sta $1
 	delay 896-4-5-6
 	dey
 	bne @1

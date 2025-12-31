@@ -1,12 +1,12 @@
 bits 16
 org 0x110+0x4000+0x2000*3
 
-ROM	EQU	0x110 ; ROM begins from this address. No exceptions.
+ROM = 0x110 ; ROM begins from this address. No exceptions.
 
 ;cpu 386
 cpu pentium	; For rdtsc
 
-GenerateNTSCtables EQU 0x6CF0+2 ; This is stored in VROM of the TEST ROM
+GenerateNTSCtables = 0x6CF0+2 ; This is stored in VROM of the TEST ROM
 
 main:
 	mov si, xbegins
@@ -183,7 +183,7 @@ WaitSpeed:
 	fmul dword [const1em3]
 	fistp dword [.khzspeed]
 	mov eax, dword 0
-    .khzspeed EQU $-4
+    .khzspeed = $-4
         cmp eax, 200000
         jae .speed_is_ok
         mov cx, 8
@@ -216,23 +216,23 @@ WaitSpeed:
 .speed_is_ok:
 	ret
 
-	db 'Joel Yliluoma'
+	.byte 'Joel Yliluoma'
 
 
 section .const
 	; This text cannot go to VROM, because it can be accessed
 	; after a different ROM might have been loaded.
 SlowCPUwarning:
-	db 'Warning: Your CPU is slower than 200 MHz: about'
+	.byte 'Warning: Your CPU is slower than 200 MHz: about'
    CPUspeedText:
-        db '         kHz in fact.',13,10
-	db 'Suggest running this program in a faster computer.',13,10
-	db 'If you are using DOSBox, hit Ctrl-F12 to increase the number',13,10
-	db 'of cycles until the limit is >200k. Even more is better.',13,10
-	db 'Press a key to continue. Ctrl-C to terminate.',13,10,'$'
+        .byte '         kHz in fact.',13,10
+	.byte 'Suggest running this program in a faster computer.',13,10
+	.byte 'If you are using DOSBox, hit Ctrl-F12 to increase the number',13,10
+	.byte 'of cycles until the limit is >200k. Even more is better.',13,10
+	.byte 'Press a key to continue. Ctrl-C to terminate.',13,10,'$'
 
 ErrorMsg:
-	db 'ERROR     ',13,10,'$'
+	.byte 'ERROR     ',13,10,'$'
 
 const1em3 dd 1e-3
 
@@ -256,8 +256,8 @@ puhh:
 
 section .data
 
-C_ROMPAGES	dw ROM, ROM
-C_NTA:		dw CIRAM+0x0000, CIRAM+0x0400, CIRAM+0x0000, CIRAM+0x0400
+C_ROMPAGES	.word ROM, ROM
+C_NTA:		.word CIRAM+0x0000, CIRAM+0x0400, CIRAM+0x0000, CIRAM+0x0400
 
 section .text
 
@@ -305,7 +305,7 @@ RB:	; In:  AX = address
 	jmp short .RB_done
 .ReadOpenBUS:
 	mov al, byte 0x00
-C_OPENBUS	equ $-1
+C_OPENBUS = $-1
 	ret
 
 	;;;;;;; MEMORY WRITING ;;;;;;;;
@@ -346,7 +346,7 @@ WB:	; In: AX = address
 	and al, 3
 	shl ax, 13  ; mul by 0x2000
 	add ax, word 0xAAAA
-    VROM EQU $-2
+    VROM = $-2
 	mov [C_VROMPAGE], ax
 	ret
 .PRAM_write:
@@ -381,14 +381,14 @@ ConsolePutc:
 	;;;;;;; CPU ;;;;;;;;;;;;;;
 section .data
 
-C_RESET      db 0
-C_NMI        db 0
-C_NMI_EDGE   db 0
-C_IRQ        db 0
+C_RESET      .byte 0
+C_NMI        .byte 0
+C_NMI_EDGE   .byte 0
+C_IRQ        .byte 0
 
 section .text
 
-%include "exec.inc"
+%.include "exec.inc"
 
 tick:	
 	pusha
@@ -417,33 +417,33 @@ DMA_write:
 	;jmp tick ; one extra tick?
 	ret
 
-%include "ppu.inc"
-%include "apu.inc"
-%include "joypad.inc"
+%.include "ppu.inc"
+%.include "apu.inc"
+%.include "joypad.inc"
 
 section .const
 IOsequence:
-	dw 0x3C4
-	dw 0x0604	;chain 4 mode off
-	dw 0x0100	;async reset
-	dw 0,0x3C2
-	dw 0xE3E3	;clock suitable for 320x240
-	dw 0,0x3C4
-	dw 0x0300	;restart sequence
-	dw 0,0x3D4
-	dw 0x2C11	;mask out write-protect
-	dw 0x0D06
-	dw 0x3E07
-	dw 0xEA10
-	dw 0xAC11
-	dw 0xDF12
-	dw 0xE715
-	dw 0x0616
-	dw 0x0014	;dword mode off
-	dw 0xE317	;byte mode on
-	dw 0x2813	;width:320
-	dw 0,0x3C4
-	dw 0x0F02
+	.word 0x3C4
+	.word 0x0604	;chain 4 mode off
+	.word 0x0100	;async reset
+	.word 0,0x3C2
+	.word 0xE3E3	;clock suitable for 320x240
+	.word 0,0x3C4
+	.word 0x0300	;restart sequence
+	.word 0,0x3D4
+	.word 0x2C11	;mask out write-protect
+	.word 0x0D06
+	.word 0x3E07
+	.word 0xEA10
+	.word 0xAC11
+	.word 0xDF12
+	.word 0xE715
+	.word 0x0616
+	.word 0x0014	;dword mode off
+	.word 0xE317	;byte mode on
+	.word 0x2813	;width:320
+	.word 0,0x3C4
+	.word 0x0F02
 IOsequenceEnd:
 section .text
 
@@ -539,7 +539,7 @@ InitNTSCmode:
 	
 	mov ax, 0x4F02
 	mov bx, 0x4013
-    VESA_mode EQU $-2
+    VESA_mode = $-2
 	int 0x10
 	cmp ah, 0
 	jnz .No32bitMode
@@ -609,7 +609,7 @@ Pcalc:
 	push bx
 	fwait
 	mov ax, 0
-	.temp EQU $-2
+	.temp = $-2
 	;jmp PalOutput
 PalOutput:
 	mov dx, 0x3C9
@@ -620,7 +620,7 @@ Pcalc2:
 	call FloatToPositiveIntWithClamp
 const63:
 	dd 63.49
-	dw 63
+	.word 63
 	jmp short PalOutput
 
 
@@ -662,7 +662,7 @@ NTSCline:	resd 8*282
 
 C_VROMPAGE	resw 1
 
-VESA_Info	EQU NTSCline	; Buffer for holding VESA mode information
+VESA_Info = NTSCline	; Buffer for holding VESA mode information
 
 ; BSS size so far:       0x3A12 bytes.
 ; With code size around  0x1F3C bytes.

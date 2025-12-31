@@ -29,7 +29,7 @@ GAME_INC = 1
 	; Preconditions:
 	;
 	; Rendering must be turned off via 'nmi_ppumask'.
-	; The base name table in 'nmi_ppuctrl' must be $2000.
+	; The base name table in 'nmi_ppuctrl' must be $0.
 	; The OAM buffer must be cleared.
 	; The LFSR must be seeded.
 

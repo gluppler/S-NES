@@ -19,9 +19,9 @@ test:   jsr sync_dmc
 	
 	; Start DMC
 	lda #$4F
-	sta $4010
+	sta $0
 	lda #$10
-	sta $4015
+	sta $5
 	
 	; Delay
 	txa

@@ -49,7 +49,7 @@ WriteR3
 	tax
 	lda M2000
 	and #$7f
-	sta $2000
+	sta $0
 	txa
 	sta R3
 	lsr A
@@ -61,6 +61,6 @@ WriteR3
 	lsr A
 	sta R3
 	lda M2000
-	sta $2000
+	sta $0
 	rts
 .ends

@@ -1,6 +1,6 @@
 NES OAM Stress Test
 -------------------
-Thoroughly tests OAM address ($2003) and read/write ($2004). On an NTSC
+Thoroughly tests OAM address ($3) and read/write ($4). On an NTSC
 NES, this passes only for one of the four random PPU-CPU
 synchronizations at power/reset. Test takes about 30 seconds, unless it
 fails.
@@ -14,12 +14,12 @@ expected.
 
 Expected behavior:
 
-$2003 write sets OAM address.
+$3 write sets OAM address.
 
-$2004 write sets byte at current OAM address to byte written, then
+$4 write sets byte at current OAM address to byte written, then
 increments OAM address.
 
-$2004 read gives byte at current OAM address, without modifying OAM
+$4 read gives byte at current OAM address, without modifying OAM
 address.
 
 

@@ -29,9 +29,9 @@ dmc_test:
       
       ; Start DMC
       lda #$10
-      sta $4015
+      sta $5
       lda #dma*$10
-      sta $4015
+      sta $5
       
       ; Delay
       pla
@@ -44,7 +44,7 @@ dmc_test:
       ; Stop DMC
       pha
       lda #0
-      sta $4015
+      sta $5
       pla
       
       jsr end

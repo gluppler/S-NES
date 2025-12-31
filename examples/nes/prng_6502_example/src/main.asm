@@ -111,14 +111,14 @@ reset:
 	bne :-
 	
 	; Enable PPU rendering
-	lda #%00001010	; Show background
-	sta PPUMASK
 	lda #%10000000	; Enable NMI
 	sta PPUCTRL
+	lda #%00001010	; Show background
+	sta PPUMASK
 	
 main_loop:
 	; Wait for VBlank (must wait before PPU writes during rendering)
-:
+	:
 	bit PPUSTATUS
 	bpl :-
 	

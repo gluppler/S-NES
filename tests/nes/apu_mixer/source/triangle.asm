@@ -7,12 +7,12 @@
 .include "vol_shell.inc"
 	
 test_main:
-	setb $4008,$FF
-	setb $400A,0
-	setb $400B,0
+	setb $8,$FF
+	setb $A,0
+	setb $B,0
 	delay_msec 20
-	setb $4015,$04
-	setb $4009,0
+	setb $5,$04
+	setb $9,0
 	
 	wait = 8
 	
@@ -23,8 +23,8 @@ test_main:
 	
 	extra = 13-1
 	
-	setb $400A,$37
-	setb $400B,0
+	setb $A,$37
+	setb $B,0
 	delay 28-extra
 	
 	ldx #16
@@ -36,7 +36,7 @@ test_main:
 	tya
 	clc
 	adc table,x
-	sta $4011
+	sta $1
 	delay 3
 	dec_tempw
 	bne @1

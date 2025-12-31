@@ -5,7 +5,7 @@
       .include "prefix_sprite_hit.a"
 
 test_name:
-      .db   "SPRITE HIT ORDER",0
+      ..byte "SPRITE HIT ORDER",0
       .code
 
 test_hit_time:
@@ -15,8 +15,8 @@ test_hit_time:
       ldy   #88         ; 15511 delay
       lda   #34         
       jsr   delay_ya6
-      ldx   $2002       ; timing really tight here
-      ldy   $2002
+      ldx   $2       ; timing really tight here
+      ldy   $2
       jsr   check_sprite_hit_timing
       rts
       .code
@@ -31,7 +31,7 @@ reset:
       ldx   #$f0
       jsr   set_vaddr
       lda   #solid_tile
-      sta   $2007
+      sta   $7
 
       lda   #0
       sta   sprite_attr

@@ -4,7 +4,7 @@
       .include "prefix_mmc3_validation.a"
       
 test_name:
-      .db   "MMC3 IRQ COUNTER",0
+      ..byte "MMC3 IRQ COUNTER",0
 
 reset:
       jsr   begin_mmc3_tests
@@ -16,7 +16,7 @@ reset:
       jsr   clock_counter
       jsr   should_be_clear
       
-      lda   #3;) Should decrement when A12 is toggled via $2006
+      lda   #3;) Should decrement when A12 is toggled via $6
       ldx   #2
       jsr   begin_counter_test
       ldx   #9

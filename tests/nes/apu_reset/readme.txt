@@ -5,22 +5,22 @@ These tests verify initial APU state at power, and the effect of reset.
 
 4015_cleared
 ------------
-At power and reset, $4015 is cleared.
+At power and reset, $5 is cleared.
 
-2) At power, $4015 should be cleared
-3) At reset, $4015 should be cleared
+2) At power, $5 should be cleared
+3) At reset, $5 should be cleared
 
 
 4017_timing
 -----------
-At power, it is as if $00 were written to $4017,
+At power, it is as if $00 were written to $7,
 then a 9-12 clock delay, then execution from address
 in reset vector.
 
 At reset, same as above, except last value written
-to $4017 is written again, rather than $00.
+to $7 is written again, rather than $00.
 
-The delay from when $00 was written to $4017 is
+The delay from when $00 was written to $7 is
 printed. Delay after NES being powered off for a
 minute is usually 9.
 
@@ -30,12 +30,12 @@ minute is usually 9.
 
 4017_written
 ------------
-At power, $4017 = $00.
-At reset, $4017 mode is unchanged, but IRQ inhibit
+At power, $7 = $00.
+At reset, $7 mode is unchanged, but IRQ inhibit
 flag is sometimes cleared.
 
-2) At power, $4017 should be written with $00
-3) At reset, $4017 should should be rewritten with last value written
+2) At power, $7 should be written with $00
+3) At reset, $7 should should be rewritten with last value written
 
 
 irq_flag_cleared
@@ -56,7 +56,7 @@ At power and reset, length counters are enabled.
 
 works_immediately
 -----------------
-At power and reset, $4017, $4015, and length counters work
+At power and reset, $7, $5, and length counters work
 immediately.
 
 2) At power, writes should work immediately

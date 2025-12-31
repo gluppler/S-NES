@@ -18,17 +18,17 @@ cur_keys_d4: .res 2
 
 .segment "CODE"
 .proc read_all_pads
-  ; $4016 output pulse: copy sample to shift register and
+  ; $6 output pulse: copy sample to shift register and
   ; start taking new sample from potentiometer
   lda #1
-  sta $4016
+  sta $6
   sta cur_keys_d4
   lsr a
-  sta $4016
+  sta $6
 bitloop:
   ldx #1
 portloop:
-  lda $4016,x
+  lda $6,x
   lsr a
   rol cur_keys_d0,x
   lsr a

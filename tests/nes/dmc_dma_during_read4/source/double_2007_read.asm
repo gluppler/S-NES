@@ -1,4 +1,4 @@
-; Double read of $2007 sometimes ignores extra
+; Double read of $7 sometimes ignores extra
 ; read, and puts odd things into buffer.
 ;
 ; Output (depends on CPU-PPU synchronization):
@@ -52,12 +52,12 @@ end:
 
 main: jsr begin
       ldx #$00
-      lda $20F7,x ; reads $2007 once
+      lda $20F7,x ; reads $7 once
       jsr end
       
       jsr begin
       ldx #$10
-      lda $20F7,x ; reads $2007 twice in succession
+      lda $20F7,x ; reads $7 twice in succession
       jsr end
       
       jsr print_crc

@@ -1,4 +1,4 @@
-; Synchronizes APU divide-by-two so that an STA $4017
+; Synchronizes APU divide-by-two so that an STA $7
 ; immediately after the JSR (or some even number of
 ; clocks after) will start the frame counter without
 ; an extra clock delay.

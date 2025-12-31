@@ -15,9 +15,9 @@ MAP " " = $1f
 		;Thoose variables are used in the NMI routine
 		;Don't do calculations with them if a VBlank is pending
 		;set them after the calculation
-SpriteDMAFlag   db  ;This tells if sprite DMA is ready in a frame
-PalFlag         db  ;Check if palette uploaded is needed
-NMIFlag         db  ;Check if a NMI is pending or not
+SpriteDMAFlag   .byte ;This tells if sprite DMA is ready in a frame
+PalFlag         .byte ;Check if palette uploaded is needed
+NMIFlag         .byte ;Check if a NMI is pending or not
 ScrollH         db
 ScrollV         db
 M2000           db
@@ -84,16 +84,16 @@ NMI
 	pha                 ;13
 	lda #$00
 	sta SpriteDMAFlag   ;17 ;Sprite buffer is read
-	sta $2003.w         ;21
+	sta $3.w         ;21
 	jsr begin_nmi_sync
 	lda #$02            ;23
-	sta $4014.w         ;36 ;Do sprite DMA at $200
+	sta $4.w         ;36 ;Do sprite DMA at $200
 	lda ScrollH         ;39
-	sta $2005.w         ;43
+	sta $5.w         ;43
 	lda ScrollV         ;46
-	sta $2005.w         ;50
+	sta $5.w         ;50
 	lda M2000           ;53
-	sta $2000.w         ;57
+	sta $0.w         ;57
 	lda #$00            ;59 ;Clears the flag to stop waiting the frame
 	sta NMIFlag         ;62
 
@@ -128,10 +128,10 @@ ClearVRAM
 
 ClrPalette
 	lda #$3f
-	sta $2006
+	sta $6
 	ldy #$00
-	sty $2006.w
--   sta $2007       ;Clear both buffer and the actual palette
+	sty $6.w
+-   sta $7       ;Clear both buffer and the actual palette
 	iny         ;Shall be called when rendering is off
 	cpy #$20
 	bne -
@@ -143,15 +143,15 @@ Clr2ndNamTbl
 ClrNamTbl
 	lda #$20
 SetNamAdress
-	sta $2006   ;Begin at $2000/$2400 (vertical mirroring)
+	sta $6   ;Begin at $0/$2400 (vertical mirroring)
 	lda #$00
-	sta $2006
+	sta $6
 	lda #$60
 	ldx #$1e    ;Clears 30 rows
 _screenloop
 	ldy #$20
 _rowloop
-	sta $2007
+	sta $7
 	dey
 	bne _rowloop
 	dex
@@ -159,7 +159,7 @@ _rowloop
 	lda #$00
 	ldx #$40    ;Clear attribute table
 _attribloop
-	sta $2007
+	sta $7
 	dex
 	bne _attribloop
 	rts
@@ -188,8 +188,8 @@ RESET           ;The programm will start here
 	ldx #$ff
 	txs     ;Init stack pointer
 	inx
-	stx $2000.w
-	stx $2001.w ;Turn off rendering and interrupts
+	stx $0.w
+	stx $1.w ;Turn off rendering and interrupts
 	txa
 _initRAMloop
 	sta $0,X
@@ -203,12 +203,12 @@ _initRAMloop
 	inx
 	bne _initRAMloop
 	lda #$40
-	sta $4017.w                 ;Set sound clock
+	sta $7.w                 ;Set sound clock
 	lda #$00
-	sta $4015.w
--   bit $2002.w
+	sta $5.w
+-   bit $2.w
 	bpl -
--   bit $2002.w             ;Wait for several VBlanks
+-   bit $2.w             ;Wait for several VBlanks
 	bpl -
 	jsr ClearVRAM           ;Clear the whole PPU
 	jsr ClrSprRam
@@ -216,7 +216,7 @@ _initRAMloop
 	jsr LoadDefaultPal
 	jsr init_nmi_sync       ;intitial sync
 	lda #$1e
-	sta $2001
+	sta $1
 	ldx #38+5
 -   lda VeryTimedCode.w,X
 	sta RAMTimedCode.w,X
@@ -225,66 +225,66 @@ _initRAMloop
 -   jmp -                   ;endless loop
 
 LoadDefaultPal
-	bit $2002
+	bit $2
 	lda #$3f
-	sta $2006
+	sta $6
 	lda #$00
-	sta $2006
+	sta $6
 	ldx #$00
 -   lda Pal.w,X
-	sta $2007
+	sta $7
 	inx
 	cpx #$20
 	bne -
 	rts
 
 Pal
-	.db $0f, $09, $20, $30
-	.db $0f, $0f, $0f, $0f
-	.db $0f, $0f, $0f, $0f
-	.db $0f, $0f, $0f, $0f
-	.db $0f, $0f, $0f, $0f
-	.db $0f, $0f, $0f, $0f
-	.db $0f, $0f, $0f, $0f
-	.db $0f, $0f, $0f, $0f
+	..byte $0f, $09, $20, $30
+	..byte $0f, $0f, $0f, $0f
+	..byte $0f, $0f, $0f, $0f
+	..byte $0f, $0f, $0f, $0f
+	..byte $0f, $0f, $0f, $0f
+	..byte $0f, $0f, $0f, $0f
+	..byte $0f, $0f, $0f, $0f
+	..byte $0f, $0f, $0f, $0f
 
 LoadTextBox
 	lda #$22
-	sta $2006
+	sta $6
 	lda #$00
-	sta $2006           ;VRAM Adress
+	sta $6           ;VRAM Adress
 	ldx #$00
 -   lda TextData.w,X
-	sta $2007
+	sta $7
 	inx
 	cpx #$c0
 	bne -
 	rts
 
 TextData
-	.db $06, $00
+	..byte $06, $00
 .rept 28
-	.db $01
+	..byte $01
 .endr
-	.db $02, $06
-	.db $06, $03
+	..byte $02, $06
+	..byte $06, $03
 	.asc "                            "
-	.db $03, $06
-	.db $06, $03
+	..byte $03, $06
+	..byte $06, $03
 	.asc "  THIS IS A DUMMY TEXT BOX  "
-	.db $03, $06
-	.db $06, $03
+	..byte $03, $06
+	..byte $06, $03
 	.asc "                            "
-	.db $03, $06
-	.db $06, $03
+	..byte $03, $06
+	..byte $06, $03
 	.asc "  IS THAT BACKGROUND NICE?  "
-	.db $03, $06
+	..byte $03, $06
 
-	.db $06, $04
+	..byte $06, $04
 .rept 28
-	.db $01
+	..byte $01
 .endr
-	.db $05, $06
+	..byte $05, $06
 .ends
 
 .include "win_timing.asm"
@@ -338,7 +338,7 @@ end_nmi_sync:
 	inc nmi_sync_count
 	and #$02
 	bne +
-+   lda $2002
++   lda $2
 	bmi +
 +   bmi +
 +   rts
@@ -355,24 +355,24 @@ init_nmi_sync
 	; Disable interrupts and rendering
 	sei
 	lda #0
-	sta $2000
-	sta $2001
+	sta $0
+	sta $1
 	
 	; Coarse synchronize
-	bit $2002
+	bit $2
 init_nmi_sync_1
-	bit $2002
+	bit $2
 	bpl init_nmi_sync_1
 	
 	; Synchronize to odd CPU cycle
-	sta $4014
+	sta $4
 
 	; Fine synchronize
 	lda #3
 init_nmi_sync_2
 	sta nmi_sync_count
-	bit $2002
-	bit $2002
+	bit $2
+	bit $2
 	php
 	eor #$02
 	nop
@@ -382,14 +382,14 @@ init_nmi_sync_2
 
 	; Delay one frame
 init_nmi_sync_3
-	bit $2002
+	bit $2
 	bpl init_nmi_sync_3
 	
 	; Enable rendering long enough for frame to
 	; be shortened if it's a short one, but not long
 	; enough that background will get displayed.
 	lda #$08
-	sta $2001
+	sta $1
 	
 	; Can reduce delay by up to 5 and this still works,
 	; so there's a good margin.
@@ -402,7 +402,7 @@ init_nmi_sync_4
 	sbc #1
 	bne init_nmi_sync_4
 	
-	sta $2001
+	sta $1
 	
 	lda nmi_sync_count
 	
@@ -410,8 +410,8 @@ init_nmi_sync_4
 	; If this frame was short, loop ends. If it was
 	; long, loop runs for a third frame.
 init_nmi_sync_5
-	bit $2002
-	bit $2002
+	bit $2
+	bit $2
 	php
 	eor #$02
 	sta nmi_sync_count
@@ -422,7 +422,7 @@ init_nmi_sync_5
 	
 	; Enable NMI
 	lda #$80
-	sta $2000
+	sta $0
 	sta M2000
 	rts
 
@@ -440,30 +440,30 @@ init_nmi_sync
 	; Disable interrupts and rendering
 	sei
 	lda #0
-	sta $2000
-	sta $2001
+	sta $0
+	sta $1
 	
 	; Coarse synchronize
-	bit $2002
+	bit $2
 init_nmi_sync_pal_1
-	bit $2002
+	bit $2
 	bpl init_nmi_sync_pal_1
 	
 	; Synchronize to odd CPU cycle
-	sta $4014
+	sta $4
 	bit <0
 	
 	; Fine synchronize
 init_nmi_sync_pal_2
 	bit <0
 	nop
-	bit $2002
-	bit $2002
+	bit $2
+	bit $2
 	bpl init_nmi_sync_pal_2
 	
 	; Enable NMI
 	lda #$80
-	sta $2000
+	sta $0
 	sta M2000
 	
 	rts
@@ -476,9 +476,9 @@ init_nmi_sync_pal_2
 
 .orga $fffa
 .section "vectors" FORCE
-.dw NMI
-.dw RESET           ;Thoose are the actual interupts vectors
-.dw IRQ
+..word NMI
+..word RESET           ;Thoose are the actual interupts vectors
+..word IRQ
 .ends
 
 .bank 1 SLOT 3

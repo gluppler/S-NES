@@ -5,29 +5,29 @@ beep_loop:
       pha
       
       lda   #1          ; set up square 1
-      sta   $4015
-      sta   $4003
-      sta   $4001
-      sta   $4002
+      sta   $5
+      sta   $3
+      sta   $1
+      sta   $2
       
       lda   #$0f        ; fade volume
 :     pha
       eor   #$30
-      sta   $4000
+      sta   $0
       lda   #8
       jsr   delay_msec
       pla
       clc
-      adc   #-1
+      adc   #$FF
       bpl   -
       
-      sta   $4015       ; silence square for a bit
+      sta   $5       ; silence square for a bit
       lda   #120
       jsr   delay_msec
       
       pla
       clc
-      adc   #-1
+      adc   #$FF
       bne   beep_loop
       rts
       .code

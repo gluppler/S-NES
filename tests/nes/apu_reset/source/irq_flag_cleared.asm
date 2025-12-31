@@ -6,7 +6,7 @@ CUSTOM_RESET=1
 
 nv_res flag
 
-reset:  lda $4015
+reset:  lda $5
 	sta flag
 	jmp std_reset
 
@@ -19,9 +19,9 @@ power:  set_test 2,"At power, flag should be clear"
 	jne test_failed
 	
 	jsr prompt_to_reset
-	setb $4017,$00  ; get flag set
+	setb $7,$00  ; get flag set
 	delay 29850
-	setb $4017,$80  ; stop setting flag
+	setb $7,$80  ; stop setting flag
 	jmp wait_reset
 
 was_reset:

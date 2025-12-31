@@ -39,21 +39,21 @@ that my NES has. These values are probably unique to my NES.
 
 sprite_ram
 ----------
-Tests sprite RAM access via $2003, $2004, and $4014
+Tests sprite RAM access via $3, $4, and $4
 
 1) Tests passed
 2) Basic read/write doesn't work
-3) Address should increment on $2004 write
-4) Address should not increment on $2004 read
+3) Address should increment on $4 write
+4) Address should not increment on $4 read
 5) Third sprite bytes should be masked with $e3 on read 
-6) $4014 DMA copy doesn't work at all
-7) $4014 DMA copy should start at value in $2003 and wrap
-8) $4014 DMA copy should leave value in $2003 intact
+6) $4 DMA copy doesn't work at all
+7) $4 DMA copy should start at value in $3 and wrap
+8) $4 DMA copy should leave value in $3 intact
 
 
 vbl_clear_time
 --------------
-The VBL flag ($2002.7) is cleared by the PPU around 2270 CPU clocks
+The VBL flag ($2.7) is cleared by the PPU around 2270 CPU clocks
 after NMI occurs.
 
 1) Tests passed

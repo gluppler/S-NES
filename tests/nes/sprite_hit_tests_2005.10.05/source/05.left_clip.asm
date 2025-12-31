@@ -3,7 +3,7 @@
       .include "prefix_sprite_hit.a"
 
 test_name:
-      .db   "SPRITE HIT LEFT CLIPPING",0
+      ..byte "SPRITE HIT LEFT CLIPPING",0
       .code
 
 reset:
@@ -27,14 +27,14 @@ reset:
       ldx   #$18
       jsr   sprite_should_miss
       
-      lda   #3;) Left-edge clipping occurs when $2001 is not $1e
+      lda   #3;) Left-edge clipping occurs when $1 is not $1e
       ldx   #$1a
       jsr   sprite_should_miss
       lda   #3
       ldx   #$1c
       jsr   sprite_should_miss
       
-      lda   #4;) Left-edge clipping is off when $2001 = $1e
+      lda   #4;) Left-edge clipping is off when $1 = $1e
       ldx   #$1e
       jsr   sprite_should_hit
       

@@ -14,24 +14,24 @@ init_nmi_sync:
 	; Disable interrupts and rendering
 	sei
 	lda #0
-	sta $2000
-	sta $2001
+	sta $0
+	sta $1
 	
 	; Coarse synchronize
-	bit $2002
+	bit $2
 init_nmi_sync_1:
-	bit $2002
+	bit $2
 	bpl init_nmi_sync_1
 	
 	; Synchronize to odd CPU cycle
-	sta $4014
+	sta $4
 
 	; Fine synchronize
 	lda #3
 init_nmi_sync_2:
 	sta nmi_sync_count
-	bit $2002
-	bit $2002
+	bit $2
+	bit $2
 	php
 	eor #$02
 	nop
@@ -41,14 +41,14 @@ init_nmi_sync_2:
 
 	; Delay one frame
 init_nmi_sync_3:
-	bit $2002
+	bit $2
 	bpl init_nmi_sync_3
 	
 	; Enable rendering long enough for frame to
 	; be shortened if it's a short one, but not long
 	; enough that background will get displayed.
 	lda #$08
-	sta $2001
+	sta $1
 	
 	; Can reduce delay by up to 5 and this still works,
 	; so there's a good margin.
@@ -61,7 +61,7 @@ init_nmi_sync_4:
 	sbc #1
 	bne init_nmi_sync_4
 	
-	sta $2001
+	sta $1
 	
 	lda nmi_sync_count
 	
@@ -69,8 +69,8 @@ init_nmi_sync_4:
 	; If this frame was short, loop ends. If it was
 	; long, loop runs for a third frame.
 init_nmi_sync_5:
-	bit $2002
-	bit $2002
+	bit $2
+	bit $2
 	php
 	eor #$02
 	sta nmi_sync_count
@@ -81,7 +81,7 @@ init_nmi_sync_5:
 	
 	; Enable NMI
 	lda #$80
-	sta $2000
+	sta $0
 	
 	rts
 
@@ -98,30 +98,30 @@ init_nmi_sync_pal:
 	; Disable interrupts and rendering
 	sei
 	lda #0
-	sta $2000
-	sta $2001
+	sta $0
+	sta $1
 	
 	; Coarse synchronize
-	bit $2002
+	bit $2
 init_nmi_sync_pal_1:
-	bit $2002
+	bit $2
 	bpl init_nmi_sync_pal_1
 	
 	; Synchronize to odd CPU cycle
-	sta $4014
+	sta $4
 	bit <0
 	
 	; Fine synchronize
 init_nmi_sync_pal_2:
 	bit <0
 	nop
-	bit $2002
-	bit $2002
+	bit $2
+	bit $2
 	bpl init_nmi_sync_pal_2
 	
 	; Enable NMI
 	lda #$80
-	sta $2000
+	sta $0
 	
 	rts
 
@@ -132,7 +132,7 @@ wait_nmi:
 	pha
 	
 	; Reset high/low flag so NMI can depend on it
-	bit $2002
+	bit $2
 	
 	; NMI must not occur during taken branch, so we
 	; only use branch to get out of loop.
@@ -158,7 +158,7 @@ begin_nmi_sync_1:
 
 ; Must be called after sprite DMA. Instructions before this
 ; must total 1715 (NTSC)/6900 (PAL) cycles, treating
-; JSR begin_nmi_sync and STA $4014 as taking 10 cycles total) 
+; JSR begin_nmi_sync and STA $4 as taking 10 cycles total) 
 ; Next instruction will begin 2286 (NTSC)/7471 (PAL) cycles
 ; after the cycle that the frame began in.
 ; Preserved: X, Y
@@ -168,7 +168,7 @@ end_nmi_sync:
 	and #$02
 	bne end_nmi_sync_1
 end_nmi_sync_1:
-	lda $2002
+	lda $2
 	bmi end_nmi_sync_2
 end_nmi_sync_2:
 	bmi end_nmi_sync_3

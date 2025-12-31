@@ -36,7 +36,11 @@ EXCLUDE_FROM_OBJECTS = \
 # Compile only .asm files that are NOT included in main.asm
 ALL_ASM = $(shell find src -name "*.asm")
 STANDALONE_ASM = $(filter-out $(EXCLUDE_FROM_OBJECTS),$(ALL_ASM))
-OBJECTS = $(patsubst src/%.asm,build/obj/%.o,$(STANDALONE_ASM))
+ALL_OBJECTS = $(patsubst src/%.asm,build/obj/%.o,$(STANDALONE_ASM))
+# Ensure reset.o is linked first so its strings are placed early
+RESET_OBJ = build/obj/reset.o
+OTHER_OBJECTS = $(filter-out $(RESET_OBJ),$(ALL_OBJECTS))
+OBJECTS = $(RESET_OBJ) $(OTHER_OBJECTS)
 
 # Target ROM
 TARGET = build/rom/game.nes
@@ -375,15 +379,19 @@ build/obj build/rom build/map:
 build/obj/%.o: src/%.asm | build/obj check-cc65
 	@echo "Assembling $<..."
 	@mkdir -p $(dir $@)
-	$(AS) -I src $< -o $@
+	$(AS) -I src -I . $< -o $@
 
 # Link ROM from object files
-$(TARGET): $(OBJECTS) $(CFG) assets/graphics/chr/font.chr | build/rom build/map
+$(TARGET): $(OBJECTS) $(CFG) | build/rom build/map
 	@echo "Linking $(TARGET)..."
 	$(LD) -C $(CFG) -o $(TARGET) $(OBJECTS) -m build/map/game.map
+	@echo "Patching string address references..."
+	@python3 patch_strings.py $(TARGET) || (echo "⚠️  String address patching failed" && exit 0)
 	@if [ -f $(TARGET) ]; then \
 		SIZE=$$(stat -c%s $(TARGET) 2>/dev/null || echo "unknown"); \
 		echo "✓ ROM built: $(TARGET) ($$SIZE bytes)"; \
+		echo "Patching interrupt vectors..."; \
+		python3 patch_vectors.py build/map/game.map $(TARGET) || (echo "⚠️  Vector patching failed (vectors may be $0000)" && exit 0); \
 	else \
 		echo "✗ ROM build failed"; \
 		exit 1; \

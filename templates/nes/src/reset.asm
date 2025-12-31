@@ -4,12 +4,13 @@
 ; EXACTLY matches hello_world example initialization sequence
 ; ============================================================================
 
-.include "constants/ppu.inc"
-.include "text/strings.asm"
+.segment "CODE"
 
-; APU constants (matching hello_world exactly)
-APU_FRAMECTR    = $4017
-APU_MODCTRL     = $4010
+.include "constants/ppu.inc"
+
+; APU constants (NES hardware addresses: $4000-$4017)
+APU_FRAMECTR    = $4017  ; Frame counter register
+APU_MODCTRL     = $4010  ; DMC control register
 
 ; Constants (matching hello_world exactly)
 DEFMASK        = %00001000 ; background enabled
@@ -17,15 +18,10 @@ START_X        = 9
 START_Y        = 14
 NAMETABLE_A    = $2000
 ATTRTABLE_A    = $23C0
-BG_COLOR       = $3F00
 START_NT_ADDR  = NAMETABLE_A + 32*START_Y + START_X
 
-; Color constants (matching hello_world exactly)
-BLACK       = $1D
-WHITE       = $30
-DARK        = $00
-NEUTRAL     = $10
-LIGHT       = $20
+; Color constants (matching hello_world exactly) - imported from ppu.inc
+; BLACK, WHITE, DARK, NEUTRAL, LIGHT defined in constants/ppu.inc
 
 ; WAIT_VBLANK macro (matching hello_world exactly)
 .macro WAIT_VBLANK
@@ -35,6 +31,14 @@ LIGHT       = $20
 
 ; Export reset entry point
 .export reset
+
+; String data (EXACTLY like hello_world - defined before reset function)
+template_str:
+    .byte "NES TEMPLATE", 0
+
+ready_str:
+    .byte "READY TO CODE", 0
+
 reset:
     ; EXACTLY like hello_world: Initialize CPU
     sei
@@ -69,6 +73,8 @@ reset:
 
     ; start writing to palette, starting with background color
     ; EXACTLY like hello_world
+    ; Reset PPU address latch by reading PPUSTATUS first
+    bit PPUSTATUS
     lda #>BG_COLOR
     sta PPUADDR
     lda #<BG_COLOR
@@ -85,6 +91,8 @@ reset:
 
     ; place "NES TEMPLATE" string
     ; EXACTLY like hello_world pattern
+    ; Reset PPU address latch
+    bit PPUSTATUS
     lda #>START_NT_ADDR
     sta PPUADDR
     lda #<START_NT_ADDR
@@ -100,6 +108,8 @@ reset:
 @ready_line:
     ; Place "READY TO CODE" on next line (START_Y + 1)
     ; EXACTLY like hello_world pattern
+    ; Reset PPU address latch
+    bit PPUSTATUS
     lda #>(NAMETABLE_A + 32*(START_Y + 1) + START_X)
     sta PPUADDR
     lda #<(NAMETABLE_A + 32*(START_Y + 1) + START_X)
@@ -115,6 +125,8 @@ reset:
 @setpal:
     ; set all table A tiles to palette 0
     ; EXACTLY like hello_world
+    ; Reset PPU address latch
+    bit PPUSTATUS
     lda #>ATTRTABLE_A
     sta PPUADDR
     lda #<ATTRTABLE_A
@@ -126,20 +138,36 @@ reset:
     dex
     bne @attr_loop
 
+    ; Wait for VBLANK after all PPU writes (EXACTLY like hello_world)
+    WAIT_VBLANK
+
     ; set scroll position to 0,0
     ; EXACTLY like hello_world
     lda #0
     sta PPUSCROLL ; x = 0
     sta PPUSCROLL ; y = 0
-    ; enable display
+    ; enable NMI and display
+    ; EXACTLY like hello_world: NMI enabled, background from pattern table 0
+    lda #%10001000
+    sta PPUCTRL
     lda #DEFMASK
     sta PPUMASK
 
-    ; Enter game loop (EXACTLY like hello_world)
-    jmp game_loop
+    ; Enter main loop (imported from main.asm)
+    .import main_loop
+    jmp main_loop
 
-; Game loop (EXACTLY like hello_world)
-game_loop:
-    WAIT_VBLANK
-    ; do something
-    jmp game_loop
+; ============================================================================
+; Interrupt Vectors
+; ============================================================================
+; EXACTLY like hello_world: vectors at end
+; NOTE: Imported symbols (nmi, irq) may not resolve in VECTORS segment
+; Workaround: Import them and let linker resolve, or define all in one file
+; ============================================================================
+
+.import nmi, irq
+
+.segment "VECTORS"
+    .word nmi         ; $fffa vblank nmi (imported - linker should resolve)
+    .word reset       ; $fffc reset (local - should work)
+    .word irq         ; $fffe irq / brk (imported - linker should resolve)

@@ -3,21 +3,21 @@
       .include "prefix_sprite_hit.a"
 
 test_name:
-      .db   "SPRITE HIT DOUBLE HEIGHT",0
+      ..byte "SPRITE HIT DOUBLE HEIGHT",0
       .code
 
 reset:
       jsr   begin_sprite_hit_tests
       
       lda   #$20        ; double-height sprites
-      sta   $2000
+      sta   $0
       
       ; Single solid tile in middle of screen
       lda   #$21
       ldx   #$f0
       jsr   set_vaddr
       lda   #solid_tile
-      sta   $2007
+      sta   $7
       
       lda   #0
       sta   sprite_attr

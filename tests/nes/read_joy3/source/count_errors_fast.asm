@@ -13,14 +13,14 @@ zp_byte errors
 main:
 	; Start DMC
 	lda #$40+dmc_rate
-	sta $4010
+	sta $0
 	lda #$FF
-	sta $4012
-	sta $4013
+	sta $2
+	sta $3
 	lda #0
-	sta $4015
+	sta $5
 	lda #$10
-	sta $4015
+	sta $5
 	
 	; Repeatedly read controller
 	ldy #>iter

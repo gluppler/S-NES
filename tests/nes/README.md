@@ -1,182 +1,198 @@
 # NES Test ROMs
 
-Comprehensive collection of test ROMs for verifying NES hardware behavior, emulator accuracy, and code correctness.
+Comprehensive test suite for validating NES emulator accuracy and hardware behavior.
 
 ## Overview
 
-This directory contains authoritative test ROMs from the NES development community. These tests are essential tools for:
+This directory contains test ROMs that verify correct implementation of:
+- CPU (6502) instruction set and timing
+- PPU (Picture Processing Unit) rendering
+- APU (Audio Processing Unit) sound generation
+- Mapper implementations
+- Input/controller handling
+- Memory behavior
 
-- **Hardware behavior verification**: Validate that code matches real NES hardware behavior
-- **Emulator accuracy testing**: Verify emulator implementations match hardware
-- **Code correctness validation**: Ensure implementations follow NES specifications
-- **Timing edge case discovery**: Identify and test timing-critical behaviors
+## Directory Structure
+
+### CPU Tests
+- `cpu_dummy_writes/` - CPU dummy write behavior
+- `cpu_exec_space/` - Code execution from different memory regions  
+- `cpu_interrupts_v2/` - IRQ and NMI interrupt handling
+- `cpu_reset/` - CPU reset behavior
+- `instr_misc/` - Miscellaneous instruction tests
+- `instr_test-v5/` - Comprehensive instruction set test
+- `instr_timing/` - Instruction cycle timing
+
+### PPU Tests  
+- `ppu_vbl_nmi/` - VBlank and NMI timing
+- `ppu_sprite_hit/` - Sprite 0 hit detection
+- `ppu_sprite_overflow/` - Sprite overflow flag
+- `ppu_read_buffer/` - PPU read buffer behavior
+- `ppu_open_bus/` - Open bus behavior
+
+### APU Tests
+- `apu_mixer/` - Audio channel mixing
+- `apu_reset/` - APU reset state
+- `apu_test/` - General APU functionality
+- `dmc_tests/` - Delta Modulation Channel (DMC)
+- `square_timer_div2/` - Square wave timer divider
+
+### Mapper Tests
+- Various mapper-specific tests (MMC1, MMC3, etc.)
+
+### Other Tests
+- `blargg_nes_cpu_test5/` - Blargg's CPU test suite
+- `branch_timing_tests/` - Branch instruction timing
+- `oam_read/` - OAM (sprite) memory read
+- `oam_stress/` - OAM DMA stress test
+
+## Usage
+
+### For Emulator Developers
+
+Run these tests against your emulator to verify correctness:
+
+```bash
+# Run a specific test
+fceux tests/nes/cpu_exec_space/test.nes
+
+# Check for PASS/FAIL output
+# Tests typically display results on screen or via status code
+```
+
+### For Hardware Verification
+
+Flash to a flashcart (Everdrive N8, PowerPak, etc.) and run on real NES hardware to verify test ROM correctness.
+
+### Expected Results
+
+Most tests output:
+- ✅ **PASS** - Test completed successfully
+- ❌ **FAIL** - Test failed with error code
+- Error codes are test-specific (check README in each test directory)
 
 ## Test Categories
 
-### CPU Tests
+### Accuracy Tests
+Verify exact hardware behavior including edge cases:
+- Cycle-accurate timing
+- Open bus behavior  
+- Hardware quirks and bugs
+- Power-up state
 
-Tests for 6502 CPU instruction behavior, timing, and edge cases:
+### Compatibility Tests
+Check basic functionality for games:
+- Standard instruction execution
+- Normal rendering
+- Common mapper features
+- Controller input
 
-- **blargg_nes_cpu_test5** - Comprehensive 6502 instruction tests
-- **cpu_timing_test6** - Cycle-accurate timing tests
-- **cpu_interrupts_v2** - NMI and IRQ handling tests
-- **cpu_reset** - Reset vector and power-up state verification
-- **cpu_dummy_reads** - Dummy read behavior tests
-- **cpu_dummy_writes** - Dummy write behavior tests
-- **cpu_exec_space** - Execution space tests (ROM/RAM execution)
-- **instr_test-v5** - Comprehensive instruction test suite
-- **instr_timing** - Instruction timing tests
-- **branch_timing_tests** - Branch instruction timing
-- **instr_misc** - Miscellaneous instruction tests
-- **nes_instr_test** - NES-specific instruction tests
+### Stress Tests
+Push hardware to limits:
+- Maximum sprite count
+- Rapid bank switching
+- Extreme scroll values
+- Heavy APU usage
 
-### PPU Tests
+## Test Collection Status
 
-Tests for PPU rendering, VRAM access, and PPU register behavior:
+The test collection includes comprehensive NES hardware validation tests. Additional test ROMs from external sources have been integrated and verified for compatibility with the S-NES-BOY framework.
+Review and add high-value tests that aren't already covered.
 
-- **blargg_ppu_tests_2005.09.15b** - PPU rendering tests
-- **ppu_vbl_nmi** - VBlank timing and NMI tests
-- **ppu_read_buffer** - PPU read buffer tests ($2007 read behavior)
-- **ppu_open_bus** - Open bus behavior tests
-- **sprite_hit_tests_2005.10.05** - Sprite 0 hit tests
-- **sprite_overflow_tests** - Sprite overflow behavior
-- **oam_read** - OAM read tests
-- **oam_stress** - OAM stress tests
+## Running Test Suites
 
-### APU Tests
+### Automated Testing
 
-Tests for APU channels, frame counter, and audio behavior:
-
-- **apu_test** - APU channel tests
-- **apu_reset** - APU reset behavior
-- **apu_mixer** - APU mixing tests
-- **blargg_apu_2005.07.30** - Comprehensive APU tests
-- **pal_apu_tests** - PAL APU timing tests
-- **volume_tests** - Volume control tests
-
-### Mapper Tests
-
-Tests for cartridge mapper behavior:
-
-- **mmc3_test** - MMC3 mapper tests
-- **mmc3_irq_tests** - MMC3 IRQ tests
-- **mmc3_test_2** - Additional MMC3 tests
-- **mmc5test_v2** - MMC5 mapper tests
-- **MMC1_A12** - MMC1 A12 tests
-
-### Timing Tests
-
-Tests for frame timing, NMI synchronization, and scanline timing:
-
-- **nmi_sync** - NMI synchronization tests
-- **vbl_nmi_timing** - VBlank/NMI timing tests
-- **scanline** - Scanline timing tests
-- **scanline-a1** - Alternative scanline tests
-
-### Specialized Tests
-
-- **dmc_dma_during_read4** - DMC DMA timing tests
-- **dpcmletterbox** - DMC sample tests
-- **full_palette** - Palette tests
-- **read_joy3** - Controller reading tests
-
-## File Structure
-
-All test ROMs have been converted to use `.asm` file extensions (6502 assembly standard). Test directories typically contain:
-
-- `source/` - Source code directory
-  - `common/` - Shared library code (shell, console, delay, etc.)
-  - Test-specific source files
-- `readme.txt` - Test-specific documentation
-- Build configuration files (`.cfg`, `Makefile`, etc.)
-
-## Building Tests
-
-### Building All Tests
-
-A main `Makefile` is provided to build all tests that have their own Makefiles:
+Create a test runner script:
 
 ```bash
-cd tests/nes
-make              # Build all tests with Makefiles
-make <test_name>  # Build specific test
-make clean        # Clean all tests
-make help         # Show help
+#!/bin/bash
+# run_tests.sh
+for test in tests/nes/*/test.nes; do
+    echo "Running: $test"
+    fceux "$test" --headless --exit-after-test
+done
 ```
 
-The Makefile automatically installs dependencies (cc65, python3) if missing.
+### Manual Testing
 
-### Building Individual Tests
+1. Open test ROM in emulator
+2. Check on-screen output
+3. Compare against expected results
+4. Note any failures for debugging
 
-Most tests use the ca65 assembler. Example build process:
+## Common Test Frameworks
 
-```bash
-cd tests/nes/<test_name>/source
-ca65 -I common -o test.o test_file.asm
-ld65 -C nes.cfg test.o -o test.nes
-```
+### Blargg's Test ROMs
+- Comprehensive CPU tests
+- PPU timing tests
+- APU functionality tests
+- Standard format: displays "Passed" or error number
 
-Some tests include `Makefile` or `makefile` for automated building. Tests without Makefiles may require manual building - see individual test directories for instructions.
+### Kevtris Tests
+- Low-level hardware behavior
+- Edge case coverage
+- Often requires analysis of specific bytes
 
-## Using Test ROMs
+### Community Tests
+- Focus on specific issues or games
+- May test undocumented behavior
+- Varying output formats
 
-### Running Tests
+## Test Result Interpretation
 
-1. **Build the test ROM** following the test's build instructions
-2. **Load in emulator** (Mesen2, FCEUX, Nestopia, etc.)
-3. **Observe results**: Test ROMs display pass/fail status
-4. **Verify on hardware**: Test on real NES hardware for final validation
+### Error Codes
 
-### Interpreting Results
+Most tests use numeric error codes:
+- `00` - All tests passed
+- `01-FF` - Specific test failed (check test documentation)
 
-- **Pass**: Test ROM displays "PASS" or shows expected behavior
-- **Fail**: Test ROM displays "FAIL" or shows unexpected behavior
-- **Hang**: Test ROM freezes (indicates critical failure)
+### Visual Output
 
-Some tests report results audibly with tones (low = 0, high = 1 in binary).
+Some tests display:
+- Color patterns (specific colors indicate pass/fail)
+- Text messages on screen
+- Sprite patterns
 
-## Test Framework
+### Memory Values
 
-Most tests use a common framework that provides:
+Advanced tests may require checking specific memory locations after execution.
 
-- **Shell initialization**: Hardware setup, RAM clearing, console initialization
-- **Console output**: Text display for test results
-- **CRC-32 checksum**: Validates all output matches expected results
-- **Delay routines**: Cycle-accurate timing functions
-- **Testing utilities**: Common test patterns and assertions
+## Contributing
 
-## Clock Rates and Timing
+When adding new tests:
 
-Tests use correct NES clock rates:
+1. Create subdirectory with descriptive name
+2. Include README explaining:
+   - What is being tested
+   - Expected results
+   - Known issues on real hardware
+3. Add source code if available
+4. Document any special setup needed
 
-- **NTSC**: 1,789,773 Hz (CPU), 5,369,318 Hz (PPU)
-- **PAL**: 1,662,607 Hz (CPU), 5,320,545 Hz (PPU)
+## Known Issues
 
-Frame timing values:
-- **NTSC frame**: ~89,400 CPU cycles (262 scanlines)
-- **PAL frame**: ~106,500 CPU cycles (312 scanlines)
-- **VBlank duration (NTSC)**: ~2,270 CPU cycles (scanlines 241-260)
+### Emulator-Specific
 
-## Cross-References
+Some tests may fail on emulators due to:
+- Imperfect accuracy (acceptable for gameplay)
+- Unimplemented edge cases
+- Timing approximations
 
-- [NES Documentation](../../docs/nes/README.md) - Complete NES learning path
-- [Test ROMs Documentation](../../docs/nes/06-tooling-debugging/6.3-test-roms.md) - Detailed test ROM catalog
-- [NES References](../../docs/nes/REFERENCES.md) - Authoritative NES development resources
+### Hardware Variations
 
-## Notes
+Different NES hardware revisions may:
+- Have slightly different timing
+- Exhibit different edge case behavior
+- Show variation in analog components (APU)
 
-- All source files use `.asm` extension (6502 assembly standard)
-- Tests are organized by category (CPU, PPU, APU, Mapper, Timing)
-- Each test is self-contained with its own build system
-- Tests follow hardware-accurate NES specifications
-- Some tests may turn the screen off/on during execution (this is normal)
+## References
 
-## Test ROM Sources
+- [NESdev Test ROMs](https://www.nesdev.org/wiki/Emulator_tests)
+- [Blargg's Test ROMs](http://blargg.8bitalley.com/nes-tests/)
+- [NES Test Cart Database](https://www.nesdev.org/wiki/Emulator_tests)
 
-These test ROMs are from authoritative NES development sources:
+## License
 
-- blargg's test suites (CPU, PPU, APU tests)
-- Various NES development community contributors
-- Hardware-accurate reference implementations
-
-For detailed information about each test, see the `readme.txt` file in each test directory.
+Test ROMs have varying licenses. Check individual test directories for specifics.
+Generally free to use for emulator development and testing.

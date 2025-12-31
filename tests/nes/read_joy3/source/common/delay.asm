@@ -76,7 +76,7 @@ delay_256a_clocks_:
 @first: jsr delay_a_25_clocks
 	pla
 	clc
-	adc #-1
+	adc #$FF
 	bne :-
 	rts
 
@@ -98,7 +98,7 @@ delay_65536a_clocks_:
 	jsr delay_256a_clocks_
 	pla
 	clc
-	adc #-1
+	adc #$FF
 	bne :-
 	rts
 

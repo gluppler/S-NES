@@ -40,25 +40,25 @@
 
 ;------------------------------[ Define stuff ]-------------------------------
 
-RIGHT_BUTTON    EQU %00000001
-LEFT_BUTTON     EQU %00000010
-DOWN_BUTTON     EQU %00000100
-UP_BUTTON       EQU %00001000
-START_BUTTON    EQU %00010000
-SELECT_BUTTON   EQU %00100000
-B_BUTTON        EQU %01000000
-A_BUTTON        EQU %10000000
+RIGHT_BUTTON = %00000001
+LEFT_BUTTON = %00000010
+DOWN_BUTTON = %00000100
+UP_BUTTON = %00001000
+START_BUTTON = %00010000
+SELECT_BUTTON = %00100000
+B_BUTTON = %01000000
+A_BUTTON = %10000000
 
 ; Zero page addresses for where to store data
 
-SND_REGS        EQU     $00     ; data for 4 channels, 4 bytes each
-CUR_CHN         EQU     $10     ; current channel (0...3)
-CUR_REG         EQU     $11     ; current register of channel (0...3)
-CUR_BIT         EQU     $12     ; current bit of register
-JOY_STAT        EQU     $FC     ; byte containing status of joypad
-OLD_STAT        EQU     $FD     ; joypad status from previous refresh
-ADDR_LO         EQU     $FE
-ADDR_HI         EQU     $FF
+SND_REGS = $00     ; data for 4 channels, 4 bytes each
+CUR_CHN = $10     ; current channel (0...3)
+CUR_REG = $11     ; current register of channel (0...3)
+CUR_BIT = $12     ; current bit of register
+JOY_STAT = $FC     ; byte containing status of joypad
+OLD_STAT = $FD     ; joypad status from previous refresh
+ADDR_LO = $FE
+ADDR_HI = $FF
 
 ;---------------------------[ Create font table ]-----------------------------
 
@@ -73,17 +73,17 @@ cleartable
 ;---------------------------------[ Data ]------------------------------------
 
 chn_text        .asc "CHANNEL: 0"
-                .db 0FFh
+                ..byte 0FFh
 
-palette         .db 0Fh,0Fh,0Fh,20h
-                .db 0Fh,0Fh,0Fh,20h
-                .db 0Fh,0Fh,0Fh,20h
-                .db 0Fh,0Fh,0Fh,20h
+palette         ..byte 0Fh,0Fh,0Fh,20h
+                ..byte 0Fh,0Fh,0Fh,20h
+                ..byte 0Fh,0Fh,0Fh,20h
+                ..byte 0Fh,0Fh,0Fh,20h
 
-                .db 0Fh,0Fh,0Fh,20h
-                .db 0Fh,0Fh,0Fh,20h
-                .db 0Fh,0Fh,0Fh,20h
-                .db 0Fh,0Fh,0Fh,20h
+                ..byte 0Fh,0Fh,0Fh,20h
+                ..byte 0Fh,0Fh,0Fh,20h
+                ..byte 0Fh,0Fh,0Fh,20h
+                ..byte 0Fh,0Fh,0Fh,20h
 
 ;---------------------------------[ Code ]------------------------------------
 
@@ -91,8 +91,8 @@ reset:
 cld             ; clear decimal mode
 sei             ; disable interrupts
 lda     #$00
-sta     $2000   ; disable various stuff
-sta     $2001   ; ditto
+sta     $0   ; disable various stuff
+sta     $1   ; ditto
 ldx     #$FF
 txs             ; set stack pointer
 
@@ -103,15 +103,15 @@ jsr     clear_nametable
 jsr     setup_screen ; writes some text info to the name table
 
 lda     #%00011110
-sta     $2001   ; enable bg & sprites
+sta     $1   ; enable bg & sprites
 
 lda     #%10000000
-sta     $2000   ; enable NMI
+sta     $0   ; enable NMI
 
 main_loop:
 lda     #$00
-sta     $2005   ; hscroll = 0
-sta     $2005   ; vscroll = 0
+sta     $5   ; hscroll = 0
+sta     $5   ; vscroll = 0
 jsr     wait_vblank
 jsr     print_regs      ; print the regs in binary format
 jsr     set_cursors     ; show the ChannelCursor and BitCursor
@@ -176,7 +176,7 @@ jsr     b7
 +
 
 -                       ; This code is NESticle-specific, as NESticle
-lda     $2002           ;  doesn't seem to reset the 7th bit of $2002 when
+lda     $2           ;  doesn't seem to reset the 7th bit of $2 when
 bmi     -               ;  it's read, only when the VBlank is actually over.
                         ;  The program is buggy in NESticle if I remove this
                         ;  loop.
@@ -221,13 +221,13 @@ asl
 dex
 bne     -
 +
-sta     $4015   ; enable sound channel
+sta     $5   ; enable sound channel
 
 ldy     #$10
 ldx     #$00
 -
 lda     SND_REGS,x
-sta     $4000,x
+sta     $0,x
 inx
 dey
 bne     -
@@ -240,12 +240,12 @@ and     #$03
 sta     CUR_CHN
 
 lda     #$20
-sta     $2006
+sta     $6
 lda     #$69
-sta     $2006
+sta     $6
 lda     CUR_CHN
 ora     #$20
-sta     $2007
+sta     $7
 rts
 
 b6:
@@ -288,9 +288,9 @@ tax
 
 print_one_reg:
 lda     ADDR_HI
-sta     $2006
+sta     $6
 lda     ADDR_LO
-sta     $2006
+sta     $6
 lda     SND_REGS,x
 ldy     #$08
 -
@@ -299,7 +299,7 @@ pha
 lda     #$00
 rol
 ora     #$20
-sta     $2007
+sta     $7
 pla
 dey
 bne     -
@@ -318,7 +318,7 @@ rts
 
 set_cursors:
 lda     #$00
-sta     $2003
+sta     $3
 lda     CUR_REG
 asl
 asl
@@ -326,13 +326,13 @@ asl
 asl
 clc
 adc     #$30
-sta     $2004
+sta     $4
 lda     #$30
-sta     $2004
+sta     $4
 lda     #$00
-sta     $2004
+sta     $4
 lda     #$38
-sta     $2004
+sta     $4
 
 lda     CUR_REG
 asl
@@ -341,11 +341,11 @@ asl
 asl
 clc
 adc     #$38
-sta     $2004
+sta     $4
 lda     #$31
-sta     $2004
+sta     $4
 lda     #$00
-sta     $2004
+sta     $4
 lda     CUR_BIT
 eor     #$07
 asl
@@ -353,20 +353,20 @@ asl
 asl
 clc
 adc     #$40
-sta     $2004
+sta     $4
 rts
 
 setup_screen:
 lda     #$20
-sta     $2006
+sta     $6
 lda     #$60
-sta     $2006
+sta     $6
 ldx     #$00
 -
 lda     chn_text,x
 cmp     #$FF
 beq     end_text
-sta     $2007
+sta     $7
 inx
 bne     -
 end_text:
@@ -378,20 +378,20 @@ sta     ADDR_LO
 ldy     #$20
 -
 lda     ADDR_HI
-sta     $2006
+sta     $6
 lda     ADDR_LO
-sta     $2006
+sta     $6
 lda     #$12    ; "R"
-sta     $2007
+sta     $7
 lda     #$05    ; "E"
-sta     $2007
+sta     $7
 lda     #$07    ; "G"
-sta     $2007
+sta     $7
 lda     #$00    ; " "
-sta     $2007
-sty     $2007
+sta     $7
+sty     $7
 lda     #$2A    ; ":"
-sta     $2007
+sta     $7
 lda     ADDR_LO
 clc
 adc     #$40
@@ -405,7 +405,7 @@ bne     -
 rts
 
 wait_vblank:
-lda     $2002
+lda     $2
 bpl     wait_vblank
 rts
 
@@ -437,13 +437,13 @@ rts
 
 read_joypad:
 ldy     #$01
-sty     $4016   ; reset strobe
+sty     $6   ; reset strobe
 dey
-sty     $4016   ; clear strobe
+sty     $6   ; clear strobe
 sty     JOY_STAT ; JOY_STAT = 0 (clear all button bits)
 ldy     #$08    ; do all 8 buttons
 read_button:
-lda     $4016   ; load button status
+lda     $6   ; load button status
 and     #$01    ; only keep lowest bit
 lsr     a       ; transfer to carry flag
 rol     JOY_STAT
@@ -457,15 +457,15 @@ rts
 
 clear_nametable:
 lda     #$20
-sta     $2006   ; write high byte of name table address
+sta     $6   ; write high byte of name table address
 lda     #$00
-sta     $2006   ; write low byte of name table address
+sta     $6   ; write low byte of name table address
 
 ldx     #$04
 ldy     #$00
 lda     #$00
 -
-sta     $2007
+sta     $7
 dey
 bne     -
 dex
@@ -477,14 +477,14 @@ rts
 
 set_palette:
 lda     #$3F
-sta     $2006
+sta     $6
 lda     #$00
-sta     $2006
+sta     $6
 ldx     #$00
 ldy     #$20
 -
 lda     palette,x
-sta     $2007
+sta     $7
 inx
 dey
 bne     -
@@ -510,6 +510,6 @@ rti
 
 .pad $FFFA
 
-.dw nmi,reset,reset
+..word nmi,reset,reset
 
 .end

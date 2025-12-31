@@ -1,7 +1,7 @@
 ; Tests MMC3 IRQ timing to PPU clock accuracy. Tests both modes,
-; $2000=$08 and $2000=$10.
+; $0=$08 and $0=$10.
 ;
-; Timing tested is between $2002 reads of VBL flag first set,
+; Timing tested is between $2 reads of VBL flag first set,
 ; and IRQ occurring.
 
 .include "test_mmc3.inc"
@@ -56,32 +56,32 @@ main:
 	scanline_0_08 = 6976
 	scanline_1_08 = scanline_0_08
 	
-	set_test 2,"Scanline 0 IRQ should occur later when $2000=$08"
+	set_test 2,"Scanline 0 IRQ should occur later when $0=$08"
 	test $08, 0, scanline_0_08 - 1
 	cmp #$22
 	jne test_failed
 	
-	set_test 3,"Scanline 0 IRQ should occur sooner when $2000=$08"
+	set_test 3,"Scanline 0 IRQ should occur sooner when $0=$08"
 	test $08, 0, scanline_0_08
 	cmp #$21
 	jne test_failed
 	
-	set_test 4,"Scanline 1 IRQ should occur later when $2000=$08"
+	set_test 4,"Scanline 1 IRQ should occur later when $0=$08"
 	test $08, 1, scanline_1_08 + 341 - 1
 	cmp #$22
 	jne test_failed
 	
-	set_test 5,"Scanline 1 IRQ should occur sooner when $2000=$08"
+	set_test 5,"Scanline 1 IRQ should occur sooner when $0=$08"
 	test $08, 1, scanline_1_08 + 341
 	cmp #$21
 	jne test_failed
 	
-	set_test 6,"Scanline 239 IRQ should occur later when $2000=$08"
+	set_test 6,"Scanline 239 IRQ should occur later when $0=$08"
 	test $08, 239, scanline_1_08 + 239*341 - 1
 	cmp #$22
 	jne test_failed
 	
-	set_test 7,"Scanline 239 IRQ should occur sooner when $2000=$08"
+	set_test 7,"Scanline 239 IRQ should occur sooner when $0=$08"
 	test $08, 239, scanline_1_08 + 239*341
 	cmp #$21
 	jne test_failed
@@ -90,32 +90,32 @@ main:
 	scanline_0_10 = 6976 - 256
 	scanline_1_10 = scanline_0_10 - 21
 	
-	set_test 8,"Scanline 0 IRQ should occur later when $2000=$10"
+	set_test 8,"Scanline 0 IRQ should occur later when $0=$10"
 	test $10, 0, scanline_0_10 - 1
 	cmp #$22
 	jne test_failed
 	
-	set_test 9,"Scanline 0 IRQ should occur sooner when $2000=$10"
+	set_test 9,"Scanline 0 IRQ should occur sooner when $0=$10"
 	test $10, 0, scanline_0_10
 	cmp #$21
 	jne test_failed
 	
-	set_test 10,"Scanline 1 IRQ should occur later when $2000=$10"
+	set_test 10,"Scanline 1 IRQ should occur later when $0=$10"
 	test $10, 1, scanline_1_10 + 341 - 1
 	cmp #$22
 	jne test_failed
 	
-	set_test 11,"Scanline 1 IRQ should occur sooner when $2000=$10"
+	set_test 11,"Scanline 1 IRQ should occur sooner when $0=$10"
 	test $10, 1, scanline_1_10 + 341
 	cmp #$21
 	jne test_failed
 	
-	set_test 12,"Scanline 239 IRQ should occur later when $2000=$10"
+	set_test 12,"Scanline 239 IRQ should occur later when $0=$10"
 	test $10, 239, scanline_1_10 + 239*341 - 1
 	cmp #$22
 	jne test_failed
 	
-	set_test 13,"Scanline 239 IRQ should occur sooner when $2000=$10"
+	set_test 13,"Scanline 239 IRQ should occur sooner when $0=$10"
 	test $10, 239, scanline_1_10 + 239*341
 	cmp #$21
 	jne test_failed

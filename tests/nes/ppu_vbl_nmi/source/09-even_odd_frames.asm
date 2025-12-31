@@ -12,7 +12,7 @@
 
 test:   pha
 	lda #0
-	sta $2001
+	sta $1
 	jsr sync_vbl
 	delay 29755
 	pla
@@ -22,7 +22,7 @@ test:   pha
 	ldx #5
 :       pha
 	and #$08
-	sta $2001
+	sta $1
 	delay 29781-3-2-4-4-2-2-3
 	pla
 	lsr a
@@ -31,7 +31,7 @@ test:   pha
 	
 	; Find number of PPU clocks skipped
 	lda #0
-	sta $2001
+	sta $1
 	ldx #6
 :       delay 29781-2-4-3
 	dex

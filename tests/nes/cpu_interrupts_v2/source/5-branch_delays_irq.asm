@@ -88,9 +88,9 @@ begin:
 	stx saved_s
 	pha
 	jsr sync_apu
-	setb $4017,$40
-	setb $4017,0
-	bit $4015
+	setb $7,$40
+	setb $7,0
+	bit $5
 	cli
 	pla
 	eor #$0F
@@ -201,8 +201,8 @@ irq:    delay 29830-9-6 + 2
 	ldx #7
 :       dex
 	delay 29831 - 13
-	bit $4015
-	bit $4015
+	bit $5
+	bit $5
 	bvc :-
 	
 	jsr print_x

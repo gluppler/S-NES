@@ -1,133 +1,207 @@
-# S-NES-BOY NES Documentation
+# NES Documentation
 
-Hardware-accurate documentation for the Nintendo Entertainment System.
+Comprehensive documentation for Nintendo Entertainment System development.
 
-## Overview
+## 📚 Documentation Sections
 
-This documentation is part of **S-NES-BOY**, a Learning & Development Framework for NES, SNES, and Game Boy systems. The content in this tree is specific to the NES and provides a complete learning path from fundamentals to advanced development.
+### 🎯 [Fundamentals](fundamentals/)
+Core concepts every NES developer needs to know:
+- System architecture overview
+- Memory map and addressing
+- 6502 CPU basics
+- PPU (graphics) fundamentals
+- APU (audio) basics
+- Program structure and flow
 
-**This documentation applies to:**
-- NES (Nintendo Entertainment System): Primary focus
+### 🔧 [Concepts](concepts/)
+Important NES-specific concepts:
+- Scanline timing and rendering
+- Sprite evaluation and limitations
+- Nametables and pattern tables
+- Scrolling mechanics
+- Bank switching
+- Mappers
 
-## Structure
+### 🚀 [Advanced Fundamentals](advanced_fundamentals/)
+Deep dives into hardware behavior:
+- Cycle-accurate timing
+- PPU edge cases and quirks
+- Open bus behavior
+- Hardware limitations and workarounds
+- Optimization techniques
+- Advanced mapper features
 
-This knowledge base is organized into seven primary sections:
+### 💡 [Techniques](techniques/)
+Practical programming techniques:
+- Sprite multiplexing
+- Metatiles and compression
+- Smooth scrolling
+- Status bar implementation
+- Music and sound effects
+- Controller input handling
 
-### 1. Fundamentals
+### 🗺️ [Mappers](mappers/)
+Memory mapper (cartridge) documentation:
+- NROM (Mapper 0) - Basic, no banking
+- MMC1 (Mapper 1) - Bank switching, common
+- MMC3 (Mapper 4) - Advanced features, very common
+- Other mappers (see [mappers/](mappers/) directory for comprehensive mapper documentation)
 
-Establish correct mental models and non-negotiable concepts for NES systems.
+### 📊 [Cheatsheets](cheatsheets/)
+Quick reference materials:
+- PPU register reference
+- APU register reference
+- 6502 instruction set
+- Memory map diagrams
+- Timing diagrams
+- Common code patterns
 
-- [1.1 NES System Overview](fundamentals/1.1-nes-system-overview.md) - Hardware overview, NTSC vs PAL, VBlank
-- [1.2 6502 CPU Fundamentals](fundamentals/1.2-6502-cpu-fundamentals.md) - Registers, addressing modes, instructions
-- [1.3 Memory Fundamentals](fundamentals/1.3-memory-fundamentals.md) - CPU memory map, zero page, stack
-- [1.4 PPU Fundamentals](fundamentals/1.4-ppu-fundamentals.md) - Tiles, pattern tables, name tables, sprites
-- [1.5 ROM Fundamentals](fundamentals/1.5-rom-fundamentals.md) - iNES header, PRG/CHR ROM, mappers
+### 🛠️ [Tooling & Debugging](06-tooling-debugging/)
+Development tools and techniques:
+- cc65 assembler setup and usage
+- Emulator selection and features
+- Debugging techniques
+- Build systems
+- ROM analysis tools
 
-### 2. Advanced Fundamentals
+### 🔌 [Real Hardware](07-real-hardware/)
+Working with actual NES consoles:
+- Flashcart options (Everdrive N8, PowerPak)
+- Hardware differences between revisions
+- Famicom vs NES differences
+- PAL vs NTSC considerations
+- Testing on real hardware
 
-Move from "it works" to "it is correct on real hardware".
+### 📖 [References](references/)
+External resources and citations:
+- NESdev Wiki links
+- Academic papers
+- Hardware schematics
+- Component datasheets
+- Community forums and discussions
 
-- [2.1 CPU Timing & Cycles](advanced_fundamentals/2.1-cpu-timing-cycles.md) - Cycle counts, branch penalties, timing
-- [2.2 NMI & VBlank Discipline](advanced_fundamentals/2.2-nmi-vblank-discipline.md) - NMI handling, VBlank windows
-- [2.3 PPU Rendering Rules](advanced_fundamentals/2.3-ppu-rendering-rules.md) - VRAM access, scroll registers, sprite evaluation
-- [2.4 Controller I/O](advanced_fundamentals/2.4-controller-io.md) - Shift register, strobing, button reading
-- [2.5 Audio Fundamentals](advanced_fundamentals/2.5-audio-fundamentals.md) - APU channels, frame counter, timing
-- [2.6 Advanced Optimization Techniques](advanced_fundamentals/2.6-optimization-techniques.md) - Cycle optimization, memory access, performance tuning
-- [2.7 Graphics & Pixel Art](advanced_fundamentals/2.7-graphics-pixel-art.md) - Tile design, palette systems, pixel art techniques
+## 🎓 Learning Path
 
-### 3. Core Concepts
+### Beginners
+1. Start with [Fundamentals](fundamentals/)
+2. Read [Concepts](concepts/)
+3. Study [examples/nes/hello_world](../../examples/nes/hello_world/)
+4. Build [templates/nes](../../templates/nes/)
+5. Read [Tooling & Debugging](06-tooling-debugging/)
 
-Learn how subsystems interact and work together.
+### Intermediate
+1. Read [Advanced Fundamentals](advanced_fundamentals/)
+2. Study [Techniques](techniques/)
+3. Explore different [Mappers](mappers/)
+4. Review [examples/nes](../../examples/nes/) for patterns
+5. Test on [Real Hardware](07-real-hardware/)
 
-- [3.1 The Game Loop](concepts/3.1-the-game-loop.md) - Main loop, NMI handler, frame synchronization
-- [3.2 Data-Oriented Design (NES Style)](concepts/3.2-data-oriented-design.md) - Memory layout, zero page, struct-of-arrays
-- [3.3 Rendering Architecture](concepts/3.3-rendering-architecture.md) - OAM buffering, VRAM updates, rendering pipeline
-- [3.4 Input → State → Output Pipeline](concepts/3.4-input-state-output-pipeline.md) - Controller input, game state, rendering output
-- [3.5 Map & Level Systems](concepts/3.5-map-level-systems.md) - Metatiles, compression, attribute encoding
+### Advanced
+1. Study hardware test ROMs in [tests/nes](../../tests/nes/)
+2. Read mapper documentation in detail
+3. Understand cycle-accurate timing
+4. Optimize for real hardware constraints
+5. Contribute to emulator accuracy
 
-### 4. Cheatsheets
+## 📝 Key Topics
 
-Fast reference for active coding.
+### CPU (RP2A03/RP2A07)
+- 6502 instruction set with disabled BCD mode
+- 1.79 MHz (NTSC) or 1.66 MHz (PAL)
+- IRQ and NMI interrupt handling
+- DMA for sprite copying
 
-- [4.1 CPU Cheatsheets](cheatsheets/04-cheatsheets/4.1-cpu-cheatsheets.md) - Instruction reference, addressing modes, flags
-- [4.2 PPU Cheatsheets](cheatsheets/04-cheatsheets/4.2-ppu-cheatsheets.md) - Register reference, sprite attributes, palettes
-- [4.3 Memory Cheatsheets](cheatsheets/04-cheatsheets/4.3-memory-cheatsheets.md) - Memory maps, zero page, APU registers
-- [4.4 Timing Cheatsheets](cheatsheets/04-cheatsheets/4.4-timing-cheatsheets.md) - Frame timing, VBlank windows, cycle budgets
-- [4.5 Audio Cheatsheets](cheatsheets/04-cheatsheets/4.5-audio-cheatsheets.md) - APU register map, channel control, frame counter
-- [4.6 Optimization Cheatsheets](cheatsheets/04-cheatsheets/4.6-optimization-cheatsheets.md) - Quick optimization reference, cycle costs, patterns
+### PPU (RP2C02/RP2C07)  
+- 256x240 pixel display
+- 8x8 pixel tiles
+- 64 sprites maximum (8 per scanline)
+- 4 background palettes, 4 sprite palettes
+- Hardware scrolling
 
-### 5. Applied Patterns & Systems
+### APU
+- 2 square wave channels
+- 1 triangle wave channel
+- 1 noise channel
+- 1 DMC (sample playback) channel
 
-Reusable, proven solutions for common problems.
+### Memory
+- 2KB internal RAM
+- 2KB Video RAM (VRAM)
+- Cartridge ROM/RAM via mappers
 
-- [5.1 Sprite Engine Patterns](techniques/05-applied-patterns/5.1-sprite-engine-patterns.md) - Fixed slots, dynamic allocation, flicker prevention
-- [5.2 Scrolling Patterns](techniques/05-applied-patterns/5.2-scrolling-patterns.md) - Horizontal, vertical, four-way scrolling
-- [5.3 Collision Systems](techniques/05-applied-patterns/5.3-collision-systems.md) - Tile-based, bounding box, hybrid collision
-- [5.4 Animation Systems](techniques/05-applied-patterns/5.4-animation-systems.md) - Frame tables, timers, state-driven animation
-- [5.5 Audio Integration](techniques/05-applied-patterns/5.5-audio-integration.md) - FamiTone2, music vs SFX priority, direct APU control
+## 🔗 Essential Resources
 
-### 6. Tooling & Debugging
+### Official Documentation
+- [NESdev Wiki](https://www.nesdev.org/) - Primary reference
+- [6502 Reference](http://www.6502.org/) - CPU documentation
+- [Visual 6502](http://visual6502.org/) - Visual CPU simulator
 
-Tools and techniques for development.
+### Community
+- [NESdev Forums](https://forums.nesdev.org/) - Active community
+- [NESdev Discord](https://discord.gg/nesdev) - Real-time help
 
-- [6.1 Toolchain (Linux-first)](06-tooling-debugging/6.1-toolchain.md) - ca65/ld65, asm6f, Makefiles
-- [6.2 Emulators & Debuggers](06-tooling-debugging/6.2-emulators-debuggers.md) - Mesen2 workflow, breakpoints, PPU viewers
-- [6.3 Test ROMs](06-tooling-debugging/6.3-test-roms.md) - CPU tests, PPU tests, APU tests (see [`tests/nes/`](../../../tests/nes/) for test ROM collection)
+### Tools
+- [cc65](https://cc65.github.io/) - C and assembler toolchain
+- [FCEUX](http://fceux.com/) - Emulator with debugging
+- [Mesen](https://www.mesen.ca/) - Accuracy-focused emulator
 
-### 7. Real Hardware Considerations
+### Tutorials
+- [Nerdy Nights](https://nerdy-nights.nes.science/) - Beginner series
+- [NES Starter Kit](https://nes-starter-kit.nes.science/) - Quick start
+- [NESdoug](https://nesdoug.com/) - C programming for NES
 
-What you need to know for real NES hardware.
+## 🚧 Work in Progress
 
-- [Real Hardware Considerations](07-real-hardware/real-hardware-considerations.md) - Flashcarts, power-on state, emulator mismatches
+This documentation is continuously being improved. Areas needing expansion:
 
-### 8. Hardware Schematics
+- [ ] Complete PPU timing documentation
+- [ ] APU channel details and code examples
+- [x] Mapper reference (integrated from NES-UPDATE/mapper_docs)
+- [ ] More code examples in each section
+- [ ] Cross-references between topics
+- [ ] Illustrated hardware diagrams
+- [ ] Video tutorials
 
-Circuit-level hardware documentation.
+## 🤝 Contributing
 
-- [Hardware Schematics](../../../schematics/nes/README.md) - Console and cartridge schematic diagrams
+To improve this documentation:
 
-## Philosophy
+1. Check existing content for gaps
+2. Add code examples to illustrate concepts
+3. Cross-reference related topics
+4. Cite sources (NESdev Wiki, forums, papers)
+5. Keep explanations clear and concise
+6. Test code examples before adding
 
-This knowledge base follows these principles:
+## 📋 Documentation Standards
 
-- **Hardware-first**: No abstractions until justified
-- **Assembly-aware**: Assembly language is the foundation; higher-level languages are convenience layers
-- **Deterministic**: Cycle counts, registers, memory maps matter
-- **Cross-linked**: Concepts reference each other, not isolated chapters
-- **Cheatsheet-driven**: Fast recall is a first-class feature
-- **NES focused**: Dedicated to NES development
+- Use markdown formatting
+- Include code examples with syntax highlighting
+- Cite sources with links
+- Use diagrams where helpful
+- Keep files focused on single topics
+- Cross-link related documentation
 
-## Getting Started
+## 🎮 Practical Examples
 
-1. **Start with Fundamentals**: Read sections 1.1-1.5 to establish correct mental models
-2. **Move to Advanced Fundamentals**: Read sections 2.1-2.7 to understand timing, constraints, and graphics
-3. **Learn Core Concepts**: Read sections 3.1-3.5 to understand system interactions
-4. **Use Cheatsheets**: Keep sections 4.1–4.6 open while coding
-5. **Apply Patterns**: Reference sections 5.1–5.5 when implementing features
-6. **Set Up Tooling**: Follow section 6.1 to set up your development environment
-7. **Test on Hardware**: Read section 7 before finalizing your game
+All concepts in this documentation are demonstrated in:
+- [examples/nes/](../../examples/nes/) - Working examples
+- [templates/nes/](../../templates/nes/) - Starting template
+- [tests/nes/](../../tests/nes/) - Validation tests
 
-## Target Audience
+## 📞 Getting Help
 
-- **Technically competent**: Assumes programming knowledge
-- **New to NES**: No system-specific intuition required
-- **6502 literate**: Basic assembly understanding helpful but not required
-- **Hardware enthusiasts**: Interest in understanding how these systems work
+- Check [NESdev Wiki](https://www.nesdev.org/) first
+- Search [NESdev Forums](https://forums.nesdev.org/)
+- Ask in [NESdev Discord](https://discord.gg/nesdev)
+- Review example code in this repository
 
-## Related Resources
+## 📄 License
 
-- [Main README](../../README.md) - Framework overview
-- [References](REFERENCES.md) - Authoritative NES development resources and source URLs
-- [Hardware Schematics](../../schematics/nes/README.md) - Console and cartridge circuit diagrams
-- [Test ROMs](../../tests/nes/README.md) - Comprehensive test ROM collection
-- [Contributing Guide](../../CONTRIBUTING.md) - How to contribute to this framework
+This documentation is provided for educational purposes.
+Code examples are free to use without attribution unless otherwise noted.
 
-## External Resources
+## 🔄 Last Updated
 
-- [NES Dev Wiki](https://www.nesdev.org/) - Comprehensive NES development resources
-- [6502.org](http://www.6502.org/) - 6502 processor documentation
-- [Open Source Guide](https://opensource.guide/) - Open source best practices
-
----
-
-S-NES-BOY NES documentation is dedicated to learning and development of NES systems.
+See git history for detailed change log.
+Major updates tracked in [CHANGELOG.md](../../CHANGELOG.md).

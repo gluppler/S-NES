@@ -1,15 +1,15 @@
 ; Tests PPU VRAM read/write and internal read buffer operation
 
-      .include "prefix_ppu.a"
+      .include "prefix_ppu.asm"
 
 ; Set VRAM addr to $2f00 + A
 ; Preserved: A, X, Y
 set_vram_pos:
       pha
       lda   #$2f
-      sta   $2006
+      sta   $6
       pla
-      sta   $2006
+      sta   $6
       rts
 
 reset:
@@ -18,21 +18,21 @@ reset:
       
       jsr   wait_vbl
       lda   #0
-      sta   $2000
-      sta   $2001
+      sta   $0
+      sta   $1
       
       lda   #2;) VRAM reads should be delayed in a buffer
       sta   result
       lda   #$00
       jsr   set_vram_pos
       lda   #$12
-      sta   $2007
+      sta   $7
       lda   #$34
-      sta   $2007
+      sta   $7
       lda   #$00
       jsr   set_vram_pos
-      lda   $2007
-      lda   $2007
+      lda   $7
+      lda   $7
       cmp   #$34
       jsr   error_if_eq
       
@@ -41,11 +41,11 @@ reset:
       lda   #$00
       jsr   set_vram_pos
       lda   #$56
-      sta   $2007
+      sta   $7
       lda   #$00
       jsr   set_vram_pos
-      lda   $2007
-      lda   $2007
+      lda   $7
+      lda   $7
       cmp   #$56
       jsr   error_if_ne
       
@@ -54,14 +54,14 @@ reset:
       lda   #$00
       jsr   set_vram_pos
       lda   #$78
-      sta   $2007
+      sta   $7
       lda   #$00
       jsr   set_vram_pos
       lda   #$00
-      lda   $2007       ; buffer now contains $78
+      lda   $7       ; buffer now contains $78
       lda   #$12
-      sta   $2007       ; shouldn't affect buffer
-      lda   $2007
+      sta   $7       ; shouldn't affect buffer
+      lda   $7
       cmp   #$78
       jsr   error_if_ne
       
@@ -70,19 +70,19 @@ reset:
       lda   #$00
       jsr   set_vram_pos
       lda   #$9a
-      sta   $2007
+      sta   $7
       lda   #$00
       jsr   set_vram_pos
-      lda   $2007       ; buffer now contains $9a
+      lda   $7       ; buffer now contains $9a
       lda   #$3f
-      sta   $2006
+      sta   $6
       lda   #$00
-      sta   $2006
+      sta   $6
       lda   #$34
-      sta   $2007       ; shouldn't affect buffer
+      sta   $7       ; shouldn't affect buffer
       lda   #$01        ; change back to non-palette addr to enable buffer
       jsr   set_vram_pos
-      lda   $2007
+      lda   $7
       cmp   #$9a
       jsr   error_if_ne
       
@@ -91,16 +91,16 @@ reset:
       lda   #$12
       jsr   set_vram_pos
       lda   #$9a
-      sta   $2007
-      lda   $2007
+      sta   $7
+      lda   $7
       lda   #$3f
-      sta   $2006
+      sta   $6
       lda   #$12
-      sta   $2006
-      lda   $2007       ; fills buffer with VRAM hidden by palette 
+      sta   $6
+      lda   $7       ; fills buffer with VRAM hidden by palette 
       lda   #$13        ; change back to non-palette addr to enable buffer
       jsr   set_vram_pos
-      lda   $2007
+      lda   $7
       cmp   #$9a
       jsr   error_if_ne
       
@@ -109,31 +109,31 @@ reset:
       lda   #$04
       jsr   set_vram_pos
       lda   #$12
-      sta   $2007
+      sta   $7
       lda   #$14
       jsr   set_vram_pos
       lda   #$34
-      sta   $2007
+      sta   $7
       lda   #$3f
-      sta   $2006
+      sta   $6
       lda   #$04
-      sta   $2006
-      lda   $2007       ; fills buffer with VRAM hidden by palette 
+      sta   $6
+      lda   $7       ; fills buffer with VRAM hidden by palette 
       lda   #$13        ; change back to non-palette addr to enable buffer
       jsr   set_vram_pos
-      lda   $2007
+      lda   $7
       cmp   #$12
       jsr   error_if_ne
       lda   #$34
-      sta   $2007
+      sta   $7
       lda   #$3f
-      sta   $2006
+      sta   $6
       lda   #$14
-      sta   $2006
-      lda   $2007       ; fills buffer with VRAM hidden by palette 
+      sta   $6
+      lda   $7       ; fills buffer with VRAM hidden by palette 
       lda   #$13        ; change back to non-palette addr to enable buffer
       jsr   set_vram_pos
-      lda   $2007
+      lda   $7
       cmp   #$34
       jsr   error_if_ne
       

@@ -190,13 +190,13 @@ crash_proof_begin:
 	
 	; Enable NMI
 	lda #$80
-	sta $2000
+	sta $0
 	rts
 
 crash_proof_end:
 	; Disable NMI
 	lda #0
-	sta $2000
+	sta $0
 	sta maybe_crashed
 	rts
 

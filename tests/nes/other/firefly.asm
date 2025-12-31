@@ -1,16 +1,16 @@
 	enum 0
-	ystart1 db 0
-	ystart2 db 0
-	ystart3 db 0
-	yline1 db 0
-	yline2 db 0
-	yline3 db 0
-	IRQline db 0
-	fly_x db 0
-	fly_y db 0
-	fly_frame db 0
-	light dw 0
-	timingtoggle db 0
+	ystart1 .byte 0
+	ystart2 .byte 0
+	ystart3 .byte 0
+	yline1 .byte 0
+	yline2 .byte 0
+	yline3 .byte 0
+	IRQline .byte 0
+	fly_x .byte 0
+	fly_y .byte 0
+	fly_frame .byte 0
+	light .word 0
+	timingtoggle .byte 0
 	ende
 	
 do_mmc5test
@@ -32,22 +32,22 @@ do_mmc5test
 	lda #%00000000
 	sta $5105	;mirror
 
-	setVADDR $2000
+	setVADDR $0
 	ldx #0
 -	lda brick,x
-	sta $2007
+	sta $7
 	inx
 	bne -
 -	lda brick+$100,x
-	sta $2007
+	sta $7
 	inx
 	bne -
 -	lda brick+$200,x
-	sta $2007
+	sta $7
 	inx
 	bne -
 -	lda brick+$300,x
-	sta $2007
+	sta $7
 	inx
 	bne -
 	
@@ -64,8 +64,8 @@ do_mmc5test
 	setNMI mmc5nmi
 	
 	lda #$80
-	bit $2002
-	sta $2000	;NMI on
+	bit $2
+	sta $0	;NMI on
 	
 -	jmp -
 
@@ -73,18 +73,18 @@ do_mmc5test
 mmc5nmi:
 	jsr move_fly
 	lda #2
-	sta $4014	;spriteDMA
+	sta $4	;spriteDMA
 
 	setVADDR $3f13
 	ldx #$39
 	lda fly_frame
 	beq +
 	ldx #$19
-+	stx $2007
++	stx $7
 
 	lda #0
-	sta $2005
-	sta $2005	;scroll reset
+	sta $5
+	sta $5	;scroll reset
 	
         jsr readjoypad
         and #joySTART
@@ -94,9 +94,9 @@ mmc5nmi:
         sta timingtoggle
 +
 	lda #%10100000
-	sta $2000	;8x16 obj
+	sta $0	;8x16 obj
 	lda #%11111110		;2
-	sta $2001	;screen on
+	sta $1	;screen on
 
 	setIRQ mmc5irq1
 	
@@ -161,13 +161,13 @@ move_fly
 	sbc light_y,x
 	sta fly_y
 	rts
-light_y	dw 31,27
+light_y	.word 31,27
 lighttbl
-	dw light1,light2
-anim db 1,3,5,7,9,11,13,15
+	.word light1,light2
+anim .byte 1,3,5,7,9,11,13,15
 	i = 255
 div3	rept 256
-        db 26+i/3
+        .byte 26+i/3
 	i=i-1
         endr
 ;---------------
@@ -194,9 +194,9 @@ macro flame1(start,end,third)
 	lda #%01111110		;2
 	ldx #%11111110		;2
 	eatcycles(start+4)
-	sta $2001		;4
+	sta $1		;4
 	eatcycles(end-start-4)
-	stx $2001		;4
+	stx $1		;4
 	eatcycles(114-end-12-third)
 endm
 macro flame2(start1,start2,end2,end1,third)
@@ -204,13 +204,13 @@ macro flame2(start1,start2,end2,end1,third)
 	ldx #%00011110		;2
 	ldy #%11111110		;2
 	eatcycles(start1+2)
-	sta $2001		;4
+	sta $1		;4
 	eatcycles(start2-start1-4)
-	stx $2001		;4
+	stx $1		;4
 	eatcycles(end2-start2-4)
-	sta $2001		;4
+	sta $1		;4
 	eatcycles(end1-end2-4)
-	sty $2001		;4
+	sty $1		;4
 	eatcycles(114-end1-12-third)
 endm
 
@@ -360,12 +360,12 @@ light2
 ;---
 setpal
 	lda #$3f	;set palette
-	sta $2006
+	sta $6
 	lda #$00
-	sta $2006
+	sta $6
 	ldx #0
 -	lda pal,x
-	sta $2007
+	sta $7
 	inx
 	cpx #32
 	bne -

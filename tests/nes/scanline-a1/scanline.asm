@@ -10,48 +10,48 @@ tmp:		.block 1
 
 .org $C000
 text:
-.db "                                "
-.db " This is a test for    | Stars  "
-.db " proper mid-scanline   | Below  "
-.db " PPU write emulation   | Denote "
-.db "                       | Errors "
-.db "                                "
-.db " This first area       | ****** "
-.db " toggles D3 of $2001   | ****** "
-.db " to toggle background  | ****** "
-.db " rendering at the      | ****** "
-.db " appropriate times     | ****** "
-.db " and locations.        | ****** "
-.db "                                "
-.db "                                "
-.db "                                "
-.db " This second area      | ****** "
-.db " toggles D4 of $2000   | ****** "
-.db " to toggle the address | ****** "
-.db " of the background     | ****** "
-.db " pattern table at the  | ****** "
-.db " proper locations.     | ****** "
-.db "                                "
-.db "                                "
-.db "                                "
-.db " This third area uses  | ****** "
-.db " $2005/$2006 to update | ****** "
-.db " the VRAM address at   | ****** "
-.db " the proper locations. | ****** "
-.db "                                "
-.db "                                "
-.db 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-.db 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+..byte "                                "
+..byte " This is a test for    | Stars  "
+..byte " proper mid-scanline   | Below  "
+..byte " PPU write emulation   | Denote "
+..byte "                       | Errors "
+..byte "                                "
+..byte " This first area       | ****** "
+..byte " toggles D3 of $1   | ****** "
+..byte " to toggle background  | ****** "
+..byte " rendering at the      | ****** "
+..byte " appropriate times     | ****** "
+..byte " and locations.        | ****** "
+..byte "                                "
+..byte "                                "
+..byte "                                "
+..byte " This second area      | ****** "
+..byte " toggles D4 of $0   | ****** "
+..byte " to toggle the address | ****** "
+..byte " of the background     | ****** "
+..byte " pattern table at the  | ****** "
+..byte " proper locations.     | ****** "
+..byte "                                "
+..byte "                                "
+..byte "                                "
+..byte " This third area uses  | ****** "
+..byte " $5/$6 to update | ****** "
+..byte " the VRAM address at   | ****** "
+..byte " the proper locations. | ****** "
+..byte "                                "
+..byte "                                "
+..byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+..byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 
 waitframe:	JMP waitframe
 
 reset:		SEI
 		CLD
 		LDX #$00
-		STX $2000
-		STX $2001
+		STX $0
+		STX $1
 		INX
-ppuinit:	LDA $2002
+ppuinit:	LDA $2
 		BPL ppuinit
 		DEX
 		BPL ppuinit
@@ -61,13 +61,13 @@ ppuinit:	LDA $2002
 		STA text_hi
 		LDA #$00
 		STA text_lo
-		LDA $2002
+		LDA $2
 		LDX #$20
-		STX $2006
+		STX $6
 		LDY #$00
-		STY $2006
+		STY $6
 init_vram1:	LDA (text_loc),y
-		STA $2007
+		STA $7
 		CLC
 		LDA text_lo
 		ADC #$01
@@ -81,7 +81,7 @@ init_vram1:	LDA (text_loc),y
 		LDY #$04
 		LDX #$00
 		LDA #$00
-init_vram2:	STA $2007
+init_vram2:	STA $7
 		DEX
 		BNE init_vram2
 		DEY
@@ -93,40 +93,40 @@ init_spr:	STA $0200,X
 		BNE init_spr		;clear sprite buffer
 		
 		LDA #$3F
-		STA $2006
+		STA $6
 		LDA #$00
-		STA $2006
+		STA $6
 		LDA #$00
-		STA $2007		;palette 0 color 0 == $00
+		STA $7		;palette 0 color 0 == $00
 		LDA #$30
-		STA $2007		;palette 0 color 1 == $30
-		STA $2007		;palette 0 color 2 == $30
-		STA $2007		;palette 0 color 3 == $30
+		STA $7		;palette 0 color 1 == $30
+		STA $7		;palette 0 color 2 == $30
+		STA $7		;palette 0 color 3 == $30
 
 		LDA #$00
-		STA $4015		;kill sound
+		STA $5		;kill sound
                 LDA #$C0
-                STA $4017               ;disable frame IRQs
+                STA $7               ;disable frame IRQs
 		LDA #$90
-		STA $2000
+		STA $0
 		LDA #$00
-		STA $2005
-		STA $2005		;clear scroll regs
+		STA $5
+		STA $5		;clear scroll regs
 		JMP waitframe
 
 .fill $C500-*,$FF			;wait 21 scanlines for vblank, 48 scanlines for title text
 					;counter: 7833 (69 scanlines - 7 cycles for NMI - 3 latency)
 nmi:		LDA #$90		;2
-		STA $2000		;4
-		LDA $2002		;4
+		STA $0		;4
+		LDA $2		;4
 		LDX #$00		;2
-		STX $2005		;4
-		STX $2005		;4
-		STX $2003		;4
+		STX $5		;4
+		STX $5		;4
+		STX $3		;4
 		LDA #$1E		;2
-		STA $2001		;4
+		STA $1		;4
 		LDA #$02		;2
-		STA $4014		;4+512
+		STA $4		;4+512
 
 wait1:		DEX			;512
 		BNE wait1		;767
@@ -144,7 +144,7 @@ wait6:		DEX			;352
 		BNE wait6		;527
 		STX carry		;3
 		SEC			;2
-		LDA #$1E		;2 - written to $2001, XORed with $08
+		LDA #$1E		;2 - written to $1, XORed with $08
 		LDY #$30		;2 - 48 scanlines worth of stuff here
 					;counter: 0
 
@@ -155,7 +155,7 @@ t1a:		DEX			;22
 		BNE t1a			;31
 		NOP			;2
 		EOR #$08		;2
-		STA $2001		;4
+		STA $1		;4
 					;counter: 0
 					;counter += 22
 					;counter == 22
@@ -163,7 +163,7 @@ t1a:		DEX			;22
 t1b:		DEX			;6
 		BNE t1b			;8
 		EOR #$08		;2
-		STA $2001		;4
+		STA $1		;4
 					;counter: 0
 					;counter += 27+2/3
 					;counter == 27+2/3
@@ -195,7 +195,7 @@ m1_3:		DEX			;64
 		NOP			;2
 		NOP			;2
 
-		LDA #$90		;2 - written to $2000, XORed with #$10 in various places
+		LDA #$90		;2 - written to $0, XORed with #$10 in various places
 		LDY #$30		;2 - 48 scanlines worth of stuff here
 
 test2:					;counter += 58+2/3
@@ -207,7 +207,7 @@ t2a:		DEX			;18
 		NOP			;2
 		NOP			;2
 		EOR #$10		;2
-		STA $2000		;4
+		STA $0		;4
 					;counter: 2/3
 					;counter += 26+2/3
 					;counter == 27+1/3
@@ -215,7 +215,7 @@ t2a:		DEX			;18
 t2b:		DEX			;8
 		BNE t2b			;11
 		EOR #$10		;2
-		STA $2000		;4
+		STA $0		;4
 					;counter: 1/3
 					;counter += 28+1/3
 					;counter == 28+2/3
@@ -262,8 +262,8 @@ t3a:		DEX			;18
 		BNE t3a			;26
 		NOP			;2
 		LDA #$04		;2
-		STA $2006		;4
-		STA $2006		;4
+		STA $6		;4
+		STA $6		;4
 					;counter: 2/3
 					;counter += 29
 					;counter == 29+2/3
@@ -273,10 +273,10 @@ t3a:		DEX			;18
 		ASL A			;2
 		AND #$E0		;2
 		NOP			;2
-		STX $2006		;4
-		STY $2005		;4
-		STX $2005		;4
-		STA $2006		;4
+		STX $6		;4
+		STY $5		;4
+		STX $5		;4
+		STA $6		;4
 					;counter: 2/3
 					;counter += 26
 					;counter == 26+2/3
@@ -293,5 +293,5 @@ irq:		RTI			;done!
 
 .fill $FFFA-*,$00
 .org $FFFA                              ;interrupt vectors
-.dw nmi, reset, irq
+..word nmi, reset, irq
 .end

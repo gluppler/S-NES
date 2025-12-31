@@ -9,7 +9,7 @@ halt = $30
 unhalt = $10
 
 test_name:
-	.db "APU LENGTH HALT TIMING",0
+	..byte "APU LENGTH HALT TIMING",0
 	
 begin_test:
 	sta result

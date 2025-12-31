@@ -2,8 +2,8 @@
 ; Clear VBL flag then wait for it to be set
 ; Preserved: A, X, Y
 wait_vbl:
-      bit   $2002
-:     bit   $2002
+      bit   $2
+:     bit   $2
       bpl   -
       rts
       .code
@@ -11,28 +11,28 @@ wait_vbl:
 ; Set VRAM address to A * $100
 ; Preserved: X, Y
 set_vpage:
-      bit   $2002
-      sta   $2006
+      bit   $2
+      sta   $6
       lda   #0
-      sta   $2006
+      sta   $6
       rts
       .code
 
 ; Set VRAM address to A * $100 + X
 ; Preserved: A, X, Y
 set_vaddr:
-      bit   $2002
-      sta   $2006
-      stx   $2006
+      bit   $2
+      sta   $6
+      stx   $6
       rts
       .code
 
 ; Set X and Y scroll
 ; Preserved: A, X, Y
 set_vscroll:
-      bit   $2002
-      stx   $2005
-      sty   $2005
+      bit   $2
+      stx   $5
+      sty   $5
       rts
       .code
 
@@ -41,11 +41,11 @@ set_vscroll:
 disable_ppu:
       pha
       lda   #0
-      sta   $2000
-      sta   $2001
-      bit   $2002
-      sta   $2006
-      sta   $2006
+      sta   $0
+      sta   $1
+      bit   $2
+      sta   $6
+      sta   $6
       pla
       rts
       .code
@@ -55,7 +55,7 @@ disable_ppu:
 clear_sprites:
       lda   #$ff
       ldx   #0
-:     sta   $2004
+:     sta   $4
       dex
       bne   -
       rts
@@ -70,15 +70,15 @@ fill_nametable:
       jsr   set_vpage
       pla
       ldx   #240
-:     sta   $2007
-      sta   $2007
-      sta   $2007
-      sta   $2007
+:     sta   $7
+      sta   $7
+      sta   $7
+      sta   $7
       dex
       bne   -
       lda   #0
       ldx   #32
-:     sta   $2007
+:     sta   $7
       dex
       bne   -
       rts
@@ -103,7 +103,7 @@ fill_vram_:
       jsr   set_vpage
       txa
       ldx   #0
-:     sta   $2007
+:     sta   $7
       dex
       bne   -
       dey

@@ -12,7 +12,7 @@
      .include "prefix.a"
 
 test_name:
-     .db  "SPRITE OVERFLOW OBSCURE",0
+     ..byte "SPRITE OVERFLOW OBSCURE",0
      .code
 
 reset:

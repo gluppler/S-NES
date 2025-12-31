@@ -16,13 +16,13 @@ sync_ppu_frame_:
       ; shorter one.
       
       lda   #$08        ; 6 enable bg
-      sta   $2001
+      sta   $1
       ldy   #41         ; 29785 delay
       lda   #144
       jsr   delay_ya2
       nop               ; 2 delay
       pla               ; 4
-      eor   $2002       ; 4 find whether frame was odd or even
+      eor   $2       ; 4 find whether frame was odd or even
       pha               ; 3
                         ; run another enabled frame so that clock will
                         ; have been subtracted on one of the two frames
@@ -30,7 +30,7 @@ sync_ppu_frame_:
       lda   #137        
       jsr   delay_ya1
       lda   #$00        ; 6 disable bg
-      sta   $2001
+      sta   $1
       
       ; If the first frame was shorter, wait three frames to switch
       ; the even/odd synchronization without changing the CPU clock's
@@ -57,15 +57,15 @@ sync_ppu_align2_30:
       tya
       pha
       lda   #0          ; disable dmc and irq
-      sta   $4015
+      sta   $5
       sei
       jsr   wait_vbl
       lda   #0          ; disable bg and nmi
-      sta   $2000
-      sta   $2001
+      sta   $0
+      sta   $1
 
-      bit   $2002
-:     bit   $2002       ; 1
+      bit   $2
+:     bit   $2       ; 1
       bpl   -           ; 2
       
       ldy   #141        ; 29774 delay
@@ -76,7 +76,7 @@ sync_ppu_align2_30:
       lda   #68         
       jsr   delay_ya1
 
-      bit   $2002       ; 1
+      bit   $2       ; 1
       bpl   -           ; 2
 
       ldy   #28         ; 29726 delay

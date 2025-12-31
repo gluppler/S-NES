@@ -1,6 +1,6 @@
 ; Tests time VBL flag is cleared.
 ;
-; Reads $2002 and prints VBL flag.
+; Reads $2 and prints VBL flag.
 ; Test is run one PPU clock later each line,
 ; around the time the flag is cleared.
 ;
@@ -27,7 +27,7 @@ test:   jsr print_a
 	jsr sync_vbl_delay
 	delay 29763
 	delay 2273
-	lda $2002
+	lda $2
 	print_cc bmi,'V','-'
 	jsr print_newline
 	rts

@@ -1,7 +1,7 @@
-; Tests behavior when $2002 is read near time
+; Tests behavior when $2 is read near time
 ; VBL flag is set.
 ;
-; Reads $2002 one PPU clock later each time.
+; Reads $2 one PPU clock later each time.
 ; Prints whether VBL flag read back as set, and
 ; whether NMI occurred.
 ;
@@ -38,7 +38,7 @@ test:   jsr print_a
 	lda #0
 	sta <nmi_count
 	lda #$80
-	sta $2000
+	sta $0
 	
 	nop
 	nop
@@ -47,7 +47,7 @@ test:   jsr print_a
 	nop
 	
 	ldx #0
-	stx $2000
+	stx $0
 	ldx nmi_count
 	
 	and #$80

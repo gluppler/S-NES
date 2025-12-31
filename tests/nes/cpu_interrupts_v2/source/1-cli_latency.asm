@@ -83,7 +83,7 @@ addr2:  inx
 	cpx #2
 	jne test_failed
 
-	set_test 3,"APU should generate IRQ when $4017 = $00"
+	set_test 3,"APU should generate IRQ when $7 = $00"
 	jsr begin_test
 	lda #$80        ; have IRQ handler set I flag after first invocation
 	sta irq_count

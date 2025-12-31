@@ -7,7 +7,7 @@ jitter = 1
 ; remove indented delays for NTSC timing
 
 test_name:
-	.db "APU CLOCK JITTER",0
+	..byte "APU CLOCK JITTER",0
 	
 reset:
 	jsr setup_apu

@@ -360,15 +360,15 @@ play_hex:
 	; Set up square
 	lda #1
 	sta SNDCHN
-	sta $4001
-	sta $4003
+	sta $1
+	sta $3
 	adc #$FE    ; period=$100 if carry, $1FF if none
-	sta $4002
+	sta $2
 	
 	; Fade volume
 	lda #$0F
 :   ora #$30
-	sta $4000
+	sta $0
 	delay_msec 8
 	sec
 	sbc #$31

@@ -3,7 +3,7 @@
       .include "prefix_mmc3_validation.a"
       
 test_name:
-      .db   "MMC3 IRQ TIMING",0
+      ..byte "MMC3 IRQ TIMING",0
 
 reset:
       jsr   begin_mmc3_tests
@@ -43,9 +43,9 @@ begin_test:
       pha
       jsr   sync_ppu_align2_30
       lda   #$08        ; 12
-      sta   $2000
+      sta   $0
       lda   #$18
-      sta   $2001
+      sta   $1
       pla               ; 20
       sta   r_set_reload
       sta   r_clear_counter

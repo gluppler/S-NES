@@ -35,7 +35,7 @@ interrupt or causes continuous interrupts that block the main code from
 continuing.
 
 2) RTI should not adjust return address (as RTS does)
-3) APU should generate IRQ when $4017 = $00
+3) APU should generate IRQ when $7 = $00
 4) Exactly one instruction after CLI should execute before IRQ is taken
 5) CLI SEI should allow only one IRQ just after SEI
 6) In IRQ allowed by CLI SEI, I flag should be set in saved status flags

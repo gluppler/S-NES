@@ -1,11 +1,11 @@
-; At power, it is as if $00 were written to $4017,
+; At power, it is as if $00 were written to $7,
 ; then a 9-12 clock delay, then execution from address
 ; in reset vector.
 ;
 ; At reset, same as above, except last value written
-; to $4017 is written again, rather than $00.
+; to $7 is written again, rather than $00.
 ;
-; The delay from when $00 was written to $4017 is
+; The delay from when $00 was written to $7 is
 ; printed. Delay after NES being powered off for a
 ; minute is usually 9.
 
@@ -17,17 +17,17 @@ nv_res count
 
 reset:  delay 29814-2
 	ldx #14
-:       lda $4015
+:       lda $5
 	and #$40
 	bne :+
 	delay 29831-4-2-2-4-2-3
-	lda $4015
+	lda $5
 	dex
 	bne :-
 :       stx count
 	jmp std_reset
 
-main:   print_str "Delay after effective $4017 write: "
+main:   print_str "Delay after effective $7 write: "
 	lda count
 	jsr print_dec
 	jsr print_newline

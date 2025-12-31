@@ -101,7 +101,10 @@ map.txt $(title).nes: snrom2mbit.cfg $(objlisto)
 mapalt.txt $(titlealt).nes: uorom2mbit.cfg $(objlistalto)
 	$(LD65) -o $(titlealt).nes -m mapalt.txt -C $^
 
-$(objdir)/%.o: $(srcdir)/%.asm $(srcdir)/nes.inc $(srcdir)/global.inc $(srcdir)/mmc1.inc
+$(objdir):
+	@mkdir -p $(objdir)
+
+$(objdir)/%.o: $(srcdir)/%.asm $(srcdir)/nes.inc $(srcdir)/global.inc $(srcdir)/mmc1.inc | $(objdir)
 	$(AS65) $(CFLAGS65) $< -o $@
 
 $(objdir)/%.o: $(objdir)/%.asm

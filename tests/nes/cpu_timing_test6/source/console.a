@@ -64,9 +64,9 @@ pal:  sta   $2007
       
       lda   #$02        ; load tiles
       jsr   set_vpage
-      lda   #chr_data.lsb
+      lda   #<chr_data
       sta   <$f0
-      lda   #chr_data.msb
+      lda   #>chr_data
       sta   <$f1
       ldy   #0
       lda   #59         ; 59 chars in data
@@ -83,10 +83,10 @@ chr_loop:
       iny
       sta   $2007
       dex
-      bne   -
+      bne   :-
       
       tya
-      bne   +
+      bne   :+
       inc   <$f1
 :     dec   <$f2
       bne   chr_loop

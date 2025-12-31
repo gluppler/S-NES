@@ -1,14 +1,15 @@
-;ษอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออป
-;บSplit screen multidirection scrolling with MMC1 mapper                       บ
-;บWritten by Cadaver, 1-2/2000                                                 บ
-;บFixed to work on Nintendulator by Cadaver, 1/2004, added NTSC detection      บ
-;บMore stuff maybe to follow..                                                 บ
-;บ                                                                             บ
-;บUse freely, but at your own risk!                                            บ
-;ศอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+;อป
+;Split screen multidirection scrolling with MMC1 mapper                       
+;Written by Cadaver, 1-2/2000                                                 
+;Fixed to work on Nintendulator by Cadaver, 1/2004, added NTSC detection      
+;More stuff maybe to follow..                                                 
+;                                                                             
+;Use freely, but at your own risk!                                            
+;อผ
 
                 processor 6502
-                org $c000
+.segment "CODE"
+.org $c000
 
 CTRL_A          = 1
 CTRL_B          = 2
@@ -112,12 +113,12 @@ ml_skip:        jsr setpanel
 mainloop2:      jmp mainloop
 
 readcontroller: lda #$01
-                sta $4016
+                sta $6
                 lda #$00
-                sta $4016
+                sta $6
                 sta control
                 ldx #$08
-readcloop:      lda $4016
+readcloop:      lda $6
                 ror
                 lda control
                 ror
@@ -210,11 +211,11 @@ rscr_loop2:     lda #$00                        ;Clear color buffer
 
 erasemagicchar: lda mcharhi
                 bmi emc_noneed
-                sta $2006
+                sta $6
                 lda mcharlo
-                sta $2006
+                sta $6
                 lda mcharunder
-                sta $2007
+                sta $7
 emc_noneed:     lda #$ff
                 sta mcharhi
                 sta mcharlo
@@ -239,30 +240,30 @@ dmc_posok:      asl
                 ora scract_rowtbl,x
                 sta mcharlo
                 lda mcharhi
-                sta $2006
+                sta $6
                 lda mcharlo
-                sta $2006
-                lda $2007                       ;First read is rubbish
-                lda $2007
+                sta $6
+                lda $7                       ;First read is rubbish
+                lda $7
                 sta mcharunder
                 lda mcharhi
-                sta $2006
+                sta $6
                 lda mcharlo
-                sta $2006
+                sta $6
                 lda #$ff
-                sta $2007
+                sta $7
                 rts
 
-;ษอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออป
-;บSCROLLLOGIC                                                                  บ
-;บ                                                                             บ
-;บUpdates scrolling position, block & map pointers and draws the new graphics  บ
-;บto the horizontal and vertical buffers for the SCROLLACTION routine.         บ
-;บ                                                                             บ
-;บParameters: -                                                                บ
-;บReturns:    -                                                                บ
-;บDestroys:   A,X,Y                                                            บ
-;ศอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+;อป
+;SCROLLLOGIC                                                                  
+;                                                                             
+;Updates scrolling position, block & map pointers and draws the new graphics  
+;to the horizontal and vertical buffers for the SCROLLACTION routine.         
+;                                                                             
+;Parameters: -                                                                
+;Returns:    -                                                                
+;Destroys:   A,X,Y                                                            
+;อผ
 
 scrolllogic:    lda #$00
                 sta screenshift
@@ -640,19 +641,19 @@ scrlog_dodownno2:lda temp3
                 jmp scrlog_dodownnb
 scrlog_dodownrdy:rts
 
-;ษอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออป
-;บSCRLOG_XCOLOR                                                                บ
-;บSCRLOG_YCOLOR                                                                บ
-;บ                                                                             บ
-;บSubroutines to color the blocks (not so simple :-))                          บ
-;บ                                                                             บ
-;บParameters: Temp5 = Block color byte                                         บ
-;บ            Temp6 = Position (X for xcolor, Y for ycolor)                    บ
-;บ            X     = Position in the other axis                               บ
-;บ            Y     = Position within the block                                บ
-;บReturns:    -                                                                บ
-;บDestroys:   A                                                                บ
-;ศอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+;อป
+;SCRLOG_XCOLOR                                                                
+;SCRLOG_YCOLOR                                                                
+;                                                                             
+;Subroutines to color the blocks (not so simple :-))                          
+;                                                                             
+;Parameters: Temp5 = Block color byte                                         
+;            Temp6 = Position (X for xcolor, Y for ycolor)                    
+;            X     = Position in the other axis                               
+;            Y     = Position within the block                                
+;Returns:    -                                                                
+;Destroys:   A                                                                
+;อผ
 
 scrlog_xcolor:  txa
                 and #$01
@@ -814,19 +815,19 @@ scrlog_mul4tbl: dc.b 0,4,8,12
 scrlog_mul16tbl:dc.b 0,16,32,48
 scrlog_mul64tbl:dc.b 0,64,128,192
 
-;ษอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออป
-;บSCROLLACTION                                                                 บ
-;บ                                                                             บ
-;บBlits the horizontal & vertical buffers to PPU memory and also updates       บ
-;บattribute table. To be called during vblank. Also, RESETSCROLL or SCROLLLOGICบ
-;บmust be called before calling this.                                          บ
-;บ                                                                             บ
-;บParameters: -                                                                บ
-;บReturns:    -                                                                บ
-;บDestroys:   A,X,Y                                                            บ
-;ศอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+;อป
+;SCROLLACTION                                                                 
+;                                                                             
+;Blits the horizontal & vertical buffers to PPU memory and also updates       
+;attribute table. To be called during vblank. Also, RESETSCROLL or SCROLLLOGIC
+;must be called before calling this.                                          
+;                                                                             
+;Parameters: -                                                                
+;Returns:    -                                                                
+;Destroys:   A,X,Y                                                            
+;อผ
 
-scrollaction:   lda $2002
+scrollaction:   lda $2
                 lda screenshift
                 asl
                 tax
@@ -861,10 +862,10 @@ scract_dodownright:jsr scract_doright
                 jmp scract_dodown
 
 scract_doleft:  lda #$20
-                sta $2006
+                sta $6
                 lda rawscrollx
                 and #$1f
-                sta $2006
+                sta $6
                 jsr scract_horizshift
                 lda rawscrollx
                 lsr
@@ -874,23 +875,23 @@ scract_doleftattr:
 N               SET 0
                 REPEAT 8
                 lda #$23
-                sta $2006
+                sta $6
                 txa
                 ora #$c0+N
-                sta $2006
+                sta $6
                 lda COLORBUF+N,x
-                sta $2007
+                sta $7
 N               SET N+8
                 REPEND
 scract_done:    rts
 
 scract_doright: lda #$20
-                sta $2006
+                sta $6
                 lda rawscrollx
                 clc
                 adc #SCRSIZEX-1
                 and #$1f
-                sta $2006
+                sta $6
                 jsr scract_horizshift
                 lda rawscrollx
                 clc
@@ -905,23 +906,23 @@ scract_doup:    lda rawscrolly
                 asl
                 tax
                 lda scract_rowtbl+1,x
-                sta $2006
+                sta $6
                 lda scract_rowtbl,x
-                sta $2006
+                sta $6
                 jsr scract_vertshift
                 lda #$23
-                sta $2006
+                sta $6
                 lda rawscrolly
                 asl
                 and #$f8
                 tax
                 ora #$c0
-                sta $2006
+                sta $6
 scract_doupattr:
 N               SET 0
                 REPEAT 8
                 lda COLORBUF+N,x
-                sta $2007
+                sta $7
 N               SET N+1
                 REPEND
                 rts
@@ -937,95 +938,95 @@ scract_dodownok1:
                 asl
                 tax
                 lda scract_rowtbl+1,x
-                sta $2006
+                sta $6
                 lda scract_rowtbl,x
-                sta $2006
+                sta $6
                 jsr scract_vertshift
                 lda #$23
-                sta $2006
+                sta $6
                 lda temp1
                 asl
                 and #$f8
                 tax
                 ora #$c0
-                sta $2006
+                sta $6
                 jmp scract_doupattr
 
 scract_horizshift:
                 lda #PPU0VALUE+4         ;Vertical increment
-                sta $2000
+                sta $0
 N               SET 0
                 REPEAT SCRSIZEY
                 lda HORIZBUF+N
-                sta $2007
+                sta $7
 N               SET N+1
                 REPEND
                 lda #PPU0VALUE           ;Normal increment
-                sta $2000
+                sta $0
                 rts
 
 scract_vertshift:
 N               SET 0
                 REPEAT SCRSIZEX
                 lda VERTBUF+N
-                sta $2007
+                sta $7
 N               SET N+1
                 REPEND
                 rts
 
 scract_rowtbl:
-N               SET $2000
+N               SET $0
                 REPEAT SCRSIZEY
                 dc.w N
 N               SET N+32
                 REPEND
 
 setgamescreen:  lda #$00
-                sta $2006
-                sta $2006
+                sta $6
+                sta $6
                 lda scrollx
                 sec
                 sbc #$08
-                sta $2005
+                sta $5
                 lda scrolly
                 clc
                 adc #$10
                 cmp #SCRSIZEY*8
                 bcc setgame_ok
                 sbc #SCRSIZEY*8
-setgame_ok:     sta $2005
+setgame_ok:     sta $5
                 lda #$1c                        ;Turn on onescreen mirror
                 jsr write8000
                 lda #$18                        ;BG & sprites on, clipping
-                sta $2001
+                sta $1
                 lda #$00                        ;Assume no shifting on next fr.
                 sta screenshift
                 rts
 
-setpanel:       bit $2002                       ;Wait if sprite hit still on
+setpanel:       bit $2                       ;Wait if sprite hit still on
                 bvs setpanel
                 ldx nmicount
 setpanel_wait:  cpx nmicount                    ;Check if vblank occurs before
                 bne setpanel_toolong            ;spritehit (something went
-                bit $2002                       ;wrong)
+                bit $2                       ;wrong)
                 bvc setpanel_wait
                 lda #$00                        ;Blank screen
-                sta $2001
+                sta $1
                 lda #$1e                        ;Turn off onescreen mirror
                 jsr write8000
                 lda #$00
                 ldy #$04                        ;Set scrolling & display pos.
-                sta $2005
-                sta $2005
-                sty $2006
-                sta $2006
+                sta $5
+                sta $5
+                sty $6
+                sta $6
                 lda #$0a
-                sta $2001                       ;Just BG on, no sprites, no clip
+                sta $1                       ;Just BG on, no sprites, no clip
 setpanel_toolong:
                 rts
 
 setsprites:     lda #>SPRBUF                    ;Start sprite DMA
-                sta $4014
+                sta $4
                 rts
 
 clearsprites:   ldx #$00
@@ -1047,15 +1048,15 @@ clrspr_loop:    lda #$f0
 setnametable:   lda #$1e                        ;Turn off onescreen mirror
                 jsr write8000
                 lda #PPU0VALUE                  ;Normal increment
-                sta $2000
-                lda #$20                        ;Address $2000
-                sta $2006
+                sta $0
+                lda #$20                        ;Address $0
+                sta $6
                 lda #$00
-                sta $2006
+                sta $6
                 ldx #$00
                 ldy #$00
 setntbl_loop1:  lda #$00                        ;Wipe both nametables
-                sta $2007
+                sta $7
                 inx
                 bne setntbl_loop1
                 iny
@@ -1063,42 +1064,42 @@ setntbl_loop1:  lda #$00                        ;Wipe both nametables
                 bcc setntbl_loop1
                 ldx #$00
                 lda #$24                        ;Address $2400
-                sta $2006
+                sta $6
                 lda #$00
-                sta $2006
+                sta $6
                 lda ntscflag
                 bne setntbl_loop3
 
 setntbl_loop2:  lda paneltext,x                 ;Now write text to the
                 and #$3f                        ;second nametable
-                sta $2007
+                sta $7
                 inx
                 cpx #6*32
                 bcc setntbl_loop2
                 rts
 setntbl_loop3:  lda paneltext2,x                ;Now write text to the
                 and #$3f                        ;second nametable
-                sta $2007
+                sta $7
                 inx
                 cpx #6*32
                 bcc setntbl_loop3
                 rts
 
 loadpalette:    lda #$3f
-                sta $2006
+                sta $6
                 lda #$00
-                sta $2006
+                sta $6
                 ldx #$00
 loadpalette2:   lda palette,x
-                sta $2007
+                sta $7
                 inx
                 cpx #$20
                 bne loadpalette2
                 rts
 
 loadchars:      lda #$00
-                sta $2006
-                sta $2006
+                sta $6
+                sta $6
                 lda #<chardata
                 sta srclo
                 lda #>chardata
@@ -1106,7 +1107,7 @@ loadchars:      lda #$00
                 ldy #$00
                 ldx #$10
 loadchars2:     lda (srclo),y
-                sta $2007
+                sta $7
                 iny
                 bne loadchars2
                 inc srchi
@@ -1138,9 +1139,9 @@ dntsc_nopal:    rts
 
 
 setupppu:       lda #PPU0VALUE          ;Blank screen, leave NMI's on
-                sta $2000
+                sta $0
                 lda #$00
-                sta $2001
+                sta $1
                 rts
 
 setupmapper:    lda #$1e
@@ -1163,8 +1164,8 @@ waitvblank:     lda nmicount
 waitvblank2:    cmp nmicount
                 beq waitvblank2
                 lda #$00                        ;Blank screen, with clipping
-                sta $2001
-                lda $2002
+                sta $1
+                lda $2
                 lda #$1e                        ;Turn off onescreen mirror
                 jmp write8000
 
@@ -1218,7 +1219,8 @@ mapdata         = map+4
 
 chardata:       incbin scrtest.chr
 
-                org $fffa
+.segment "CODE"
+.org $fffa
 
                 dc.w nmi
                 dc.w start

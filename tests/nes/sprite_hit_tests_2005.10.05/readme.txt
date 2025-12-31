@@ -74,8 +74,8 @@ Tests sprite 0 hit for single pixel sprite and background.
 Tests sprite 0 hit with regard to clipping of left 8 pixels of screen.
 
 2) Should miss when entirely in left-edge clipping
-3) Left-edge clipping occurs when $2001 is not $1e
-4) Left-edge clipping is off when $2001 = $1e
+3) Left-edge clipping occurs when $1 is not $1e
+4) Left-edge clipping is off when $1 = $1e
 5) Left-edge clipping blocks all hits only when X = 0
 6) Should miss; sprite pixel covered by left-edge clip
 7) Should hit; sprite pixel outside left-edge clip

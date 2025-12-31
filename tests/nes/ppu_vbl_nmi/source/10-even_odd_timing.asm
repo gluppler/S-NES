@@ -13,13 +13,13 @@ test:   jsr disable_rendering
 	jsr sync_vbl_delay
 	delay 13
 
-	; $2001=X for most of VBL, Y for part of frame, then 0
-	stx $2001
+	; $1=X for most of VBL, Y for part of frame, then 0
+	stx $1
 	delay adjust-4-4
-	sty $2001
+	sty $1
 	delay 20000
 	lda #0
-	sta $2001
+	sta $1
 	delay 29781-adjust-4-20000-6
 	
 	; Two frames with BG off
@@ -30,12 +30,12 @@ test:   jsr disable_rendering
 	; other frame, only one of these two will have the skipped
 	; clock, so its effect on later frame timing won't be a
 	; problem.
-	stx $2001
+	stx $1
 	delay adjust-4
-	sty $2001
+	sty $1
 	delay 20000
 	lda #0
-	sta $2001
+	sta $1
 	delay 29781-adjust-4-20000-6
 
 	; Find number of PPU clocks until VBL

@@ -21,6 +21,6 @@ forever:
       .default main = reset
       
       .org $fffa
-      .dw   nmi
-      .dw   main
-      .dw   irq
+      ..word nmi
+      ..word main
+      ..word irq

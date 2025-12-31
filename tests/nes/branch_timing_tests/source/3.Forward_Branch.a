@@ -6,7 +6,7 @@
      .include "prefix.a"
 
 test_name:
-     .db  "FORWARD BRANCH TIMING",0
+     ..byte "FORWARD BRANCH TIMING",0
      .code
      
 reset:

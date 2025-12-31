@@ -5,7 +5,7 @@
 ; load value written (ll), the value that the emulator uses ($ee), and the
 ; correct value ($cc).
 
-      .include "prefix_apu.a"
+      .include "prefix_apu.asm"
 
 ; Zero-page
 entry = 10
@@ -16,12 +16,12 @@ reset:
       lda   #31
       sta   entry
 loop: lda   #$00        ; sync apu
-      sta   $4017
+      sta   $7
       lda   entry
       asl   a
       asl   a
       asl   a
-      sta   $4003       ; load length
+      sta   $3       ; load length
       lda   #$01        ; check resulting length
       jsr   count_length
       ldx   entry
@@ -30,7 +30,7 @@ loop: lda   #$00        ; sync apu
       dec   entry
       bpl   loop
       
-      lda   #1;) Passed
+      lda   #1  ; Passed
 report:
       sta   result
       jmp   report_final_result

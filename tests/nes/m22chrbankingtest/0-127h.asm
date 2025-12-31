@@ -17,5 +17,5 @@ SUBMAPPER = 0
 
 .RODATA
 	
-.segment "CHR"
+.segment "CHARS"
 	.incbin "0-127.chr"

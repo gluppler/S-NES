@@ -1,0 +1,163 @@
+Modules list:
+-------------
+main.o:
+    CODE              Offs=000000  Size=000004  Align=00001  Fill=0000
+    RODATA            Offs=000000  Size=000020  Align=00001  Fill=0000
+    ZEROPAGE          Offs=000000  Size=000006  Align=00001  Fill=0000
+    BANK04            Offs=000000  Size=000055  Align=00001  Fill=0000
+init.o:
+    CODE              Offs=000004  Size=000040  Align=00001  Fill=0000
+bg.o:
+    CODE              Offs=000044  Size=00006D  Align=00001  Fill=0000
+player.o:
+    CODE              Offs=0000B1  Size=0000C6  Align=00001  Fill=0000
+    ZEROPAGE          Offs=000006  Size=000007  Align=00001  Fill=0000
+    BANK02            Offs=000000  Size=00007A  Align=00001  Fill=0000
+pads.o:
+    CODE              Offs=000177  Size=00004C  Align=00001  Fill=0000
+ppuclear.o:
+    CODE              Offs=0001C3  Size=000045  Align=00001  Fill=0000
+mmc1.o:
+    CODE              Offs=000208  Size=00004B  Align=00001  Fill=0000
+    ZEROPAGE          Offs=00000D  Size=000003  Align=00001  Fill=0000
+    INESHDR           Offs=000000  Size=000008  Align=00001  Fill=0000
+    STUB00            Offs=000000  Size=000010  Align=00001  Fill=0000
+    STUB01            Offs=000000  Size=000010  Align=00001  Fill=0000
+    STUB02            Offs=000000  Size=000010  Align=00001  Fill=0000
+    STUB03            Offs=000000  Size=000010  Align=00001  Fill=0000
+    STUB04            Offs=000000  Size=000010  Align=00001  Fill=0000
+    STUB05            Offs=000000  Size=000010  Align=00001  Fill=0000
+    STUB06            Offs=000000  Size=000010  Align=00001  Fill=0000
+    STUB07            Offs=000000  Size=000010  Align=00001  Fill=0000
+    STUB08            Offs=000000  Size=000010  Align=00001  Fill=0000
+    STUB09            Offs=000000  Size=000010  Align=00001  Fill=0000
+    STUB10            Offs=000000  Size=000010  Align=00001  Fill=0000
+    STUB11            Offs=000000  Size=000010  Align=00001  Fill=0000
+    STUB12            Offs=000000  Size=000010  Align=00001  Fill=0000
+    STUB13            Offs=000000  Size=000010  Align=00001  Fill=0000
+    STUB14            Offs=000000  Size=000010  Align=00001  Fill=0000
+    STUB15            Offs=000000  Size=000010  Align=00001  Fill=0000
+chrram.o:
+    BANK13            Offs=000000  Size=002022  Align=00001  Fill=0000
+bankcalltable.o:
+    RODATA            Offs=000020  Size=000006  Align=00001  Fill=0000
+
+
+Segment list:
+-------------
+Name                   Start     End    Size  Align
+----------------------------------------------------
+INESHDR               000000  000007  000008  00001
+ZEROPAGE              000010  00001F  000010  00001
+BANK02                008000  008079  00007A  00001
+BANK04                008000  008054  000055  00001
+BANK13                008000  00A021  002022  00001
+STUB00                00BFF0  00BFFF  000010  00001
+STUB01                00BFF0  00BFFF  000010  00001
+STUB02                00BFF0  00BFFF  000010  00001
+STUB03                00BFF0  00BFFF  000010  00001
+STUB04                00BFF0  00BFFF  000010  00001
+STUB05                00BFF0  00BFFF  000010  00001
+STUB06                00BFF0  00BFFF  000010  00001
+STUB07                00BFF0  00BFFF  000010  00001
+STUB08                00BFF0  00BFFF  000010  00001
+STUB09                00BFF0  00BFFF  000010  00001
+STUB10                00BFF0  00BFFF  000010  00001
+STUB11                00BFF0  00BFFF  000010  00001
+STUB12                00BFF0  00BFFF  000010  00001
+STUB13                00BFF0  00BFFF  000010  00001
+STUB14                00BFF0  00BFFF  000010  00001
+CODE                  00C000  00C252  000253  00001
+RODATA                00C300  00C325  000026  00001
+STUB15                00FFF0  00FFFF  000010  00001
+
+
+Exports list by name:
+---------------------
+OAM                       000200 REA    bankcall                  00C234 RLA    
+bankcall_table            00C320 RLA    bankrts                   00C24A RLA    
+cur_keys                  000012 RLZ    draw_bg                   00C044 RLA    
+draw_player_sprite        000000 REZ    draw_player_sprite_far    008000 RLA    
+init_player               00C0B1 RLA    irq_handler               00C003 RLA    
+load_chr_ram              000003 REZ    load_chr_ram_far          00A000 RLA    
+main                      008000 RLA    move_player               00C0C4 RLA    
+new_keys                  000014 RLZ    nmi_handler               00C000 RLA    
+oam_used                  000011 RLZ    ppu_clear_nt              00C1C3 RLA    
+ppu_clear_oam             00C1E5 RLA    ppu_screen_on             00C1F5 RLA    
+read_pads                 00C177 RLA    reset_handler             00C004 RLA    
+setMMC1BankMode           00C21E RLA    setPRGBank                00C208 RLA    
+
+
+
+Exports list by value:
+----------------------
+draw_player_sprite        000000 REZ    load_chr_ram              000003 REZ    
+oam_used                  000011 RLZ    cur_keys                  000012 RLZ    
+new_keys                  000014 RLZ    OAM                       000200 REA    
+draw_player_sprite_far    008000 RLA    main                      008000 RLA    
+load_chr_ram_far          00A000 RLA    nmi_handler               00C000 RLA    
+irq_handler               00C003 RLA    reset_handler             00C004 RLA    
+draw_bg                   00C044 RLA    init_player               00C0B1 RLA    
+move_player               00C0C4 RLA    read_pads                 00C177 RLA    
+ppu_clear_nt              00C1C3 RLA    ppu_clear_oam             00C1E5 RLA    
+ppu_screen_on             00C1F5 RLA    setPRGBank                00C208 RLA    
+setMMC1BankMode           00C21E RLA    bankcall                  00C234 RLA    
+bankrts                   00C24A RLA    bankcall_table            00C320 RLA    
+
+
+
+Imports list:
+-------------
+OAM (main.o):
+    ppuclear.o                src/ppuclear.asm:12
+    player.o                  src/global.inc:8
+bankcall (mmc1.o):
+    main.o                    src/mmc1.inc:4
+bankcall_table (bankcalltable.o):
+    mmc1.o                    src/mmc1.asm:12
+bankrts (mmc1.o):
+    chrram.o                  src/mmc1.inc:4
+    player.o                  src/mmc1.inc:4
+cur_keys (main.o):
+    pads.o                    src/pads.asm:32
+    player.o                  src/global.inc:10
+draw_bg (bg.o):
+    main.o                    src/global.inc:13
+draw_player_sprite (bankcalltable.o):
+    main.o                    src/global.inc:25
+draw_player_sprite_far (player.o):
+    bankcalltable.o           src/bankcalltable.asm:18
+init_player (player.o):
+    main.o                    src/global.inc:16
+irq_handler (main.o):
+    mmc1.o                    src/mmc1.asm:12
+load_chr_ram (bankcalltable.o):
+    main.o                    src/global.inc:25
+load_chr_ram_far (chrram.o):
+    bankcalltable.o           src/bankcalltable.asm:19
+main (main.o):
+    init.o                    src/global.inc:9
+move_player (player.o):
+    main.o                    src/global.inc:16
+new_keys (main.o):
+    pads.o                    src/pads.asm:32
+nmi_handler (main.o):
+    mmc1.o                    src/mmc1.asm:12
+oam_used (main.o):
+    player.o                  src/global.inc:10
+ppu_clear_nt (ppuclear.o):
+    bg.o                      src/global.inc:22
+ppu_clear_oam (ppuclear.o):
+    init.o                    src/global.inc:22
+    main.o                    src/global.inc:22
+ppu_screen_on (ppuclear.o):
+    main.o                    src/global.inc:22
+read_pads (pads.o):
+    main.o                    src/global.inc:19
+reset_handler (init.o):
+    mmc1.o                    src/mmc1.asm:12
+setMMC1BankMode (mmc1.o):
+    init.o                    src/mmc1.inc:4
+setPRGBank (mmc1.o):
+    init.o                    src/mmc1.inc:4
+

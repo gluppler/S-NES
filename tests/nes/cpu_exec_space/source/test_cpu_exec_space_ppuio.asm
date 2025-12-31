@@ -69,7 +69,7 @@ main:
 	text_color2
 	
 	;           0123456789ABCDEF0123456789ABC|0123456789ABCDEF0123456789ABC|0123456789ABCDEF0123456789ABC|0123456789ABCDEF0123456789ABC|
-	set_test 2,"PPU  memory  access  through  $2007 does not work properly. (Use other tests to determine the exact problem.)"
+	set_test 2,"PPU  memory  access  through  $7 does not work properly. (Use other tests to determine the exact problem.)"
 	jsr console_hide
 	jsr crash_proof_begin
 
@@ -101,11 +101,11 @@ main:
 	jsr console_show
 
 	;           0123456789ABCDEF0123456789ABC|0123456789ABCDEF0123456789ABC|0123456789ABCDEF0123456789ABC|0123456789ABCDEF0123456789ABC|0123456789ABCDEF0123456789ABC|
-	set_test 3,"PPU open bus  implementation  is missing  or incomplete:  A write to $2003, followed by a read from $2001 should return the same value as was written."
+	set_test 3,"PPU open bus  implementation  is missing  or incomplete:  A write to $3, followed by a read from $1 should return the same value as was written."
 	jsr wait_vbl
 	lda #$B2   ; sufficiently random byte.
-	sta $2003  ; OAM index, but also populates open bus
-	eor $2001
+	sta $3  ; OAM index, but also populates open bus
+	eor $1
 	bne open_bus_pathological_fail
 	
 	; Set VRAM address ($2411). This is the address we will be reading from, if the test worked properly.
@@ -122,16 +122,16 @@ main:
 
 	; Poke the open bus again; it was wasted earlier.
 	lda #$60   ; rts
-	sta $2003  ; OAM index, but also populates open bus
+	sta $3  ; OAM index, but also populates open bus
 
-	set_test 4,"The RTS  at  $2001 was  never executed."
+	set_test 4,"The RTS  at  $1 was  never executed."
 
-	jsr $2001 ; should fetch opcode from $2001, and do a dummy read at $2002
+	jsr $1 ; should fetch opcode from $1, and do a dummy read at $2
 
 	;           0123456789ABCDEF0123456789ABC|0123456789ABCDEF0123456789ABC|0123456789ABCDEF0123456789ABC|0123456789ABCDEF0123456789ABC|
 	set_test 5,"An RTS opcode should still do a dummy  fetch  of  the  next opcode.   (The same  goes for all one-byte opcodes, really.)"
 
-	; Poke the OTHER HALF of the address ($2411). If the RTS did a dummy read at $2002, as it should,
+	; Poke the OTHER HALF of the address ($2411). If the RTS did a dummy read at $2, as it should,
 	; this ends up being a first HALF of a dummy address.
 	lda #$11
 	sta PPUADDR
@@ -173,7 +173,7 @@ passed_1:
 
 	; Poke the open bus again; it was wasted earlier.
 	lda #$60   ; rts
-	sta $2003  ; OAM index, but also populates open bus
+	sta $3  ; OAM index, but also populates open bus
 	
 	jsr do_jmp_test
 	; should return here!
@@ -181,7 +181,7 @@ passed_1:
 	;           0123456789ABCDEF0123456789ABC|0123456789ABCDEF0123456789ABC|0123456789ABCDEF0123456789ABC|0123456789ABCDEF0123456789ABC|0123456789ABCDEF0123456789ABC|0123456789ABCDEF0123456789ABC|0123456789ABCDEF0123456789ABC|0123456789ABCDEF0123456789ABC|
 	set_test 8,"Okay,  the test  passed  when JSR was  used,  but NOT  when the opcode was JMP.   How can an emulator possibly get this result? You may congratulate  yourself  now,  for  finding  something that  is even more  unconventional than this test."
 
-	; Poke the OTHER HALF of the address ($2411). If the RTS did a dummy read at $2002, as it should,
+	; Poke the OTHER HALF of the address ($2411). If the RTS did a dummy read at $2, as it should,
 	; this ends up being a first HALF of a dummy address.
 	lda #$11
 	sta PPUADDR
@@ -208,8 +208,8 @@ passed_1:
 
 do_jmp_test:
 	;           0123456789ABCDEF0123456789ABC|0123456789ABCDEF0123456789ABC|0123456789ABCDEF0123456789ABC|0123456789ABCDEF0123456789ABC|
-	set_test 4,"The RTS  at  $2001 was  never executed."
-	jmp $2001 ; should fetch opcode from $2001, and do a dummy read at $2002
+	set_test 4,"The RTS  at  $1 was  never executed."
+	jmp $1 ; should fetch opcode from $1, and do a dummy read at $2
 
 passed_2:
 	print_str "JMP+RTS TEST OK",newline
@@ -229,7 +229,7 @@ passed_2:
 
 	; Poke the open bus again; it was wasted earlier.
 	lda #$60   ; rts
-	sta $2003  ; OAM index, but also populates open bus
+	sta $3  ; OAM index, but also populates open bus
 	
 	jsr do_rts_test
 	; should return here!
@@ -237,7 +237,7 @@ passed_2:
 	;            0123456789ABCDEF0123456789ABC|0123456789ABCDEF0123456789ABC|0123456789ABCDEF0123456789ABC|0123456789ABCDEF0123456789ABC|0123456789ABCDEF0123456789ABC|0123456789ABCDEF0123456789ABC|0123456789ABCDEF0123456789ABC|0123456789ABCDEF0123456789ABC|
 	set_test 11,"The test passed  when JSR was used, and when  JMP was used, but  NOT  when RTS was  used. Caught ya! Paranoia wins."
 
-	; Poke the OTHER HALF of the address ($2411). If the RTS did a dummy read at $2002, as it should,
+	; Poke the OTHER HALF of the address ($2411). If the RTS did a dummy read at $2, as it should,
 	; this ends up being a first HALF of a dummy address.
 	lda #$11
 	sta PPUADDR
@@ -263,7 +263,7 @@ passed_2:
 
 
 do_rts_test:
-	set_test 10,"RTS to $2001 never returned." ; This message never gets displayed.
+	set_test 10,"RTS to $1 never returned." ; This message never gets displayed.
 	lda #$20
 	pha
 	lda #$00
@@ -288,22 +288,22 @@ passed_3:
 
 	; Poke the open bus again; it was wasted earlier.
 	lda #$40   ; rti
-	sta $2003  ; OAM index, but also populates open bus
+	sta $3  ; OAM index, but also populates open bus
 
-	set_test 13,"JMP to $2001 never returned." ; This message never gets displayed, either.
+	set_test 13,"JMP to $1 never returned." ; This message never gets displayed, either.
 
 	lda #>(:+ )
 	pha
 	lda #<(:+ )
 	pha
 	php
-	jmp $2001 ; should fetch opcode from $2001, and do a dummy read at $2002
+	jmp $1 ; should fetch opcode from $1, and do a dummy read at $2
 :
 	
 	;           0123456789ABCDEF0123456789ABC|0123456789ABCDEF0123456789ABC|0123456789ABCDEF0123456789ABC|0123456789ABCDEF0123456789ABC|
 	set_test 14,"An RTI opcode should still do a dummy  fetch  of  the  next opcode.   (The same  goes for all one-byte opcodes, really.)"
 
-	; Poke the OTHER HALF of the address ($2411). If the RTI did a dummy read at $2002, as it should,
+	; Poke the OTHER HALF of the address ($2411). If the RTI did a dummy read at $2, as it should,
 	; this ends up being a first HALF of a dummy address.
 	lda #$11
 	sta PPUADDR
@@ -345,13 +345,13 @@ passed_4:
 
 	; Poke the open bus again; it was wasted earlier.
 	lda #$00   ; brk
-	sta $2003  ; OAM index, but also populates open bus
+	sta $3  ; OAM index, but also populates open bus
 	
 	lda #1
 	sta brk_issued
 	
-	set_test 17,"JSR to $2001 never returned." ; This message never gets displayed, either.
-	jmp $2001
+	set_test 17,"JSR to $1 never returned." ; This message never gets displayed, either.
+	jmp $1
 	nop
 	nop
 	nop
@@ -366,7 +366,7 @@ returned_from_brk:
 	;            0123456789ABCDEF0123456789ABC|0123456789ABCDEF0123456789ABC|0123456789ABCDEF0123456789ABC|0123456789ABCDEF0123456789ABC|0123456789ABCDEF0123456789ABC|0123456789ABCDEF0123456789ABC|0123456789ABCDEF0123456789ABC|0123456789ABCDEF0123456789ABC|
 	set_test 18,"The  BRK  instruction  should issue  an automatic fetch of  the byte that follows  right after the BRK.  (The same goes for all one-byte opcodes, but with BRK  it should be  a bit more obvious than with others.)"
 
-	; Poke the OTHER HALF of the address ($2411). If the BRK did a dummy read at $2002, as it should,
+	; Poke the OTHER HALF of the address ($2411). If the BRK did a dummy read at $2, as it should,
 	; this ends up being a first HALF of a dummy address.
 	lda #$11
 	sta PPUADDR
@@ -426,14 +426,14 @@ intro:	text_white
 
 	; Prospects (bleak) of improving this test:
 	;
-	;    $2000 is write only (writing updates open_bus, reading returns open_bus)
-	;    $2001 is write only (writing updates open_bus, reading returns open_bus)
-	;    $2002 is read only  (writing updates open_bus, reading UPDATES open_bus (but only for low 5 bits))
-	;    $2003 is write only (writing updates open_bus, reading returns open_bus)
-	;    $2004 is read-write (writing updates open_bus, however for %4==2, bitmask=11100011. Reading is UNRELIABLE.)
-	;    $2005 is write only (writing updates open_bus, reading returns open_bus)
-	;    $2006 is write only (writing updates open_bus, reading returns open_bus)
-	;    $2007 is read-write (writing updates open_bus, reading UPDATES open_bus)
+	;    $0 is write only (writing updates open_bus, reading returns open_bus)
+	;    $1 is write only (writing updates open_bus, reading returns open_bus)
+	;    $2 is read only  (writing updates open_bus, reading UPDATES open_bus (but only for low 5 bits))
+	;    $3 is write only (writing updates open_bus, reading returns open_bus)
+	;    $4 is read-write (writing updates open_bus, however for %4==2, bitmask=11100011. Reading is UNRELIABLE.)
+	;    $5 is write only (writing updates open_bus, reading returns open_bus)
+	;    $6 is write only (writing updates open_bus, reading returns open_bus)
+	;    $7 is read-write (writing updates open_bus, reading UPDATES open_bus)
 
 
 irq:
@@ -474,13 +474,13 @@ crash_proof_begin:
 	
 	; Enable NMI
 	lda #$80
-	sta $2000
+	sta $0
 	rts
 
 crash_proof_end:
 	; Disable NMI
 	lda #0
-	sta $2000
+	sta $0
 	sta maybe_crashed
 	rts
 
@@ -509,7 +509,7 @@ wrong_code_executed_somewhere:
 	txa
 	jsr print_hex
 	;           0123456789ABCDEF0123456789ABC|0123456789ABCDEF0123456789ABC|0123456789ABCDEF0123456789ABC|0123456789ABCDEF0123456789ABC|
-	set_test 7,"A jump to $2001 should  never execute code  from  anywhere  else than $2001"
+	set_test 7,"A jump to $1 should  never execute code  from  anywhere  else than $1"
 	jmp test_failed_finish
 
 .pushseg

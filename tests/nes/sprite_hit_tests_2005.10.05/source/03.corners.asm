@@ -4,7 +4,7 @@
       .include "prefix_sprite_hit.a"
 
 test_name:
-      .db   "SPRITE HIT CORNERS",0
+      ..byte "SPRITE HIT CORNERS",0
       .code
 
 set_params:
@@ -16,7 +16,7 @@ set_params:
       ldx   #$f0
       jsr   set_vaddr
       pla
-      sta   $2007
+      sta   $7
       rts
       .code
 

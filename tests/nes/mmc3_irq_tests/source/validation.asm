@@ -2,7 +2,7 @@
 result = $f8
 
 default_test_name:
-      .db   0
+      ..byte 0
       .default test_name = default_test_name
       
 ; Report error if branch with given condition would be taken
@@ -40,7 +40,7 @@ report_final_result:
 report_final_result_:
       sei               ; disable interrupts
       lda   #0
-      sta   $2000
+      sta   $0
       jsr   init_runtime
       
       lda   test_name
@@ -114,7 +114,7 @@ test_passed:
       .default irq = default_irq
       .code
 default_irq:
-      bit   $4015
+      bit   $5
 default_nmi:
       rti
       

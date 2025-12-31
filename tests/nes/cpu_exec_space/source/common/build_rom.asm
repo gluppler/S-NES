@@ -32,7 +32,7 @@ CUSTOM_MAPPER=n ; Specify mapper number
 
 .ifndef CUSTOM_VECTORS
 	.segment "VECTORS"
-		.word -1&$FFFF,-1&$FFFF,-1&$FFFF, nmi, reset, irq
+		.word $FFFF&$FFFF,-1&$FFFF,-1&$FFFF, nmi, reset, irq
 .endif
 
 ;;;; CHR-RAM/ROM
@@ -67,7 +67,7 @@ CUSTOM_MAPPER=n ; Specify mapper number
 
 ; Move code to $C000
 ;.segment "DMC"
-;	.res $4000
+;	.res $0
 
 .include "shell.asm"
 

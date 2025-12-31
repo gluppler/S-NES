@@ -4,29 +4,29 @@
 
    PROCESSOR   6502
 
-SPRITEMAP  EQU   #$0600    ;Region in Memory to copy sprites.
-SPRITEHARD EQU   #$C000    ;Format: Y-pos,Tile#,Attr,X-Pos
-SPRITEDIR  EQU   #$C100    ;Format: DY,D2Y,D2X,DX
+SPRITEMAP = #$0600    ;Region in Memory to copy sprites.
+SPRITEHARD = #$C000    ;Format: Y-pos,Tile#,Attr,X-Pos
+SPRITEDIR = #$C100    ;Format: DY,D2Y,D2X,DX
 
-NMIPASS    EQU   #$0001    ;NMI has passed flag.
-NMIODD     EQU   #$0000    ;Odd NMIs
+NMIPASS = #$0001    ;NMI has passed flag.
+NMIODD = #$0000    ;Odd NMIs
 
-XSCROLL    EQU   #$0002    ;Scroll values.
-YSCROLL    EQU   #$0003
-TEXTLO     EQU   #$04      ;Zero-Page pointers for the text.
-TEXTHI     EQU   #$05
-SCRLO      EQU   #$0006    ;Place to put the text.
-SCRHI      EQU   #$0007
-NMICOUNT   EQU   #$0008
-SPRITEHIT  EQU   #$0009
-FREEZEROL  EQU   #$0A
-FREEZEROH  EQU   #$0B      ;In other words, free, always empty zero-page space.
-XSCROLLSPEED EQU #$000C    ;Duh.
-YSCROLLSPEED EQU #$000D
-CHECKFORSPR EQU  #$000E    ;Flag to check for sprites
-RAINBOWPOS EQU   #$000F    ;Position in rainbow-cycle.
-TEXTHARDLO EQU   #$10
-TEXTHARDHI EQU   #$11      ;Hard Copy of text
+XSCROLL = #$0002    ;Scroll values.
+YSCROLL = #$0003
+TEXTLO = #$04      ;Zero-Page pointers for the text.
+TEXTHI = #$05
+SCRLO = #$0006    ;Place to put the text.
+SCRHI = #$0007
+NMICOUNT = #$0008
+SPRITEHIT = #$0009
+FREEZEROL = #$0A
+FREEZEROH = #$0B      ;In other words, free, always empty zero-page space.
+XSCROLLSPEED = #$000C    ;Duh.
+YSCROLLSPEED = #$000D
+CHECKFORSPR = #$000E    ;Flag to check for sprites
+RAINBOWPOS = #$000F    ;Position in rainbow-cycle.
+TEXTHARDLO = #$10
+TEXTHARDHI = #$11      ;Hard Copy of text
 
 ;-----------------Music-Playing Code----------------------------
 
@@ -41,16 +41,17 @@ TEXTHARDHI EQU   #$11      ;Hard Copy of text
 ;START_SONG EQU #$00           ;Although I played around with the order.
 ;MAX_SONG EQU #$0C
 ;---------------------------
-   ORG   $C200    ;16Kb PRG-ROM, 8Kb CHR-ROM
+.segment "CODE"
+.org $C200
 
 Reset_Routine  SUBROUTINE
    cld         ;Clear decimal flag
    sei         ;Disable interrupts
-.WaitV   lda $2002
+.WaitV   lda $2
    bpl .WaitV     ;Wait for vertical blanking interval
    ldx #$00
-   stx $2000
-   stx $2001      ;Screen display off, amongst other things
+   stx $0
+   stx $1      ;Screen display off, amongst other things
    dex
    txs         ;Top of stack at $1FF
 
@@ -71,13 +72,13 @@ Reset_Routine  SUBROUTINE
 
 
    lda   #$20
-   sta   $2006
+   sta   $6
    lda   #$00
-   sta   $2006
+   sta   $6
 
    ldx   #$00
    ldy   #$10
-.ClearPPU sta $2007        ;Clear the PPU space.  REALLY IMPORTANT for a real NES!
+.ClearPPU sta $7        ;Clear the PPU space.  REALLY IMPORTANT for a real NES!
    dex
    bne   .ClearPPU
    dey
@@ -92,9 +93,9 @@ Reset_Routine  SUBROUTINE
    sta   FREEZEROH
 
    lda   #$20        ;Load up entire name & attribute table for screen 0.
-   sta   $2006
+   sta   $6
    lda   #$00
-   sta   $2006
+   sta   $6
    ldx   #$00
    ldy   #$04
 
@@ -104,7 +105,7 @@ Reset_Routine  SUBROUTINE
 
    ldx   #$00
    lda   (FREEZEROL),X     ;Load up NES image
-   sta   $2007
+   sta   $7
 
    pla
    tax
@@ -124,16 +125,16 @@ Reset_Routine  SUBROUTINE
 ;---------- Set up other bits ----------------
 
    lda   #$26                 ;Bars on screen 1.
-   sta   $2006
+   sta   $6
    lda   #$C0
-   sta   $2006
+   sta   $6
 
    jsr   DrawBits
 
    lda   #$27
-   sta   $2006
+   sta   $6
    lda   #$60
-   sta   $2006
+   sta   $6
 
    jsr   DrawBits
 
@@ -142,14 +143,14 @@ Reset_Routine  SUBROUTINE
 ;********* Initialize Palette to colour table ********
 
    ldx   #$3F
-   stx   $2006
+   stx   $6
    ldx   #$00
-   stx   $2006
+   stx   $6
 
    ldx   #$00
    ldy   #$20     ;Save BG & Sprite palettes.
 .InitPal lda .Palette,X
-   sta $2007
+   sta $7
    inx
    dey
    bne   .InitPal
@@ -204,14 +205,14 @@ Reset_Routine  SUBROUTINE
 ;-------------------------------
 
    lda   #$00
-   sta   $2006
-   sta   $2006
+   sta   $6
+   sta   $6
 
 ;Enable vblank interrupts, etc.
    lda   #%10001000
-   sta   $2000
+   sta   $0
    lda   #%00011000  ;Screen on, sprites on, show leftmost 8 pixels, colour
-   sta   $2001
+   sta   $1
 ;   cli            ;Enable interrupts(?)  NO!!!!!!!!!!!!!!
 
 .Loop
@@ -272,18 +273,18 @@ Reset_Routine  SUBROUTINE
    bne   .SprMov
 
 .CheckSpr1
-   lda   $2002
+   lda   $2
    and   #$40
    bne   .CheckSpr1
 
 .CheckSpr2
-   lda   $2002
+   lda   $2
    and   #$40
    beq   .CheckSpr2
 
    lda   XSCROLL
-   sta   $2005
-   lda   $2002
+   sta   $5
+   lda   $2
 
 ;------- MUSIC CODE ---------------
 ;   jsr r_btn
@@ -311,11 +312,11 @@ Reset_Routine  SUBROUTINE
          dc.b #$0D,#$00,#$10,#$30,#$0D,#$16,#$26,#$16,#$0D,#$07,#$16,#$28,#$0D,#$00,#$00,#$00
 
 .NESDeck
-   INCLUDE starsnam.asm
+   .include starsnam.asm
 
 
 .text
-   INCLUDE scrolltext.bin
+   .include scrolltext.bin
    dc.b #$00
    dc.b "Hello, all you hackers!"
 
@@ -342,12 +343,12 @@ IncScr SUBROUTINE
 DrawBits SUBROUTINE
    ldy   #$20
    lda   #$04
-.Bits1A sta  $2007
+.Bits1A sta  $7
    dey
    bne   .Bits1A
    ldy   #$20
    lda   #$05
-.Bits1B sta $2007
+.Bits1B sta $7
    dey
    bne   .Bits1B
    rts
@@ -356,11 +357,11 @@ DrawBits SUBROUTINE
 ;r_btn SUBROUTINE
 ;           ldy #$08      ;read keypad
 ;           ldx #$01
-;           stx $4016
+;           stx $6
 ;           dex
-;           stx $4016
+;           stx $6
 ;
-;.r_bit     lda $4016
+;.r_bit     lda $6
 ;           ROR
 ;           txa
 ;           ROL
@@ -390,7 +391,7 @@ IncRainbow SUBROUTINE
 SaveRainbow SUBROUTINE
    ldx   RAINBOWPOS
    lda   .Rainbow,X
-   sta   $2007
+   sta   $7
    jsr   IncRainbow
    rts
 
@@ -415,8 +416,8 @@ NMI_Routine SUBROUTINE
    sta   YSCROLL
 
    lda   #$00
-   sta   $2005
-   sta   $2005
+   sta   $5
+   sta   $5
 
 
    inc   NMICOUNT
@@ -429,23 +430,23 @@ NMI_Routine SUBROUTINE
    sta   NMICOUNT
 
    lda   SCRHI
-   sta   $2006
+   sta   $6
    lda   SCRLO
-   sta   $2006
+   sta   $6
 
    ldx   #$00
    lda   (TEXTLO),X
 
-   sta   $2007
+   sta   $7
 
    lda   SCRHI
    eor   #$04
-   sta   $2006
+   sta   $6
    lda   SCRLO
-   sta   $2006
+   sta   $6
 
    lda   (TEXTLO),X
-   sta   $2007
+   sta   $7
    cmp   #$00
    bne   .NoTextWrap
 
@@ -460,15 +461,15 @@ NMI_Routine SUBROUTINE
 ;---------------------------------------------
 ;   increase rainbow colours here.
    lda   #$3F
-   sta   $2006
+   sta   $6
    lda   #$09
-   sta   $2006
+   sta   $6
 
    jsr   SaveRainbow
    jsr   SaveRainbow
    jsr   SaveRainbow
    lda   #$0D
-   sta   $2007
+   sta   $7
    jsr   SaveRainbow
    jsr   SaveRainbow
    jsr   SaveRainbow
@@ -489,18 +490,18 @@ NMI_Routine SUBROUTINE
    sta   NMIPASS
 
    lda   #$00
-   sta   $2006
-   sta   $2006
+   sta   $6
+   sta   $6
 
    lda   #$00
-   sta   $2005
-   sta   $2005
+   sta   $5
+   sta   $5
 
    lda   #$01
    sta   CHECKFORSPR
 
    lda   #>SPRITEMAP        ;Point to SPRITEMAP
-   sta   $4014       ;Xfer sprites over
+   sta   $4       ;Xfer sprites over
 
 ;----- MUSIC CODE -----------------------------
 ;   lda int_en
@@ -524,7 +525,8 @@ IRQ_Routine       ;Dummy label
 
 ;That's all the code. Now we just need to set the vector table approriately.
 
-   ORG   $FFFA,0
+.segment "CODE"
+.org $FFFA
    dc.w  NMI_Routine
    dc.w  Reset_Routine
    dc.w  IRQ_Routine    ;Not used, just points to RTI

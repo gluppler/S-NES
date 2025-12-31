@@ -8,7 +8,7 @@ main:   test_main_chans test_chan
 .macro test len,clk,mode,time
 	jsr sync_apu
 	delay 3
-	setb {$4003,x},len
+	setb {$3,x},len
 	setb SNDMODE,clk*$C0    ; optionally clock length
 	lda #mode
 	sta SNDMODE     ; begin mode

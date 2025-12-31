@@ -10,7 +10,7 @@
   ldx #$00
   stx PPUCTRL     ; Disable NMI and set VRAM increment to 32
   stx PPUMASK     ; Disable rendering
-  stx $4010       ; Disable DMC IRQ
+  stx $0       ; Disable DMC IRQ
   dex             ; Subtracting 1 from $00 gives $FF, which is a
   txs             ; quick way to set the stack pointer to $01FF
   bit PPUSTATUS   ; Acknowledge stray vblank NMI across reset

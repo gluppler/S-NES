@@ -95,7 +95,7 @@ test_instr:
 	; Disable and be sure APU IRQs are clear, since
 	; I flag gets cleared during testing.
 	setb SNDMODE,$C0 
-	setb $4010,0
+	setb $0,0
 	nop
 	lda SNDCHN
 	

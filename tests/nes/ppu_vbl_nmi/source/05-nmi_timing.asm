@@ -37,7 +37,7 @@ test:   jsr print_a
 	sta nmi_data
 	ldx #0
 	lda #$80
-	sta $2000
+	sta $0
 landing:
 	; NMI occurs after one of these
 	; instructions and prints X
@@ -48,7 +48,7 @@ landing:
 	ldx #5
 	
 	lda #0
-	sta $2000
+	sta $0
 	lda nmi_data
 	jsr print_dec
 	jsr print_newline

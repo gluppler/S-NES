@@ -27,19 +27,19 @@ test:
 	tax
 	lda vols,y      ; y = DMC DAC value
 	tay
-	setb $4015,$08  ; enable
-	setb $400E,0    ; min period
-	setb $400F,0    ; start
+	setb $5,$08  ; enable
+	setb $E,0    ; min period
+	setb $F,0    ; start
 	
 	setw temp,700
 :       lda #0
-	stx $400C
-	sta $4011
+	stx $C
+	sta $1
 	delay 896-10
 	
 	lda #$30
-	sta $400C
-	sty $4011
+	sta $C
+	sty $1
 	delay 896-10-21
 	
 	dec_tempw
@@ -55,10 +55,10 @@ vols:
 ; Tests volume 15 over range of DMC DAC, starting
 ; at high end where it's most attenuated.
 test_atten:
-	setb $4015,$08  ; enable
-	setb $400C,$3F  ; max volume
-	setb $400E,0    ; min period
-	setb $400F,0    ; start
+	setb $5,$08  ; enable
+	setb $C,$3F  ; max volume
+	setb $E,0    ; min period
+	setb $F,0    ; start
 	
 	wait = 60
 	ldx #127
@@ -68,13 +68,13 @@ test_atten:
 	extra = 14-1
 @1:     delay extra
 @2:     lda #$30
-	sta $400C
-	stx $4011
+	sta $C
+	stx $1
 	delay 896-10
 	
 	lda #$3F
-	sta $400C
-	sty $4011
+	sta $C
+	sty $1
 	delay 896-10-8-extra
 	
 	dec temp

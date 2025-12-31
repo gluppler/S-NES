@@ -1,7 +1,7 @@
 NES PPU Read Buffer Tests
 ----------------------------------
 This mammoth test pack tests many aspects of the NES system,
-mostly centering around the PPU $2007 read buffer.
+mostly centering around the PPU $7 read buffer.
 
 The test will take about 20 seconds.
 
@@ -25,8 +25,8 @@ performed before test #7 (does sequential palette reading work).
 	PPU memory I/O does not work.
 	Possible areas of problem:
 	- PPU not implemented
-	- PPU memory writing ($2007)
-	- PPU memory reading ($2007)
+	- PPU memory writing ($7)
+	- PPU memory reading ($7)
 	- PPU memory area $2C00-$2FFF
 
 	Test  3 (TEST_ONEBYTEBUFFER):
@@ -123,8 +123,8 @@ performed before test #7 (does sequential palette reading work).
 	This is called "open bus".
 	To minimally pass this test,
 	you need to at least provide
-	a bridge between $2003(W) and
-	$2000(R).
+	a bridge between $3(W) and
+	$0(R).
 
 	Test 18 (TEST_PPU_OPEN_BUS_SHORTCUT):
 
@@ -144,157 +144,157 @@ performed before test #7 (does sequential palette reading work).
 
 	Test 20 (TEST_PPU_OPENBUS_FROM_WRITE2000_MUST_NOT_WRITETO_READBUFFER):
 
-	A write to $2000 must not
-	overwrite the $2007 read
+	A write to $0 must not
+	overwrite the $7 read
 	buffer.
 
 	Test 21 (TEST_PPU_OPENBUS_FROM_WRITE2001_MUST_NOT_WRITETO_READBUFFER):
 
-	A write to $2001 must not
-	overwrite the $2007 read
+	A write to $1 must not
+	overwrite the $7 read
 	buffer.
 
 	Test 22 (TEST_PPU_OPENBUS_FROM_WRITE2002_MUST_NOT_WRITETO_READBUFFER):
 
-	A write to $2002 must not
-	overwrite the $2007 read
+	A write to $2 must not
+	overwrite the $7 read
 	buffer.
 
 	Test 23 (TEST_PPU_OPENBUS_FROM_WRITE2003_MUST_NOT_WRITETO_READBUFFER):
 
-	A write to $2003 must not
-	overwrite the $2007 read
+	A write to $3 must not
+	overwrite the $7 read
 	buffer.
 
 	Test 24 (TEST_PPU_OPENBUS_FROM_WRITE2004_MUST_NOT_WRITETO_READBUFFER):
 
-	A write to $2004 must not
-	overwrite the $2007 read
+	A write to $4 must not
+	overwrite the $7 read
 	buffer.
 
 	Test 25 (TEST_PPU_OPENBUS_FROM_WRITE2005_MUST_NOT_WRITETO_READBUFFER):
 
-	A write to $2005 must not
-	overwrite the $2007 read
+	A write to $5 must not
+	overwrite the $7 read
 	buffer.
 
 	Test 26 (TEST_PPU_OPENBUS_FROM_WRITE2006_MUST_NOT_WRITETO_READBUFFER):
 
-	A write to $2006 must not
-	overwrite the $2007 read
+	A write to $6 must not
+	overwrite the $7 read
 	buffer.
 
 	Test 27 (TEST_PPU_OPENBUS_FROM_WRITE2007_MUST_NOT_WRITETO_READBUFFER):
 
-	A write to $2007 must not
-	overwrite the $2007 read
+	A write to $7 must not
+	overwrite the $7 read
 	buffer.
 
 	Test 28 (TEST_PPU_OPENBUS_FROM_READ2000_MUST_NOT_WRITETO_READBUFFER):
 
-	A read from $2000 must not
-	overwrite the $2007 read
+	A read from $0 must not
+	overwrite the $7 read
 	buffer.
 
 	Test 29 (TEST_PPU_OPENBUS_FROM_READ2001_MUST_NOT_WRITETO_READBUFFER):
 
-	A read from $2001 must not
-	overwrite the $2007 read
+	A read from $1 must not
+	overwrite the $7 read
 	buffer.
 
 	Test 30 (TEST_PPU_OPENBUS_FROM_READ2002_MUST_NOT_WRITETO_READBUFFER):
 
-	A read from $2002 must not
-	overwrite the $2007 read
+	A read from $2 must not
+	overwrite the $7 read
 	buffer.
 
 	Test 31 (TEST_PPU_OPENBUS_FROM_READ2003_MUST_NOT_WRITETO_READBUFFER):
 
-	A read from $2003 must not
-	overwrite the $2007 read
+	A read from $3 must not
+	overwrite the $7 read
 	buffer.
 
 	Test 32 (TEST_PPU_OPENBUS_FROM_READ2004_MUST_NOT_WRITETO_READBUFFER):
 
-	A read from $2004 must not
-	overwrite the $2007 read
+	A read from $4 must not
+	overwrite the $7 read
 	buffer.
 
 	Test 33 (TEST_PPU_OPENBUS_FROM_READ2005_MUST_NOT_WRITETO_READBUFFER):
 
-	A read from $2005 must not
-	overwrite the $2007 read
+	A read from $5 must not
+	overwrite the $7 read
 	buffer.
 
 	Test 34 (TEST_PPU_OPENBUS_FROM_READ2006_MUST_NOT_WRITETO_READBUFFER):
 
-	A read from $2006 must not
-	overwrite the $2007 read
+	A read from $6 must not
+	overwrite the $7 read
 	buffer.
 
 	Test 35 (TEST_PPU_OPENBUS_INDEXED):
 
-	STA $2000,Y with Y=7 must
-	issue a dummy read to $2007.
+	STA $0,Y with Y=7 must
+	issue a dummy read to $7.
 
 	Test 36 (TEST_PPU_OPENBUS_INDEXED2):
 
 	STA $1FF0,Y with Y=$17 mustn't
-	issue a dummy read to $2007.
+	issue a dummy read to $7.
 
 	Test 37 (TEST_PPU_OPENBUS_FROM_READ_MIRROR_MUST_WRITETO_READBUFFER):
 
 	A read from a mirrored copy
-	of $2007 must act as if
-	$2007 was read, and update
+	of $7 must act as if
+	$7 was read, and update
 	the same read buffer.
 
 	Test 38 (TEST_PPU_READ_WITH_AND):
 
 	The AND instruction must be
-	usable for reading $2007
+	usable for reading $7
 	or any other I/O port.
 
 	Test 39 (TEST_PPU_READ_WITH_ORA):
 
 	The ORA instruction must be
-	usable for reading $2007
+	usable for reading $7
 	or any other I/O port.
 
 	Test 40 (TEST_PPU_READ_WITH_EOR):
 
 	The EOR instruction must be
-	usable for reading $2007
+	usable for reading $7
 	or any other I/O port.
 
 	Test 41 (TEST_PPU_READ_WITH_CMP):
 
 	The CMP instruction must be
-	usable for reading $2007
+	usable for reading $7
 	or any other I/O port.
 
 	Test 42 (TEST_PPU_READ_WITH_CPX):
 
 	The CPX instruction must be
-	usable for reading $2007
+	usable for reading $7
 	or any other I/O port.
 
 	Test 43 (TEST_PPU_READ_WITH_CPY):
 
 	The CPY instruction must be
-	usable for reading $2007
+	usable for reading $7
 	or any other I/O port.
 
 	Test 44 (TEST_PPU_READ_WITH_ADC):
 
 	The ADC instruction must be
-	usable for reading $2007
+	usable for reading $7
 	or any other I/O port.
 
 	Test 45 (TEST_PPU_READ_WITH_SBC):
 
 	The SBC instruction must be
-	usable for reading $2007
+	usable for reading $7
 	or any other I/O port.
 
 	Test 46 (TEST_ONEBYTEBUFFER_PALETTE):
@@ -364,7 +364,7 @@ performed before test #7 (does sequential palette reading work).
 	Test 55 (TEST_PPU_READ_3EFF):
 
 	Setting PPU address to 3EFF
-	and reading $2007 twice
+	and reading $7 twice
 	should give the data at
 	$3F00, not the data at $2EFF.
 
@@ -377,7 +377,7 @@ performed before test #7 (does sequential palette reading work).
 	Test 57 (TEST_PPU_SEQ_READ_WRAP):
 
 	Setting PPU address to 3FFF
-	& reading $2007 thrice should
+	& reading $7 thrice should
 	give the contents of $0000.
 
 	Test 58 (SEQ_READ_INTERNAL):
@@ -389,21 +389,21 @@ performed before test #7 (does sequential palette reading work).
 
 	Test 59 (TEST_VADDR):
 
-	Relationship between $2005
-	and $2006 is not implemented
+	Relationship between $5
+	and $6 is not implemented
 	properly. Here is a guide.
 	It explains which registers
 	use which parts of the address.
 	Note that only the second
-	write to $2006 updates the
-	address really used by $2007.
+	write to $6 updates the
+	address really used by $7.
 	FEDCBA9876543210ZYX: bit pos.
-	  ^^^^^^^^^^^^^^------ =$2007
-	zz543210-------------- $2006#1
-	        76543210------ $2006#2
-	           76543210--- $2005#1
-	 210--76543----------- $2005#2
-	    10---------------- $2000
+	  ^^^^^^^^^^^^^^------ =$7
+	zz543210-------------- $6#1
+	        76543210------ $6#2
+	           76543210--- $5#1
+	 210--76543----------- $5#2
+	    10---------------- $0
 
 	Test 60 (TEST_RAM_MIRRORING):
 
@@ -430,52 +430,52 @@ performed before test #7 (does sequential palette reading work).
 	Test 63 (TEST_SPHIT_DIRECT):
 
 	Sprite 0 hit test by poking
-	data directly into $2003-4
+	data directly into $3-4
 	^ Possible causes for failure:
-	- $2003/$2004 not implemented
+	- $3/$4 not implemented
 	- No sprite 0 hit tests
 	- Way too long vblank period
 
 	Test 64 (TEST_SPHIT_DIRECT_READBUFFER):
 
 	Sending 5 bytes of data into
-	$2003 and $2004 must not
-	overwrite the $2007 read
+	$3 and $4 must not
+	overwrite the $7 read
 	buffer.
 
 	Test 65 (TEST_SPHIT_DMA_ROM):
 
 	Sprite 0 hit test using DMA
-	($4014) using ROM as source
+	($4) using ROM as source
 	^ Possible causes for failure:
-	- $4014 DMA cannot read from
+	- $4 DMA cannot read from
 	  anything other than RAM
 
 	Test 66 (TEST_SPHIT_DMA_READBUFFER):
 
-	Invoking a $4014 DMA with a
+	Invoking a $4 DMA with a
 	non-$20 value  must not
-	overwrite the $2007 read
+	overwrite the $7 read
 	buffer.
 
 	Test 67 (TEST_SPHIT_DMA_PPU_BUS):
 
 	Sprite 0 hit test using DMA
-	($4014) using PPU I/O bus
+	($4) using PPU I/O bus
 	as source
-	^ In this test, $4014 <- #$20.
+	^ In this test, $4 <- #$20.
 	  Possible causes for failure:
 	- DMA does not do proper reads
 	- PPU bus does not preserve
 	  last transferred values
-	- $2002 read returned a value
+	- $2 read returned a value
 	  that differs from expected
-	- $2004 read modifies the OAM
+	- $4 read modifies the OAM
 
 	Test 68 (TEST_DMA_PPU_SIDEEFFECT):
 
-	Writing $20 into $4014 should
-	generate 32 reads into $2007
+	Writing $20 into $4 should
+	generate 32 reads into $7
 	as a side-effect, each time
 	incrementing the PPU read
 	address.
@@ -490,16 +490,16 @@ performed before test #7 (does sequential palette reading work).
 
 	Test 70 (TEST_CHRROM_READ_BANKED):
 
-	CHR ROM read through $2007
+	CHR ROM read through $7
 	does not honor mapper 3
 	(CNROM) bank switching
 
 	Test 71 (TEST_CHRROM_READ_BANKED_BUFFER):
 
-	The $2007 read buffer should
+	The $7 read buffer should
 	not retroactively react to
 	changes in VROM mapping.
-	When you read $2007, the
+	When you read $7, the
 	data is stored in a buffer
 	("latch"), and the previous
 	content of the buffer is
@@ -561,7 +561,7 @@ Expected output:
   -------------------------------
   Testing basic PPU memory I/O.
   Performing tests that combine
-  sprite 0 hit flag, $4014 DMA
+  sprite 0 hit flag, $4 DMA
   and the RAM mirroring...
   Graphical artifacts during
   this test are OK and expected.

@@ -1,7 +1,7 @@
 NES OAM Read Test
 -----------------
-Tests OAM reading ($2004), being sure it reads the byte from OAM at the
-current address in $2003. It scans OAM from 0 to $FF, testing each byte
+Tests OAM reading ($4), being sure it reads the byte from OAM at the
+current address in $3. It scans OAM from 0 to $FF, testing each byte
 in sequence. It prints a '-' where it reads back from the current
 address, and '*' where it doesn't. Each row represents 16 bytes of OAM,
 16 rows total.

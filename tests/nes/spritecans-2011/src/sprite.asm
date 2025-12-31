@@ -424,7 +424,7 @@ noSwap:
 
 
 ;;
-; Copies a name table from address in 0 to CIRAM $2000.
+; Copies a name table from address in 0 to CIRAM $0.
 .proc copynametable
 src = 0
 

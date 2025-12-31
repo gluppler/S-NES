@@ -4,7 +4,7 @@
       .include "prefix_sprite_hit.a"
 
 test_name:
-      .db   "SPRITE HIT EDGE TIMING",0
+      ..byte "SPRITE HIT EDGE TIMING",0
       .code
 
 reset:
@@ -28,7 +28,7 @@ reset:
       ldy   #27         ; 16380 delay
       lda   #120        
       jsr   delay_ya1
-      lda   $2002
+      lda   $2
       and   #$40
       jsr   error_if_ne
       
@@ -43,7 +43,7 @@ reset:
       ldy   #41         ; 16458 delay
       lda   #79         
       jsr   delay_ya0
-      lda   $2002
+      lda   $2
       and   #$40
       jsr   error_if_ne
       
@@ -55,7 +55,7 @@ reset:
       ldy   #41         ; 16458 delay
       lda   #79         
       jsr   delay_ya0
-      lda   $2002
+      lda   $2
       and   #$40
       jsr   error_if_ne
       

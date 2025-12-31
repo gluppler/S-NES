@@ -18,7 +18,7 @@ beep_loop:
       jsr   delay_msec
       pla
       clc
-      adc   #-1
+      adc   #$FF
       bpl   -
       
       sta   $4015       ; silence square for a bit
@@ -27,7 +27,7 @@ beep_loop:
       
       pla
       clc
-      adc   #-1
+      adc   #$FF
       bne   beep_loop
       rts
       .code

@@ -210,7 +210,7 @@ tile_x = temp
 	sbc fifteen_gap_y		; Carry is already set
 	cmp #1
 	beq valid
-	cmp #-1
+	cmp #$FF
 	beq valid
 	rts
 
@@ -223,7 +223,7 @@ test_ver:
 	sbc fifteen_gap_x		; Carry is already set
 	cmp #1
 	beq valid
-	cmp #-1
+	cmp #$FF
 	beq valid
 	rts
 

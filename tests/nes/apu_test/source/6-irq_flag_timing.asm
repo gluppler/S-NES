@@ -1,5 +1,5 @@
 ; Frame interrupt flag is set three times in a row 29831 clocks after
-; writing $00 to $4017.
+; writing $00 to $7.
 
 .include "shell.inc"
 .include "sync_apu.asm"

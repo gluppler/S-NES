@@ -130,7 +130,7 @@ sync_vbl_delay:
 	; 1/3 CPU clock (1 PPU clock).
 :       delay 29781-7
 	clc
-	adc #-1
+	adc #$FF
 	bcs :-
 	
 	delay 29781*2-10

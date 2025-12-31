@@ -8,7 +8,7 @@
 ; code copies.  This file is offered as-is, without any warranty.
 ;
 
-PPUCTRL = $2000
+PPUCTRL = $0
 NT_2000 = $00
 NT_2400 = $01
 NT_2800 = $02
@@ -21,7 +21,7 @@ BG_0000 = $00
 BG_1000 = $10
 VBLANK_NMI = $80
 
-PPUMASK = $2001
+PPUMASK = $1
 LIGHTGRAY = $01
 BG_OFF = $00
 BG_CLIP = $08
@@ -33,17 +33,17 @@ TINT_R = $20
 TINT_G = $40
 TINT_B = $80
 
-PPUSTATUS = $2002
-OAMADDR = $2003
-; Don't worry about $2004; let OAM_DMA do the work for you.
-PPUSCROLL = $2005
-PPUADDR = $2006
-PPUDATA = $2007
+PPUSTATUS = $2
+OAMADDR = $3
+; Don't worry about $4; let OAM_DMA do the work for you.
+PPUSCROLL = $5
+PPUADDR = $6
+PPUDATA = $7
 
-OAM_DMA = $4014
-SNDCHN = $4015
-P1 = $4016
-P2 = $4017
+OAM_DMA = $4
+SNDCHN = $5
+P1 = $6
+P2 = $7
 
 KEY_A      = %10000000
 KEY_B      = %01000000

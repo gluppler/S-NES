@@ -113,11 +113,13 @@ copyramcode_end:
 
 reset:
 	sei
+	cld
+	ldx #$FF
+	txs
 	lda #0
 	sta $2000
 	sta $2001
 	sta $4015
-	cld
 	jsr vblank
 	jsr vblank
 	; blank nametables
@@ -188,6 +190,8 @@ loop:
 	lda #$B8
 	sta $2007
 	; render on, reset scroll
+	lda #%10000000
+	sta $2000
 	lda #%00001010
 	sta $2001
 	lda #0

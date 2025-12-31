@@ -28,7 +28,7 @@ bss_res console_buf,console_width
 ; Initializes console
 console_init:
 	; Flag that console hasn't been initialized
-	setb console_scroll,-1
+	setb console_scroll,$FF
 	
 	setb console_pos,0
 	rts
@@ -267,7 +267,7 @@ console_load_palette_:
 ; Preserved: A, X, Y, console_temp
 console_wait_vbl_:
 	lda console_scroll
-	cmp #-1
+	cmp #$FF
 	bne @already_initialized
 	
 	; Deferred initialization of PPU until first use of console

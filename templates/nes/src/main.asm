@@ -133,31 +133,15 @@
 ; ============================================================================
 .export main_loop
 main_loop:
-    ; Wait for frame
-    ; Per NES documentation: Frame synchronization
-    LDA frame_ready
-    BEQ main_loop       ; Wait until frame ready flag is set
-    
-    ; Clear frame flag
-    LDA #0
-    STA frame_ready
-    
-    ; Read controllers
-    ; Per NES documentation: Input polling
-    JSR read_controllers
-    
-    ; Update game state
-    ; Per NES documentation: Game logic runs in main loop, not NMI
-    JSR update_game_state
-    
-    ; Update game logic
-    JSR update_game
-    
-    ; Update rendering data
-    ; Per NES documentation: Prepare rendering data before NMI
-    JSR update_rendering
-    
-    ; Loop back
+    ; EXACTLY like hello_world: Simple VBLANK wait loop
+    ; The text is already written to nametable in reset.asm
+    ; Just wait for VBLANK to keep the display stable
+    ; Per NES documentation: Simple game loop pattern
+    BIT PPUSTATUS
+@vblank_wait:
+    BIT PPUSTATUS
+    BPL @vblank_wait
+    ; do something (placeholder - text already displayed in reset)
     JMP main_loop
 
 ; ============================================================================
@@ -199,6 +183,7 @@ update_rendering:
 ; CHR ROM Data
 ; ============================================================================
 ; Per NES documentation: Pattern table data, 8 KB (512 tiles × 16 bytes)
+; ASCII font starting at tile 0 (ASCII 32 = space, ASCII 65 = 'A', etc.)
+; EXACTLY like hello_world: include CHR data in main.asm
 ; ============================================================================
-.segment "CHARS"
-    .incbin "assets/graphics/chr/font.chr"
+.include "../assets/data/neschar.asm"

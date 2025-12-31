@@ -3,7 +3,7 @@
      .include "prefix.a"
 
 test_name:
-     .db  "SPRITE OVERFLOW TIMING",0
+     ..byte "SPRITE OVERFLOW TIMING",0
      .code
 
 begin_timing:

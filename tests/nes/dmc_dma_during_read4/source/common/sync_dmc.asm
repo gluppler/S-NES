@@ -7,9 +7,9 @@
 sync_dmc:
       ; Setup
       lda #$80
-      sta $4010
+      sta $0
       lda #0
-      sta $4013
+      sta $3
       sta SNDCHN
       
       ; Start twice (first will clear immediately)

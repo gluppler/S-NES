@@ -135,23 +135,23 @@ beep_bits:
 	; Set LSB of pitch based on carry
 	lda #0
 	adc #$FF
-	sta $4002
+	sta $2
 	
 	; Set up square
 	lda #1
 	sta SNDCHN
-	sta $4003
-	sta $4001
+	sta $3
+	sta $1
 	
 	; Fade volume
 	lda #15
 :       pha
 	eor #$30
-	sta $4000
+	sta $0
 	delay_msec 8
 	pla
 	clc
-	adc #-1
+	adc #$FF
 	bne :-
 	
 	; Silence

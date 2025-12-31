@@ -27,9 +27,9 @@ PPUMASK = $2001
 PPUSTATUS = $2002
 PPUADDR = $2006
 PPUDATA = $2007
-OAM_DMA = $4014
-P1 = $4016
-P2 = $4017
+OAM_DMA = $4
+P1 = $6
+P2 = $7
 
 .exportzp cur_keys, new_keys, retraces
 .import read_pads

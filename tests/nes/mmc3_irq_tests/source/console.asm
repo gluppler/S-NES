@@ -8,15 +8,15 @@ print_char:
 print_char_no_wait:
       pha
       lda   #$20
-      sta   $2006
+      sta   $6
       inc   console_pos
       lda   console_pos
-      sta   $2006
+      sta   $6
       lda   #0          ; restore scroll
-      sta   $2005
-      sta   $2005
+      sta   $5
+      sta   $5
       pla
-      sta   $2007
+      sta   $7
       rts
       .code
 
@@ -40,18 +40,18 @@ init_console:
       
       jsr   wait_vbl    ; init ppu
       lda   #0
-      sta   $2000
-      sta   $2001
+      sta   $0
+      sta   $1
       
       lda   #$3f        ; load palette
       jsr   set_vpage
       lda   #15         ; bg
       ldx   #48         ; fg
       ldy   #8
-pal:  sta   $2007
-      stx   $2007
-      stx   $2007
-      stx   $2007
+pal:  sta   $7
+      stx   $7
+      stx   $7
+      stx   $7
       dey
       bne   pal
       
@@ -67,14 +67,14 @@ pal:  sta   $2007
 chr_loop:
       ldx   #8
       lda   #0
-:     sta   $2007
+:     sta   $7
       dex
       bne   -
       
       ldx   #8
 :     lda   ($f0),y
       iny
-      sta   $2007
+      sta   $7
       dex
       bne   -
       
@@ -89,10 +89,10 @@ chr_loop:
       
       jsr   wait_vbl    ; enable ppu
       lda   #0
-      sta   $2005
-      sta   $2005
+      sta   $5
+      sta   $5
       lda   #$08
-      sta   $2001
+      sta   $1
       rts
       .code
       

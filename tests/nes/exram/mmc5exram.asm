@@ -14,44 +14,44 @@ ctabl:	.block $02	;(padding)
 .org $C000
 .fill $E000-*,$FF
 text:
-.db "                                "
-.db "   MMC5 Executable ExRAM Test   "
-.db "________________________________"
-.db "                                "
-.db "  This is basically just my     "
-.db "  'copper bars' test program,   "
-.db "  except I've modified it so    "
-.db "  the code that determines      "
-.db "  where each color bar should   "
-.db "  be displayed during each      "
-.db "  frame is not executed from    "
-.db "  ROM, but is copied into the   "
-.db "  MMC5's ExRAM during startup   "
-.db "  and then executed from there  "
-.db "  during each VBLANK.           "
-.db "                                "
-.db "  A proper emulator will be     "
-.db "  able to handle this without   "
-.db "  any problems, including both  "
-.db "  Nintendulator and Nestopia.   "
-.db "  In Nintendulator, though,     "
-.db "  the debugger will display FF  "
-.db "  even though it's executing    "
-.db "  real code, since it thinks    "
-.db "  the region contains I/O       "
-.db "  registers rather than RAM.    "
-.db "________________________________"
-.db "                                "
-.db "      Written by Quietust       "
-.db "                                "
-.db $00,$00,$00,$00,$00,$00,$00,$00
-.db $00,$00,$00,$00,$00,$00,$00,$00
-.db $00,$00,$00,$00,$00,$00,$00,$00
-.db $00,$00,$00,$00,$00,$00,$00,$00
-.db $00,$00,$00,$00,$00,$00,$00,$00
-.db $00,$00,$00,$00,$00,$00,$00,$00
-.db $00,$00,$00,$00,$00,$00,$00,$00
-.db $00,$00,$00,$00,$00,$00,$00,$00
+..byte "                                "
+..byte "   MMC5 Executable ExRAM Test   "
+..byte "________________________________"
+..byte "                                "
+..byte "  This is basically just my     "
+..byte "  'copper bars' test program,   "
+..byte "  except I've modified it so    "
+..byte "  the code that determines      "
+..byte "  where each color bar should   "
+..byte "  be displayed during each      "
+..byte "  frame is not executed from    "
+..byte "  ROM, but is copied into the   "
+..byte "  MMC5's ExRAM during startup   "
+..byte "  and then executed from there  "
+..byte "  during each VBLANK.           "
+..byte "                                "
+..byte "  A proper emulator will be     "
+..byte "  able to handle this without   "
+..byte "  any problems, including both  "
+..byte "  Nintendulator and Nestopia.   "
+..byte "  In Nintendulator, though,     "
+..byte "  the debugger will display FF  "
+..byte "  even though it's executing    "
+..byte "  real code, since it thinks    "
+..byte "  the region contains I/O       "
+..byte "  registers rather than RAM.    "
+..byte "________________________________"
+..byte "                                "
+..byte "      Written by Quietust       "
+..byte "                                "
+..byte $00,$00,$00,$00,$00,$00,$00,$00
+..byte $00,$00,$00,$00,$00,$00,$00,$00
+..byte $00,$00,$00,$00,$00,$00,$00,$00
+..byte $00,$00,$00,$00,$00,$00,$00,$00
+..byte $00,$00,$00,$00,$00,$00,$00,$00
+..byte $00,$00,$00,$00,$00,$00,$00,$00
+..byte $00,$00,$00,$00,$00,$00,$00,$00
+..byte $00,$00,$00,$00,$00,$00,$00,$00
 
 
 rast_start1:
@@ -111,25 +111,25 @@ rast_end2:
 rast_end1:
 
 coltab:
-.db $14,$10,$18,$08,$0C,$04
+..byte $14,$10,$18,$08,$0C,$04
 
 sinetab:     
-.db $5F,$61,$64,$66,$68,$6B,$6D,$6F,$72,$74,$76,$78,$7B,$7D,$7F,$81
-.db $83,$85,$88,$8A,$8C,$8E,$90,$92,$94,$96,$98,$99,$9B,$9D,$9F,$A1
-.db $A2,$A4,$A5,$A7,$A8,$AA,$AB,$AD,$AE,$AF,$B0,$B2,$B3,$B4,$B5,$B6
-.db $B7,$B8,$B8,$B9,$BA,$BB,$BB,$BC,$BC,$BD,$BD,$BD,$BE,$BE,$BE,$BE
-.db $BE,$BE,$BE,$BE,$BE,$BD,$BD,$BD,$BC,$BC,$BB,$BB,$BA,$B9,$B8,$B8
-.db $B7,$B6,$B5,$B4,$B3,$B2,$B0,$AF,$AE,$AD,$AB,$AA,$A8,$A7,$A5,$A4
-.db $A2,$A1,$9F,$9D,$9B,$99,$98,$96,$94,$92,$90,$8E,$8C,$8A,$88,$85
-.db $83,$81,$7F,$7D,$7B,$78,$76,$74,$72,$6F,$6D,$6B,$68,$66,$64,$61
-.db $5F,$5D,$5A,$58,$56,$53,$51,$4F,$4C,$4A,$48,$46,$43,$41,$3F,$3D
-.db $3B,$39,$36,$34,$32,$30,$2E,$2C,$2A,$28,$26,$25,$23,$21,$1F,$1D
-.db $1C,$1A,$19,$17,$16,$14,$13,$11,$10,$0F,$0E,$0C,$0B,$0A,$09,$08
-.db $07,$06,$06,$05,$04,$03,$03,$02,$02,$01,$01,$01,$00,$00,$00,$00
-.db $00,$00,$00,$00,$00,$01,$01,$01,$02,$02,$03,$03,$04,$05,$06,$06
-.db $07,$08,$09,$0A,$0B,$0C,$0E,$0F,$10,$11,$13,$14,$16,$17,$19,$1A
-.db $1C,$1D,$1F,$21,$23,$25,$26,$28,$2A,$2C,$2E,$30,$32,$34,$36,$39
-.db $3B,$3D,$3F,$41,$43,$46,$48,$4A,$4C,$4F,$51,$53,$56,$58,$5A,$5D
+..byte $5F,$61,$64,$66,$68,$6B,$6D,$6F,$72,$74,$76,$78,$7B,$7D,$7F,$81
+..byte $83,$85,$88,$8A,$8C,$8E,$90,$92,$94,$96,$98,$99,$9B,$9D,$9F,$A1
+..byte $A2,$A4,$A5,$A7,$A8,$AA,$AB,$AD,$AE,$AF,$B0,$B2,$B3,$B4,$B5,$B6
+..byte $B7,$B8,$B8,$B9,$BA,$BB,$BB,$BC,$BC,$BD,$BD,$BD,$BE,$BE,$BE,$BE
+..byte $BE,$BE,$BE,$BE,$BE,$BD,$BD,$BD,$BC,$BC,$BB,$BB,$BA,$B9,$B8,$B8
+..byte $B7,$B6,$B5,$B4,$B3,$B2,$B0,$AF,$AE,$AD,$AB,$AA,$A8,$A7,$A5,$A4
+..byte $A2,$A1,$9F,$9D,$9B,$99,$98,$96,$94,$92,$90,$8E,$8C,$8A,$88,$85
+..byte $83,$81,$7F,$7D,$7B,$78,$76,$74,$72,$6F,$6D,$6B,$68,$66,$64,$61
+..byte $5F,$5D,$5A,$58,$56,$53,$51,$4F,$4C,$4A,$48,$46,$43,$41,$3F,$3D
+..byte $3B,$39,$36,$34,$32,$30,$2E,$2C,$2A,$28,$26,$25,$23,$21,$1F,$1D
+..byte $1C,$1A,$19,$17,$16,$14,$13,$11,$10,$0F,$0E,$0C,$0B,$0A,$09,$08
+..byte $07,$06,$06,$05,$04,$03,$03,$02,$02,$01,$01,$01,$00,$00,$00,$00
+..byte $00,$00,$00,$00,$00,$01,$01,$01,$02,$02,$03,$03,$04,$05,$06,$06
+..byte $07,$08,$09,$0A,$0B,$0C,$0E,$0F,$10,$11,$13,$14,$16,$17,$19,$1A
+..byte $1C,$1D,$1F,$21,$23,$25,$26,$28,$2A,$2C,$2E,$30,$32,$34,$36,$39
+..byte $3B,$3D,$3F,$41,$43,$46,$48,$4A,$4C,$4F,$51,$53,$56,$58,$5A,$5D
 
 nmi:		PHA
 		TXA
@@ -137,18 +137,18 @@ nmi:		PHA
 		TYA
 		PHA
 		LDA #$00
-		STA $2003
+		STA $3
 		LDA #$02
-		STA $4014
+		STA $4
 		LDA #$01
 		STA vbflag
 		LDA #$98
-		STA $2000
+		STA $0
 		LDA #$1E
-		STA $2001
+		STA $1
 		LDA #$00
-		STA $2005
-		STA $2005
+		STA $5
+		STA $5
 		JSR do_rast
 		PLA
 		TAY
@@ -160,10 +160,10 @@ irq:		RTI
 reset:		SEI
 		CLD
 		LDA #$00
-		STA $2000
-		STA $2001
+		STA $0
+		STA $1
 		LDX #$02
-waitframe:	LDA $2002
+waitframe:	LDA $2
 		BPL waitframe
 		DEX
 		BPL waitframe
@@ -203,9 +203,9 @@ exram_init:	LDA rast_start1,X
 		BNE exram_init
 
 		LDX #$20
-		STX $2006
+		STX $6
 		LDY #$00
-		STY $2006
+		STY $6
 
 		LDA #text & $FF
 		STA ptr
@@ -214,7 +214,7 @@ exram_init:	LDA rast_start1,X
 
 		LDX #$04
 init_vram1:	LDA (ptr),Y	;load text for primary NT
-		STA $2007
+		STA $7
 		INY
 		BNE init_vram1
 		INC ptr+1
@@ -223,7 +223,7 @@ init_vram1:	LDA (ptr),Y	;load text for primary NT
 
 		LDX #$04
 		LDA #$FF
-init_vram2:	STA $2007	;load white for secondary NT
+init_vram2:	STA $7	;load white for secondary NT
 		INY
 		BNE init_vram2
 		DEX
@@ -245,37 +245,37 @@ spr_init:	STA $0200,X	;move all sprites offscreen
 
 		LDX #$3F
 		LDY #$00
-		STX $2006
-		STY $2006
+		STX $6
+		STY $6
 
 		LDX #$08
 palloop:	LDA #$1F
-		STA $2007
+		STA $7
 		LDA #$1F
-		STA $2007
+		STA $7
 		LDY #$00
-		STY $2007
+		STY $7
 		LDY #$30
-		STY $2007
+		STY $7
 		DEX
 		BNE palloop
 
 		LDA #$3F
-		STA $2006
+		STA $6
 		LDA #$00
-		STA $2006
-		STA $2006
-		STA $2006
+		STA $6
+		STA $6
+		STA $6
 
-		STA $2005
-		STA $2005		;clear scroll regs
-		STA $4015		;kill sound
+		STA $5
+		STA $5		;clear scroll regs
+		STA $5		;kill sound
 		STA vbflag
                 LDA #$C0
-                STA $4017               ;disable frame IRQs
+                STA $7               ;disable frame IRQs
 		JSR rast_init
 		LDA #$98
-		STA $2000
+		STA $0
 		CLI
 
 loop:		LDA vbflag
@@ -283,9 +283,9 @@ loop:		LDA vbflag
 		LDA #$00
 		STA vbflag
 
-spr0off:	BIT $2002
+spr0off:	BIT $2
 		BVS spr0off
-spr0on:		BIT $2002
+spr0on:		BIT $2
 		BVC spr0on
 		LDX #$FF
 		STX overflow
@@ -311,7 +311,7 @@ scanloop:	LDA ctabl+2,x		;4
 c3w:		DEY			;56
 		BNE c3w			;85
 		LDY #$99		;insert them
-		STY $2000		;here
+		STY $0		;here
 		JMP endloop		;88
 
 color2:					;23
@@ -322,7 +322,7 @@ color2:					;23
 c2w:		DEY			;53
 		BNE c2w			;85
 		LDY #$98		;and
-		STY $2000		;here
+		STY $0		;here
 		JMP endloop		;88
 
 color1:					;19
@@ -335,7 +335,7 @@ color1:					;19
 c1w:		DEY			;53
 		BNE c1w			;85
 		LDY #$80		;and
-		STY $2000		;here
+		STY $0		;here
 		JMP endloop		;88
 
 color0:					;15
@@ -344,11 +344,11 @@ color0:					;15
 c0w:		DEY			;47
 		BNE c0w			;88
 		LDY #$98		;and
-		STY $2000		;here
+		STY $0		;here
 
 endloop:			;88
 		ORA #$1E	;90
-		STA $2001	;94
+		STA $1	;94
 
 		CLC		;96
 		LDA overflow	;99
@@ -367,13 +367,13 @@ endw:		DEY
 
 		LDX #$1E
 		LDY #$98
-		STX $2001
-		STY $2000
+		STX $1
+		STY $0
 		JMP loop
 
 .fill $FFFA-*,$FF
 .org $FFFA
-.dw nmi
-.dw reset
-.dw irq
+..word nmi
+..word reset
+..word irq
 .end

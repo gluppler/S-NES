@@ -8,13 +8,13 @@ nmi:    inc interrupt_count
 	rti
 
 irq:    inc interrupt_count
-	lsr $4015
+	lsr $5
 	rti
 
 main:
 	set_test 2,"Interrupts could not be disabled"
 	mov SNDCHN,#0           ; disable interrupts
-	mov $4010,#0
+	mov $0,#0
 	mov SNDMODE,#$C0
 	mov PPUCTRL,#0
 	cli

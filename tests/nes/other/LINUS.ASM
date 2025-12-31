@@ -105,10 +105,10 @@ no_chg:    lda #0
 
 ;info line
 
-           .db "Linus Spacehead music... "
-           .db "ripped and player by k.horton "
-           .db "khorton@iquest.net "
-           .db "press START to change song"
+           ..byte "Linus Spacehead music... "
+           ..byte "ripped and player by k.horton "
+           ..byte "khorton@iquest.net "
+           ..byte "press START to change song"
 
 ;fill empty space
 
@@ -117,8 +117,8 @@ no_chg:    lda #0
 
 ;vectors
 
- .dw interrupt
- .dw start
- .dw interrupt
+ ..word interrupt
+ ..word start
+ ..word interrupt
 
  .end

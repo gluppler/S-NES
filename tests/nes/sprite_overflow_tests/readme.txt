@@ -1,6 +1,6 @@
 NTSC NES PPU Sprite Overflow Flag Test ROMs
 -------------------------------------------
-These ROMs test the sprite overflow flag in bit 5 of $2002. When run on
+These ROMs test the sprite overflow flag in bit 5 of $2. When run on
 a NES they all give a passing result. Each ROM runs several tests and
 reports the result on screen and by beeping a number of times. See below
 for the meaning of failure codes for each test. THE TESTS MUST BE RUN
@@ -18,12 +18,12 @@ Contact me if you'd like assistance porting them to your setup.
 Tests basic operation of sprite overflow flag.
 
 2) Should be set when 9 sprites are on a scanline
-3) Reading $2002 shouldn't clear flag
+3) Reading $2 shouldn't clear flag
 4) Shouldn't be cleared at the beginning of VBL
 5) Should be cleared at the end of VBL
 6) Shouldn't be set when all rendering is off
-7) Should work normally when $2001 = $08 (bg rendering only)
-8) Should work normally when $2001 = $10 (sprite rendering only)
+7) Should work normally when $1 = $08 (bg rendering only)
+8) Should work normally when $1 = $10 (sprite rendering only)
 
 
 2.Details
@@ -87,7 +87,7 @@ Refer to the NESdevWiki for further information about this behavior.
 Tests things that an emulator with predictive overflow flag handling is
 likely to get wrong.
 
-2) Didn't calculate overflow when there was no $2002 read for frame
+2) Didn't calculate overflow when there was no $2 read for frame
 3) Disabling rendering didn't recalculate flag time
 4) Changing sprite RAM didn't recalculate flag time
 5) Changing sprite height didn't recalculate time

@@ -13,7 +13,7 @@ delay_msec_:
                               ; -1
       pla                     ; 4
       clc                     ; 2
-      adc   #-1               ; 2
+      adc   #$FF               ; 2
       bne   delay_msec        ; 3
       rts
       .code
@@ -32,7 +32,7 @@ delay_01msec_:
                               ; -1
       pla                     ; 4
       clc                     ; 2
-      adc   #-1               ; 2
+      adc   #$FF               ; 2
       bne   delay_01msec      ; 3
       rts
       .code
@@ -66,27 +66,27 @@ delay_17:   beq   +     ; 5
       
 ; Delay (5 * A + 6) * Y + 7 + n clocks
 delay_ya11:
-      .db   $a2         ; 1 ldx #imm
+      ..byte $a2         ; 1 ldx #imm
 delay_ya10:
-      .db   $a2         ; 1 ldx #imm
+      ..byte $a2         ; 1 ldx #imm
 delay_ya9:
-      .db   $a2         ; 1 ldx #imm
+      ..byte $a2         ; 1 ldx #imm
 delay_ya8:
-      .db   $a2         ; 1 ldx #imm
+      ..byte $a2         ; 1 ldx #imm
 delay_ya7:
-      .db   $a2         ; 1 ldx #imm
+      ..byte $a2         ; 1 ldx #imm
 delay_ya6:
-      .db   $a2         ; 1 ldx #imm
+      ..byte $a2         ; 1 ldx #imm
 delay_ya5:
-      .db   $a2         ; 1 ldx #imm
+      ..byte $a2         ; 1 ldx #imm
 delay_ya4:
-      .db   $a2         ; 1 ldx #imm
+      ..byte $a2         ; 1 ldx #imm
 delay_ya3:
-      .db   $a2         ; 1 ldx #imm
+      ..byte $a2         ; 1 ldx #imm
 delay_ya2:
-      .db   $a2         ; 1 ldx #imm
+      ..byte $a2         ; 1 ldx #imm
 delay_ya1:
-      .db   $a6         ; 1 ldx zp
+      ..byte $a6         ; 1 ldx zp
 delay_ya0:
       nop               ; 2
 delay_ya:

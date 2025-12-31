@@ -62,12 +62,12 @@ zp_res ptr_2006, 2
 
 
 ; Test open bus feature
-;   puts A into $2000+X
-;   reads  from $2000+Y
+;   puts A into $0+X
+;   reads  from $0+Y
 ;   expects A
 open_bus_test:
-	sta $2000,x
-	cmp $2000,y
+	sta $0,x
+	cmp $0,y
 	bne test_failed_finish
 	rts
 
@@ -142,7 +142,7 @@ main:
 	;
 	jsr populate_vram_slow
 	lda #$00
-	sta $2000
+	sta $0
 	jsr test_dummy_writes
 	;
 	lda num_fails_2
@@ -204,8 +204,8 @@ Opcodes:
 	;         Value for absolute address (appended to opcode) (BIG-ENDIAN)
 	;         Value for X
 	;         Value for PPU address (BIG_ENDIAN) -- this is used in order to avoid false positives.
-	;         Value for open bus ($2005) -- this is the expected first byte
-	;         Expected 2nd reads from $2007 with Carry Set, Carry Clear (two bytes)
+	;         Value for open bus ($5) -- this is the expected first byte
+	;         Expected 2nd reads from $7 with Carry Set, Carry Clear (two bytes)
 	; Each opcode will be tried twice. Once with carry clear, once with carry set
 
         ;     opcode  ABS       X    PPUADDR  OpenBus   READ1  READ2
@@ -216,9 +216,9 @@ Opcodes:
         .byte $6E,    $20,$06,  $00, $25,$FA, $25,      $92,   $12       ; ROR,2512 or $2592
         .byte $CE,    $20,$06,  $00, $25,$FA, $25,      $A4,   $A4       ; DEC,2524
 	.byte $EE,    $20,$06,  $00, $25,$FA, $25,      $A6,   $A6       ; INC,2526 ---Expect: reads open bus, gets $25   (Vaddr = $25FA)
-	;                                                                                      writes $2006     <-  $25   (taddr = $2525)
-	;                                                                                      writes $2006     <-  $26   (Vaddr = $2526)
-	;                                                                                      2*read $2007                               -> $A6
+	;                                                                                      writes $6     <-  $25   (taddr = $2525)
+	;                                                                                      writes $6     <-  $26   (Vaddr = $2526)
+	;                                                                                      2*read $7                               -> $A6
 	.byte $02
 	;
         .byte $1E,    $20,$05,  $01, $25,$FA, $26,      $0C,   $0C       ; ASL,$264C
@@ -308,7 +308,7 @@ test_dummy_writes:
  	lda #$EA
  	sta opcode_buffer+6
  	
- 	setw ptr_2006, $2006
+ 	setw ptr_2006, $6
 
         ldx #0 ; X coordinate
         stx num_fails
@@ -423,8 +423,8 @@ test_dummy_writes:
 	lda temp_ppu_ptr+1
 	sta PPUADDR
 	lda temp_open_bus
-	sta $2005           ; writes to $2005 serve to put data into open bus
-	sta $2005           ; writes twice, so the address toggle is not affected
+	sta $5           ; writes to $5 serve to put data into open bus
+	sta $5           ; writes twice, so the address toggle is not affected
 	ldx temp_x
 	ldy #0
 	jsr opcode_buffer   ; Execute opcode
@@ -465,60 +465,60 @@ test_failed_finish2: ; Aux label to help overcome short branch length limitation
 
 test_2005_writes:
 	;           0123456789ABCDEF0123456789ABC|0123456789ABCDEF0123456789ABC|0123456789ABCDEF0123456789ABC|0123456789ABCDEF0123456789ABC|
-	set_test 3,"A single write to $2005  must not change the address  used  by $2007  when  vblank is on."
+	set_test 3,"A single write to $5  must not change the address  used  by $7  when  vblank is on."
 
 	lda #$25
 	ldx #$4B
 	jsr set_vram_pos
 	lda #$55
-	sta $2005 ; set scrolling position
+	sta $5 ; set scrolling position
 	; read from PPU memory
-	lda $2007 ; discard first read
-	ldy $2007 ; should be x ^ $80
+	lda $7 ; discard first read
+	ldy $7 ; should be x ^ $80
 	fail_if_y_not $CB, test_failed_finish2
 	
-	set_test 4,"Even two writes to $2005 must not change the address  used  by $2007  when  vblank is on."
+	set_test 4,"Even two writes to $5 must not change the address  used  by $7  when  vblank is on."
 
 	lda #$25
 	ldx #$6A
 	jsr set_vram_pos
 	lda #$55
-	sta $2005 ; set scrolling position
+	sta $5 ; set scrolling position
 	lda #$8C
-	sta $2005
+	sta $5
 	;
 	; read from PPU memory
-	lda $2007 ; discard first read
-	ldy $2007 ; should be x ^ $80
+	lda $7 ; discard first read
+	ldy $7 ; should be x ^ $80
 	fail_if_y_not $EA, test_failed_finish2
 
 	;           0123456789ABCDEF0123456789ABC|0123456789ABCDEF0123456789ABC|0123456789ABCDEF0123456789ABC|0123456789ABCDEF0123456789ABC|
-	set_test 5,"A single write to $2006  must not change the address  used  by $2007  when  vblank is on."
+	set_test 5,"A single write to $6  must not change the address  used  by $7  when  vblank is on."
 
 	lda #$25
 	ldx #$93
 	jsr set_vram_pos
 	lda #$55
-	sta $2006 ; set half of the address
+	sta $6 ; set half of the address
 	; read from PPU memory
-	lda $2007 ; discard first read
-	ldy $2007 ; should be x
+	lda $7 ; discard first read
+	ldy $7 ; should be x
 	fail_if_y_not $13, test_failed_finish3
 
 	;           0123456789ABCDEF0123456789ABC|0123456789ABCDEF0123456789ABC|0123456789ABCDEF0123456789ABC|
-	set_test 6,"A single write  to $2005 must change the address toggle for both $2005 and $2006."
+	set_test 6,"A single write  to $5 must change the address toggle for both $5 and $6."
 
 	lda #$25
 	ldx #$93
 	jsr set_vram_pos ; taddr = $2593 (x fine = whatever)
 	lda #$F0
-	sta $2005 ; set half of the address (should set the toggle) -- taddr = $25DE
+	sta $5 ; set half of the address (should set the toggle) -- taddr = $25DE
 	; the next byte should set the toggle for also the VRAM
-	lda #$DE ; alas, this completely overrides what was written to $2005.
-	sta $2006
+	lda #$DE ; alas, this completely overrides what was written to $5.
+	sta $6
 	; read from PPU memory
-	lda $2007 ; discard first read
-	ldy $2007 ; should be $DE ^ $80
+	lda $7 ; discard first read
+	ldy $7 ; should be $DE ^ $80
 	fail_if_y_not $5E, test_failed_finish3
 
 	rts
@@ -588,14 +588,14 @@ test_failed_finish4: ; Aux label to help overcome short branch length limitation
 
 test_open_bus_behavior:
 	; Extensively test open bus.
-	;    $2000 is write only (writing updates open_bus, reading returns open_bus)
-	;    $2001 is write only (writing updates open_bus, reading returns open_bus)
-	;    $2002 is read only  (writing updates open_bus, reading UPDATES open_bus (but only for low 5 bits))
-	;    $2003 is write only (writing updates open_bus, reading returns open_bus)
-	;    $2004 is read-write (writing updates open_bus, however for %4==2, bitmask=11100011. Reading is UNRELIABLE.)
-	;    $2005 is write only (writing updates open_bus, reading returns open_bus)
-	;    $2006 is write only (writing updates open_bus, reading returns open_bus)
-	;    $2007 is read-write (writing updates open_bus, reading UPDATES open_bus)
+	;    $0 is write only (writing updates open_bus, reading returns open_bus)
+	;    $1 is write only (writing updates open_bus, reading returns open_bus)
+	;    $2 is read only  (writing updates open_bus, reading UPDATES open_bus (but only for low 5 bits))
+	;    $3 is write only (writing updates open_bus, reading returns open_bus)
+	;    $4 is read-write (writing updates open_bus, however for %4==2, bitmask=11100011. Reading is UNRELIABLE.)
+	;    $5 is write only (writing updates open_bus, reading returns open_bus)
+	;    $6 is write only (writing updates open_bus, reading returns open_bus)
+	;    $7 is read-write (writing updates open_bus, reading UPDATES open_bus)
 	;
 	;    0123456789ABCDEF0123456789ABC|
 	;          W- W- WR W- W- W- W- WR
@@ -654,7 +654,7 @@ test_open_bus_behavior:
 
 .pushseg
 .segment "RODATA"
-	; When writing or reading $2000+x, which bits of the result are shown in open bus?
+	; When writing or reading $0+x, which bits of the result are shown in open bus?
 open_bus_read_masks:
 	.byte $FF,$FF,$1F,$FF, $FF,$FF,$FF,$FF
 
@@ -685,8 +685,8 @@ print_open_bus_fails:
 
 .macro open_bus_write_test port_index
 	.local loop
-	; Should write to  $2000+port_index,
-	; and test whether $2000+X gives out the same value when read.
+	; Should write to  $0+port_index,
+	; and test whether $0+X gives out the same value when read.
 
 	; Do several writes and count the number of failures.
 .if port_index = 7
@@ -702,8 +702,8 @@ print_open_bus_fails:
 loop:	 jsr next_random
 	 and open_bus_write_and+port_index
 	 ora open_bus_write_and+port_index
-	 sta $2000+port_index
-	 eor $2000,x
+	 sta $0+port_index
+	 eor $0,x
 	 and open_bus_read_masks+port_index
 	 beq :+
 	 inc num_fails
@@ -714,14 +714,14 @@ loop:	 jsr next_random
 
 .macro open_bus_read_test  port_index
 	.local loop
-	; Should read from $2000+port_index,
-	; and test whether $2000+X gives out the same value when read.
+	; Should read from $0+port_index,
+	; and test whether $0+X gives out the same value when read.
 	lda #0
 	sta num_fails
 	ldy #15
 loop:
-	 lda $2000+port_index
-	 eor $2000,x
+	 lda $0+port_index
+	 eor $0,x
 	 and open_bus_read_masks+port_index
 	 beq :+
 	 inc num_fails
@@ -738,7 +738,7 @@ loop:
 	
 
 open_bus_test_line:
-	; Test writing into each of $2000..$2007, and read from $2000+X.
+	; Test writing into each of $0..$7, and read from $0+X.
 	 text_color1
 	 ldy #' '
 	 tya
@@ -754,7 +754,7 @@ open_bus_test_line:
 
 	 jsr console_hide
 	 ; Begin testing
-	 ; Write to $2000, read from $2000+X
+	 ; Write to $0, read from $0+X
 	 open_bus_write_test 0
 	 open_bus_skip_test
 	 open_bus_write_test 1
@@ -815,7 +815,7 @@ populate_vram_slow:
 	; Populate the $2500..$25FF with bytes: $80..$7F
 	; These updates are done very slowly, in order to
 	; avoid bugs with those PPUs that do not automatically
-	; update the taddr when $2007 is written to.
+	; update the taddr when $7 is written to.
 	ldx #$00
 :	lda #$25
 	jsr set_vram_pos
@@ -861,9 +861,9 @@ clear_vram_garbage:
 	jsr console_hide
 ;clear_vram_garbage_nohide:
 	lda #0
-	sta $2000
-	sta $2001
-	ldy $2002
+	sta $0
+	sta $1
+	ldy $2
 	ldx #$00
 	lda #$24
 	jsr set_vram_pos
@@ -877,13 +877,13 @@ clear_vram_garbage:
 	; pass through to reset_scrolling
 ;reset_scrolling:
 	; reset scrolling position and vram write position
-	ldy $2002
+	ldy $2
 	;jsr console_show
 	;
 	ldx #0
-	stx $2005
+	stx $5
 	lda console_scroll
-	sta $2005
+	sta $5
 	txa
 	jmp set_vram_pos
 	rts

@@ -3,7 +3,7 @@
      .include "prefix.a"
 
 test_name:
-     .db  "BRANCH TIMING BASICS",0
+     ..byte "BRANCH TIMING BASICS",0
      .code
      
 delay7 = $20

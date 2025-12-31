@@ -28,16 +28,16 @@ RESET:
   SEI          ; disable IRQs
   CLD          ; disable decimal mode
   LDX #$40
-  STX $4017    ; disable APU frame IRQ
+  STX $7    ; disable APU frame IRQ
   LDX #$FF
   TXS          ; Set up stack
   INX          ; now X = 0
-  STX $2000    ; disable NMI
-  STX $2001    ; disable rendering
-  STX $4010    ; disable DMC IRQs
+  STX $0    ; disable NMI
+  STX $1    ; disable rendering
+  STX $0    ; disable DMC IRQs
 
 vblankwait1:       ; First wait for vblank to make sure PPU is ready
-  BIT $2002
+  BIT $2
   BPL vblankwait1
 
 clrmem:
@@ -56,27 +56,27 @@ clrmem:
   TAX
   TXS
 vblankwait2:      ; Second wait for vblank, PPU is ready after this
-  BIT $2002
+  BIT $2
   BPL vblankwait2
 LoadPalettes:
-  LDA $2002             ; read PPU status to reset the high/low latch
+  LDA $2             ; read PPU status to reset the high/low latch
   LDA #$3F
-  STA $2006             ; write the high byte of $3F00 address
+  STA $6             ; write the high byte of $3F00 address
   LDA #$00
-  STA $2006             ; write the low byte of $3F00 address
+  STA $6             ; write the low byte of $3F00 address
   LDX #$20
 LoadPalettesLoop:
   LDA Palette-1,x ;Run pallete loading from +$1F to +$0.
-  STA $2007
+  STA $7
   DEX
   BNE LoadPalettesLoop
   LDA Palette
-  STA $2007
-  LDA $2002 ;Starts background loading.
+  STA $7
+  LDA $2 ;Starts background loading.
   LDA #$20
-  STA $2006
+  STA $6
   LDA #$00
-  STA $2006
+  STA $6
   LDA #LOW(BackgroundPage)
   STA SixteenBitBackgroundPointer
   LDA #HIGH(BackgroundPage)
@@ -85,7 +85,7 @@ LoadPalettesLoop:
   LDY #$00
 BackgroundLoop: ;Loop to upload 1K of data to the PPU as pointed at by the pointer in zeropage.
   LDA [SixteenBitBackgroundPointer],Y
-  STA $2007
+  STA $7
   INY
   BNE BackgroundLoop
   INC SixteenBitBackgroundPointer+1
@@ -101,14 +101,14 @@ BackgroundLoop: ;Loop to upload 1K of data to the PPU as pointed at by the point
   STA $203
 
 LoopUpOne:
-  BIT $2002
+  BIT $2
   BPL LoopUpOne
   
  LDA #%10001000   ; enable NMI, sprites from Pattern Table 0, background from Pattern Table 1
- STA $2000
+ STA $0
 
  LDA #%00011110   ; enable sprites, enable background
- STA $2001
+ STA $1
  JSR ReadPaddle
 
  FOREVER:
@@ -122,59 +122,59 @@ LoopUpOne:
  
 ReadPaddle: 
   LDA #$01 
-  STA $4016 
+  STA $6 
   LDA #$00 
-  STA $4016 
-  LDA $4016 
+  STA $6 
+  LDA $6 
   AND #$10 
   ASL A 
   ASL A 
   ASL A 
   ASL A 
   ROL PaddleButtons 
-  LDA $4016 
+  LDA $6 
   AND #$10 
   ASL A 
   ASL A 
   ASL A 
   ASL A 
   ROL PaddleButtons 
-  LDA $4016 
+  LDA $6 
   AND #$10 
   ASL A 
   ASL A
   ASL A 
   ASL A 
   ROL PaddleButtons 
-  LDA $4016 
+  LDA $6 
   AND #$10 
   ASL A 
   ASL A 
   ASL A 
   ASL A 
   ROL PaddleButtons 
-  LDA $4016 
+  LDA $6 
   AND #$10 
   ASL A 
   ASL A 
   ASL A 
   ASL A 
   ROL PaddleButtons 
-  LDA $4016 
+  LDA $6 
   AND #$10 
   ASL A 
   ASL A 
   ASL A 
   ASL A 
   ROL PaddleButtons 
-  LDA $4016 
+  LDA $6 
   AND #$10 
   ASL A 
   ASL A 
   ASL A 
   ASL A 
   ROL PaddleButtons 
-  LDA $4016 
+  LDA $6 
   AND #$10 
   ASL A 
   ASL A 
@@ -188,7 +188,7 @@ ReadPaddle:
 
 NMI:
   PHA
-  LDA $2002 ;Recognize interrupt
+  LDA $2 ;Recognize interrupt
   LDA PaddleButtons
   CMP #$FF ;Paddle plugged in?
   BEQ NoController ;No, take the square off the scale.
@@ -207,7 +207,7 @@ NoController:
   LDA #$7D
 SkipTextBelow:
   STA $203 ;Assign X value, either on graph value if plugged in, or middle if not plugged in.
-  LDA $4016
+  LDA $6
   AND #$08 ;Button pressed?
   BEQ Red ;Nope, Red Block.
   LDA #$02 ;Yes, Green Block to show paddle button is pressed is loaded.
@@ -216,11 +216,11 @@ Red:
   LDA #$01 ;Red Block to show paddle button isn't pressed is loaded.
 SetBackgroundValue:
   STA $201 ;Set Block color via sprite block change.
-  LDA $2002 ;Reset latch to write value in text to the screen.
+  LDA $2 ;Reset latch to write value in text to the screen.
   LDA #$21
-  STA $2006
+  STA $6
   LDA #$72
-  STA $2006
+  STA $6
   LDA PaddleButtons
   CMP #$FF
   BEQ NotConnectedText ;Not connected/readable, put letters ND on screen.
@@ -230,26 +230,26 @@ SetBackgroundValue:
   LSR A
   CLC
   ADC #$10
-  STA $2007
+  STA $7
   LDA PaddleButtons
   AND #$0F
   CLC
   ADC #$10
-  STA $2007
+  STA $7
   JMP SpritesToScreen
 NotConnectedText:
   LDA #$4E
-  STA $2007
+  STA $7
   LDA #$44
-  STA $2007
+  STA $7
 SpritesToScreen:
   LDA #$00
-  STA $2003       ; set the low byte (00) of the RAM address
+  STA $3       ; set the low byte (00) of the RAM address
   LDA #$02
-  STA $4014       ; set the high byte (02) of the RAM address, start the transfer
+  STA $4       ; set the high byte (02) of the RAM address, start the transfer
   LDA #$00
-  STA $2005
-  STA $2005 ;Reset scroll.
+  STA $5
+  STA $5 ;Reset scroll.
   INC Frame ;Tell main engine NMI is done.
   PLA
   RTI ;Return to the infinite loop.
@@ -264,19 +264,19 @@ SpritesToScreen:
 Palette:
   .incbin "Palette.bin"
 Sprite:
-  .db $FF,$01,$00,$FF
+  ..byte $FF,$01,$00,$FF
 PaddleYWhenPluggedIn:
-  .db $47
+  ..byte $47
 PaddleYWhenNotPluggedIn:
-  .db $37
+  ..byte $37
 BackgroundPage:
   .incbin "PaddleTestScreen.bin"
 
 
   .org $FFFA
-  .dw NMI
-  .dw RESET
-  .dw 0
+  ..word NMI
+  ..word RESET
+  ..word 0
 
 
 ;;;;;;;;;;;;;;  

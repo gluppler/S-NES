@@ -3,7 +3,7 @@
       .include "prefix_sprite_hit.a"
 
 test_name:
-      .db   "SPRITE HIT FLIPPING",0
+      ..byte "SPRITE HIT FLIPPING",0
       .code
 
 test_flip:
@@ -19,7 +19,7 @@ reset:
       ldx   #$f0
       jsr   set_vaddr
       lda   #solid_tile
-      sta   $2007
+      sta   $7
       
       ldx   #121
       ldy   #112

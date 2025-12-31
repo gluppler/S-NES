@@ -6,7 +6,7 @@
 phase = 1
 
 test_name:
-	.db     "APU FRAME IRQ TIMING",0
+	..byte "APU FRAME IRQ TIMING",0
 
 reset:
 	jsr setup_apu

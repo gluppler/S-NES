@@ -3,7 +3,7 @@
       .include "prefix_sprite_hit.a"
 
 test_name:
-      .db   "SPRITE HIT BASICS",0
+      ..byte "SPRITE HIT BASICS",0
       .code
 
 reset:

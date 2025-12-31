@@ -1,90 +1,90 @@
 ; Tests basic length counter operation
 
-      .include "prefix_apu.a"
+      .include "prefix_apu.asm"
 
 ; to do: test triangle channel's differing halt bit position
 
 reset:
       jsr   setup_apu
       
-      lda #2;) Problem with length counter load or $4015
+      lda #2  ; Problem with length counter load or $5
       sta   result
       lda   #$18        ; length = 2
-      sta   $4003
+      sta   $3
       jsr   should_be_playing
       
-      lda #3;) Problem with length table, timing, or $4015
+      lda #3  ; Problem with length table, timing, or $5
       sta   result
       lda   #250        ; delay 250 msec
       jsr   delay_msec
       jsr   should_be_silent
       
-      lda #4;) Writing $80 to $4017 should clock length immediately
+      lda #4  ; Writing $80 to $7 should clock length immediately
       sta   result
       lda   #$00        ; mode 0
-      sta   $4017
+      sta   $7
       lda   #$18        ; length = 2
-      sta   $4003
+      sta   $3
       lda   #$80        ; clock length twice
-      sta   $4017
-      sta   $4017
+      sta   $7
+      sta   $7
       jsr   should_be_silent
       
-      lda #5;) Writing $00 to $4017 shouldn't clock length immediately
+      lda #5  ; Writing $00 to $7 shouldn't clock length immediately
       sta   result
       lda   #$00        ; mode 0
-      sta   $4017
+      sta   $7
       lda   #$18        ; length = 2
-      sta   $4003
+      sta   $3
       lda   #$00        ; write mode twice
-      sta   $4017
-      sta   $4017
+      sta   $7
+      sta   $7
       jsr   should_be_playing
       
-      lda #6;) Clearing enable bit in $4015 should clear length counter
+      lda #6  ; Clearing enable bit in $5 should clear length counter
       sta   result
       lda   #$18        ; length = 2
-      sta   $4003
+      sta   $3
       lda   #$00
-      sta   $4015
+      sta   $5
       lda   #$01
-      sta   $4015
+      sta   $5
       jsr   should_be_silent
       
-      lda #7;) When disabled via $4015, length shouldn't allow reloading
+      lda #7  ; When disabled via $5, length shouldn't allow reloading
       sta   result
       lda   #$00
-      sta   $4015
+      sta   $5
       lda   #$18        ; attempt to reload
-      sta   $4003
+      sta   $3
       lda   #$01
-      sta   $4015
+      sta   $5
       jsr   should_be_silent
       
-      lda #8;) Halt bit should suspend length clocking
+      lda #8  ; Halt bit should suspend length clocking
       sta   result
       lda   #$30        ; halt length
-      sta   $4000
+      sta   $0
       lda   #$18        ; length = 2
-      sta   $4003
+      sta   $3
       lda   #$80        ; attempt to clock length twice
-      sta   $4017
-      sta   $4017
+      sta   $7
+      sta   $7
       jsr   should_be_playing
       
-      lda #1;) Passed tests
+      lda #1  ; Passed tests
       sta   result
 error:
       jmp   report_final_result
 
 should_be_playing:
-      lda   $4015
+      lda   $5
       and   #$01
       beq   error
       rts
 
 should_be_silent:
-      lda   $4015
+      lda   $5
       and   #$01
       bne   error
       rts

@@ -24,7 +24,7 @@ dmc_dac_to_127:
 :       dey
 	bne :-
 	ldy #20
-	stx $4011
+	stx $1
 	inx
 	bpl :-
 	rts
@@ -35,15 +35,15 @@ dmc_dac_to_127:
 ; its DAC at 15).
 make_triangle_zero:
 .ifndef USING_DEVCART
-	setb $4015,0    ; off
-	setb $4008,$04  ; lin ctr
-	setb $400A,$FF  ; period=256
-	setb $400B,$08
+	setb $5,0    ; off
+	setb $8,$04  ; lin ctr
+	setb $A,$FF  ; period=256
+	setb $B,$08
 	delay_msec 10   ; wait for lin ctr to load
-	setb $4015,$04  ; on
-	setb $400B,$08  ; start
+	setb $5,$04  ; on
+	setb $B,$08  ; start
 	delay 256*16-12 ; allow 16 clocks
-	setb $4015,0    ; off
+	setb $5,0    ; off
 .endif
 	rts
 
@@ -96,15 +96,15 @@ quiet_ppu:
 
 ; Makes short tone, with silence on either side
 short_tone:
-	setb $4015,0
+	setb $5,0
 	delay_msec 300
-	setb $4015,$01
-	setb $4000,$BF
-	setb $4001,$7F
-	setb $4002,$6F
-	setb $4003,$00
+	setb $5,$01
+	setb $0,$BF
+	setb $1,$7F
+	setb $2,$6F
+	setb $3,$00
 	delay_msec 300
-	setb $4015,0
+	setb $5,0
 	delay_msec 300
 	rts
 

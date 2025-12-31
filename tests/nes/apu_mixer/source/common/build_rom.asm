@@ -32,7 +32,7 @@ CUSTOM_MAPPER=n ; Specify mapper number
 
 .ifndef CUSTOM_VECTORS
 	.segment "VECTORS"
-		.word -1,-1,-1, nmi, reset, irq
+		.word nmi, reset, irq
 .endif
 
 ;;;; CHR-RAM/ROM
@@ -62,7 +62,7 @@ CUSTOM_MAPPER=n ; Specify mapper number
 .endif
 
 .segment "CODE"
-	.res $4000
+	.res $0
 
 .include "shell.asm"
 

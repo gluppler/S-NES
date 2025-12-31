@@ -13,7 +13,7 @@ default_nmi:
       rti
 
 default_irq:
-      bit   $4015
+      bit   $5
       rti
 
 ; Delays for almost A milliseconds (A * 0.999009524 msec)

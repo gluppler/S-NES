@@ -16,29 +16,29 @@ reset:  sei
 	
 	; Check first byte, and assume just powered
 	; if not as expected
-	lda <0
+	lda $0
 	cmp #$DB
 	jne std_reset
 	iny
 	
 	; Check second byte
-	lda <1
+	lda $1
 	cmp #$B6
 	bne failed
 	iny
 
 	; Rest of internal memory
-	setb <0,0
-	setb <1,0
+	setb $0,0
+	setb $1,0
 	lda #$6D
 	clc
-:       eor (<0),y
+:       eor ($0),y
 	bne failed
-	lda (<0),y
+	lda ($0),y
 	rol a
 	iny
 	bne :-
-	inc <1
+	inc $1
 	dex
 	bpl :-
 	
@@ -66,13 +66,13 @@ main:
 	jsr prompt_to_reset
 	
 	; Fill RAM with pattern
-	setb <0,0
-	setb <1,0
+	setb $0,0
+	setb $1,0
 	ldx #8
 	ldy #2
 	lda #$6D
 	clc
-:       sta (<0),y
+:       sta ($0),y
 	rol a
 	iny
 	bne :-
@@ -80,7 +80,7 @@ main:
 	dex
 	bne :-
 	
-	setb <0,$DB
-	setb <1,$B6
+	setb $0,$DB
+	setb $1,$B6
 	
 	jmp wait_reset

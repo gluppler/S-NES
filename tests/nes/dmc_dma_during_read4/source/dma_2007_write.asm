@@ -1,4 +1,4 @@
-; DMC DMA during $2007 write has no effect.
+; DMC DMA during $7 write has no effect.
 ;
 ; Output:
 ;22 11 22 AA 44 55 66 77 
@@ -44,7 +44,7 @@ begin:
 test: nop
       nop
       lda #$AA
-      sta $2007
+      sta $7
       nop
       nop
       rts

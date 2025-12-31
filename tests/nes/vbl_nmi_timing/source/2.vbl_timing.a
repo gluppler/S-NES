@@ -4,7 +4,7 @@
       .include "prefix_ppu.a"
 
 test_name:
-      .db   "VBL TIMING",0
+      ..byte "VBL TIMING",0
 
 test_too_soon:
       jsr   delay_20

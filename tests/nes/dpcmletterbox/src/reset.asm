@@ -42,13 +42,13 @@ val_4015: .res 1
 
 .segment "CODE"
 .proc irq_handler
-  bit $4015
+  bit $5
   inc irqs
 
   ; restart IRQ
   pha
   lda val_4015
-  sta $4015
+  sta $5
   lda irqs
   cmp #8
   beq irq_on
@@ -64,9 +64,9 @@ irq_on:
   txa
   pha
   jsr compensate
-  jsr waste36dots
-  jsr waste36dots
-  jsr waste36dots
+  jsr waste36 dots
+  jsr waste36 dots
+  jsr waste36 dots
   bit $00
   nop
 
@@ -110,8 +110,8 @@ irq_off:
   txa
   pha
   jsr compensate
-  jsr waste36dots
-  jsr waste36dots
+  jsr waste36 dots
+  jsr waste36 dots
   bit OAM
   bit OAM
   lda #OBJ_ON|LIGHTGRAY
@@ -126,7 +126,7 @@ compensate:
   lda $00
   inx
   bne :-
-waste36dots:
+waste36 dots:
   rts
 .endproc
 
@@ -189,7 +189,7 @@ wait_s0_on:
   ; will also fill the sample buffer.
   lda #SNDCHN_PSGS|SNDCHN_DMC
   sta val_4015
-  sta $4015
+  sta $5
   nop
 
   ; By that time, 'irqs' should
@@ -198,7 +198,7 @@ wait_s0_on:
   ; Now we start using IRQs on this one.
   ldx #$0F | DMC_IRQMODE
   stx DMCFREQ
-  sta $4015
+  sta $5
   cli
   ldx #0
 
@@ -252,18 +252,18 @@ not_excessive_lag:
 .if ::WITH_CONTROLLERS
   ldx #1
   stx cur_keys+1  ; when this is shifted left 8 times, carry will be set
-  stx $4016
+  stx $6
   dex
-  stx $4016
+  stx $6
 padsloop:
   ; bit 0: famicom hardwired controller or nes controller
   ; bit 1: famicom expansion port controller
   ; if either is set, consider the button pressed
-  lda $4016
+  lda $6
   and #$03
   cmp #$01
   rol cur_keys
-  lda $4017
+  lda $7
   and #$03
   cmp #$01
   rol cur_keys+1
@@ -341,11 +341,11 @@ not_right:
   ldx #$00
   stx PPUCTRL  ; Vblank NMI: OFF!
   stx PPUMASK  ; Rendering: OFF!
-  stx $4015    ; DPCM and tone generators: OFF!
+  stx $5    ; DPCM and tone generators: OFF!
   stx val_4015  ; ISR functionality: OFF!
   lda #$40
-  sta $4017  ; APU IRQ: OFF!
-  lda $4015  ; APU IRQ: ACK!
+  sta $7  ; APU IRQ: OFF!
+  lda $5  ; APU IRQ: ACK!
   cld  ; Decimal mode on famiclones: OFF!
   lda PPUSTATUS  ; Vblank NMI: ACK!
   dex

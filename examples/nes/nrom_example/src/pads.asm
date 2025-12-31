@@ -75,15 +75,15 @@ controller2 = $0001
 
   ldx #1             ; get put          <- strobe code must take an odd number of cycles total
   stx controller1    ; get put get      <- controller1 and controller2 must be in the zeropage
-  stx $4016          ; put get put get
+  stx $6          ; put get put get
   dex                ; put get
-  stx $4016          ; put get put get
+  stx $6          ; put get put get
 @read_loop:
-  lda $4017          ; put get put GET  <- loop code must take an even number of cycles total
+  lda $7          ; put get put GET  <- loop code must take an even number of cycles total
   and #%00000011     ; put get
   cmp #1             ; put get
   rol controller2, x ; put get put get put get (X = 0; waste 1 cycle and 0 bytes for alignment)
-  lda $4016          ; put get put GET
+  lda $6          ; put get put GET
   and #%00000011     ; put get
   cmp #1             ; put get
   rol controller1    ; put get put get put

@@ -13,10 +13,6 @@
 
 OAM = $0200
 
-; Set TEST_DMC_DMA to nonzero to turn on a stress test of glitch
-; avoidance in pads.asm.  This emits a high-pitched tone.
-TEST_DMC_DMA = 0
-
 .segment "ZEROPAGE"
 nmis:          .res 1
 oam_used:      .res 1  ; starts at 0
@@ -62,17 +58,6 @@ new_keys:      .res 2
   ; Set up game variables, as if it were the start of a new level.
   jsr init_player
 
-  ; Optional testing
-  .if ::TEST_DMC_DMA
-    lda #$4F  ; Looping playback
-    sta $4010
-    lda #$00  ; $C000, 1 byte
-    sta $4012
-    sta $4013
-    lda #$1F  ; Begin playback
-    sta $4015
-  .endif
-
 forever:
 
   ; Copy the display list from main RAM to the PPU and then
@@ -89,7 +74,7 @@ forever:
   ; yours might, so I'm marking the first entry used anyway.  
   ldx #4
   stx oam_used
-  ; Each routine adds to oam_used the number of bytes it wrote.
+  ; adds to oam_used
   jsr draw_player_sprite
   ldx oam_used
   jsr ppu_clear_oam

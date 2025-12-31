@@ -45,20 +45,20 @@ ReadLockJoypadDPCM
 
 ReadJoypad
 	lda #$01
-	sta $4016			;Be sure to reset the shift counters
+	sta $6			;Be sure to reset the shift counters
 	sta Pad1
 	sta Pad2
 	lsr A				;Simple trick to get a 0, heh
-	sta $4016
+	sta $6
 
--	lda $4016			;Read the value of JoyPad 1
+-	lda $6			;Read the value of JoyPad 1
 	lsr A
 	bcs +
 	lsr A
 +	rol Pad1
 	bcc -				;Carry will be set when all 8 keys are read
 
--	lda $4017			;Read the value of JoyPad 1
+-	lda $7			;Read the value of JoyPad 1
 	lsr A
 	bcs +
 	lsr A

@@ -71,32 +71,32 @@ macro seek n
   base {n}
 endmacro
 
-macro vram x, y; ($2000 + ({y} << 5) + {x}); endmacro
+macro vram x, y; ($0 + ({y} << 5) + {x}); endmacro
 
 {seek $e000}
-fill $2000
+fill $0
 
 {seek $fffa}
-dw NMIVector
-dw ResetVector
-dw ResetVector
+.word NMIVector
+.word ResetVector
+.word ResetVector
 
 {seek $e000}
 ResetVector:
 cld
 ldx #$00
-stx $2000
-stx $2001
-stx $4010
-stx $4015
+stx $0
+stx $1
+stx $0
+stx $5
 stx $5010
 stx $5015
-bit $2002
+bit $2
 -
-bit $2002
+bit $2
 bpl {-}
 -
-bit $2002
+bit $2
 bpl {-}
 stx <zp::exram
 stx <zp::mirroring
@@ -107,7 +107,7 @@ stx $5204
 dex // now FF
 txs
 stx <zp::inputold
-stx $4017
+stx $7
 lda #$03
 sta $5101
 sta $5107
@@ -117,7 +117,7 @@ lda #$4c // jmp absolute
 sta <zp::trampoline
 lda #$30 // initial PPUCTRL
 sta <zp::ppuctrl
-sta $2000
+sta $0
 
 // ---------------- Set up ex-attribute table in EXRAM
 lda #$02
@@ -152,14 +152,14 @@ lda #<VRAMData>>8
 sta <zp::pointer+1
 lda #$20
 ldy #$00
-sta $2006
-sty $2006
+sta $6
+sty $6
 lda (zp::pointer),y // number of spaces
 VRAMLoop:
 tax
 lda #$23 // space
 -
-sta $2007
+sta $7
 dex
 bne {-}
 iny
@@ -169,7 +169,7 @@ tax
 -
 iny
 lda (zp::pointer),y
-sta $2007
+sta $7
 dex
 bne {-}
 tya
@@ -192,8 +192,8 @@ sta <zp::nmitask
 lda <zp::ppuctrl
 ora #$80
 sta <zp::ppuctrl
-bit $2002
-sta $2000
+bit $2
+sta $0
 
 Forever:
 jmp Forever
@@ -225,10 +225,10 @@ rts
 // ---------------- NMI event loop
 NMIVector:
 lda #$00
-sta $2003
+sta $3
 lda #$02
-sta $4014
-bit $2002
+sta $4
+bit $2
 ldx <zp::nmitask
 lda #<task::readdata
 sta <zp::nmitask
@@ -240,18 +240,18 @@ jsr zp::trampoline
 
 // set PPUSCROLL
 lda #$00
-sta $2005
+sta $5
 lda #$08
-sta $2005
+sta $5
 
 // read joypad
 lda #$01
 sta <zp::inputnew
-sta $4016
+sta $6
 lsr             // now 0
-sta $4016
+sta $6
 -
-lda $4016
+lda $6
 and #$03
 cmp #$01
 rol <zp::inputnew
@@ -343,12 +343,12 @@ rti
 
 // ---------------- NMI tasks
 JumpTable:
-dw ReadData
-dw SetPPUCTRL
-dw SetEXRAM
-dw SetMirror
-dw SetBanks
-dw Initialize
+.word ReadData
+.word SetPPUCTRL
+.word SetEXRAM
+.word SetMirror
+.word SetBanks
+.word Initialize
 
 // ---------------- NMI task: read data from CHR (default)
 ReadData:
@@ -357,72 +357,72 @@ ldx #$07
 ldy #$ff
 -
 lda >CHRAddrTable,x
-sta $2006
-sty $2006
-lda $2007
-lda $2007
+sta $6
+sty $6
+lda $7
+lda $7
 sta <zp::databanks,x
 dex
 bpl {-}
 
 lda #<{vram 15, 18}>>8
-sta $2006
+sta $6
 lda #<{vram 15, 18}
-sta $2006
+sta $6
 lda <zp::databanks
-sta $2007
+sta $7
 lda <zp::databanks+1
-sta $2007
+sta $7
 lda <zp::databanks+2
-sta $2007
+sta $7
 lda <zp::databanks+3
-sta $2007
+sta $7
 lda <zp::databanks+4
-sta $2007
+sta $7
 lda <zp::databanks+5
-sta $2007
+sta $7
 lda <zp::databanks+6
-sta $2007
+sta $7
 lda <zp::databanks+7
-sta $2007
+sta $7
 rts
 
 CHRAddrTable:
-db $03,$07,$0b,$0f,$13,$17,$1b,$1f
+.byte $03,$07,$0b,$0f,$13,$17,$1b,$1f
 
 // ---------------- NMI task: Change PPUCTRL
 SetPPUCTRL:
 lda <zp::ppuctrl
 ora #$04   // write downward
-sta $2000
+sta $0
 ldx #<{vram 24, 8}>>8
-stx $2006
+stx $6
 ldx #<{vram 24, 8}
-stx $2006
+stx $6
 ldx #$00
 stx $5105 // make sure real nametable is mapped in
 and #$08  // current OBJ pattern table
 beq {+}
 inx
 +
-stx $2007
+stx $7
 lda <zp::ppuctrl
 ldx #$00
 and #$10 // current BG pattern table
 beq {+}
 inx
 +
-stx $2007
+stx $7
 lda <zp::ppuctrl
-sta $2000
+sta $0
 jmp SetMirror
 
 // ---------------- NMI task: Change CHR banks
 SetBanks:
 lda #<{vram 18, 12}>>8
-sta $2006
+sta $6
 lda #<{vram 18, 12}
-sta $2006
+sta $6
 // pointer = bankorder * 12 + BankOrderData
 lda <zp::bankorder
 asl
@@ -439,7 +439,7 @@ ldy #$00
 sty $5105 // make sure real nametable is mapped in
 -
 lda (zp::pointer),y
-sta $2007
+sta $7
 tax
 tya
 sta $5120,x
@@ -455,24 +455,24 @@ sta $5105
 rts
 
 BankOrderData:
-db  0, 1, 2, 3, 4, 5, 6, 7, 8, 9,10,11
-db  8, 9,10,11, 0, 1, 2, 3, 4, 5, 6, 7
-db  8, 0, 4, 9, 1, 5,10, 2, 6, 3, 7,11
-db  0, 4, 8, 1, 5, 9, 2, 6,10,11, 3, 7
+.byte 0, 1, 2, 3, 4, 5, 6, 7, 8, 9,10,11
+.byte 8, 9,10,11, 0, 1, 2, 3, 4, 5, 6, 7
+.byte 8, 0, 4, 9, 1, 5,10, 2, 6, 3, 7,11
+.byte 0, 4, 8, 1, 5, 9, 2, 6,10,11, 3, 7
 BankOrderDataEnd:
 
 // ---------------- NMI task: Initialize PPUMASK and palette
 Initialize:
 lda #$1e
-sta $2001
+sta $1
 // fall through
 
 // ---------------- NMI task: Change EXRAM mode (and palette)
 SetEXRAM:
 lda #$3f
-sta $2006
+sta $6
 ldx #$00
-stx $2006
+stx $6
 lda <zp::exram
 sta $5104
 cmp #$01
@@ -481,58 +481,58 @@ ldx #$08
 +
 ldy >PaletteData
 -
-sty $2007
+sty $7
 inx
 lda >PaletteData,x
-sta $2007
+sta $7
 inx
 lda >PaletteData,x
-sta $2007
-sty $2007
+sta $7
+sty $7
 cpx #$10
 bcc {-}
 rts
 
 PaletteData:
-db $00
-db $20,$0F
-db $22,$0F
-db $2A,$0F
-db $26,$0F
-db $33,$0F
-db $36,$0F
-db $39,$0F
-db $3C,$0F
+.byte $00
+.byte $20,$0F
+.byte $22,$0F
+.byte $2A,$0F
+.byte $26,$0F
+.byte $33,$0F
+.byte $36,$0F
+.byte $39,$0F
+.byte $3C,$0F
 
 // ---------------- VRAM data
 VRAMData:
-db  4*32+7,  18, "MMC5 CHR BANK TEST"
-db  7+32+7,  18, "REGISTER SETTINGS:"
-db  7+32+4,  18, "OBJ PATTERN TABLE:", 3, 3, "000"
-db  4   +4,  17, "BG PATTERN TABLE:", 4, 3, "000"
-db  4+32+18, 12, "0123456789AB"
-db  2   +2,  15, "BANK SET ORDER:"
-db 15+32+7,  18, "CURRENT CHR BANKS:"
-db  7+32+9,   4, "OBJ:"
-db 19   +9,   3, "BG:", 7, 4, $25,$65,$A5,$E5
-db  9   +9,   5, "DATA:"
-db 18+32+12,  9, "CONTROLS:"
-db 11+32+3,   2, "A:", 7, 17, "OBJ PATTERN TABLE"
-db  3   +3,   2, "B:", 7, 16, "BG PATTERN TABLE"
-db  4   +3,   6, "START:", 3, 15, "CHANGE OBJ SIZE"
-db  5   +3,  21, "SELECT:  TOGGLE EXRAM"
-db  8   +3,   6, "PAD U:", 3, 16, "TOGGLE FILL MODE"
-db  4   +3,  26, "PAD L R: CHANGE BANK ORDER"
-db  3+32*2,  64
-db $00,$00,$00,$00,$00,$00,$00,$00
-db $00,$00,$00,$00,$00,$00,$00,$00
-db $00,$00,$00,$00,$00,$00,$05,$00
-db $00,$00,$00,$00,$04,$05,$05,$01
-db $00,$00,$00,$80,$A8,$AA,$00,$00
-db $C0,$30,$00,$00,$00,$00,$00,$00
-db $CC,$FF,$F3,$00,$00,$00,$00,$00
-db $00,$00,$00,$00,$00,$00,$00,$00
-db 0
+.byte 4*32+7,  18, "MMC5 CHR BANK TEST"
+.byte 7+32+7,  18, "REGISTER SETTINGS:"
+.byte 7+32+4,  18, "OBJ PATTERN TABLE:", 3, 3, "000"
+.byte 4   +4,  17, "BG PATTERN TABLE:", 4, 3, "000"
+.byte 4+32+18, 12, "0123456789AB"
+.byte 2   +2,  15, "BANK SET ORDER:"
+.byte 15+32+7,  18, "CURRENT CHR BANKS:"
+.byte 7+32+9,   4, "OBJ:"
+.byte 19   +9,   3, "BG:", 7, 4, $25,$65,$A5,$E5
+.byte 9   +9,   5, "DATA:"
+.byte 18+32+12,  9, "CONTROLS:"
+.byte 11+32+3,   2, "A:", 7, 17, "OBJ PATTERN TABLE"
+.byte 3   +3,   2, "B:", 7, 16, "BG PATTERN TABLE"
+.byte 4   +3,   6, "START:", 3, 15, "CHANGE OBJ SIZE"
+.byte 5   +3,  21, "SELECT:  TOGGLE EXRAM"
+.byte 8   +3,   6, "PAD U:", 3, 16, "TOGGLE FILL MODE"
+.byte 4   +3,  26, "PAD L R: CHANGE BANK ORDER"
+.byte 3+32*2,  64
+.byte $00,$00,$00,$00,$00,$00,$00,$00
+.byte $00,$00,$00,$00,$00,$00,$00,$00
+.byte $00,$00,$00,$00,$00,$00,$05,$00
+.byte $00,$00,$00,$00,$04,$05,$05,$01
+.byte $00,$00,$00,$80,$A8,$AA,$00,$00
+.byte $C0,$30,$00,$00,$00,$00,$00,$00
+.byte $CC,$FF,$F3,$00,$00,$00,$00,$00
+.byte $00,$00,$00,$00,$00,$00,$00,$00
+.byte 0
 
 // ---------------- OAM data
 
@@ -540,20 +540,20 @@ define ypos 119
 define xpos 176
 OAMData:
 // 8x8
-db {ypos}, $25, 0, {xpos}-24
-db {ypos}, $65, 1, {xpos}-16
-db {ypos}, $a5, 2, {xpos}-8
-db {ypos}, $e5, 3, {xpos}
-db $f0, $f0, $f0, $f0
-db $f0, $f0, $f0, $f0
-db $f0, $f0, $f0, $f0
-db $f0, $f0, $f0, $f0
+.byte {ypos}, $25, 0, {xpos}-24
+.byte {ypos}, $65, 1, {xpos}-16
+.byte {ypos}, $a5, 2, {xpos}-8
+.byte {ypos}, $e5, 3, {xpos}
+.byte $f0, $f0, $f0, $f0
+.byte $f0, $f0, $f0, $f0
+.byte $f0, $f0, $f0, $f0
+.byte $f0, $f0, $f0, $f0
 // 8x16
-db {ypos}-8, $26, 0, {xpos}-56
-db {ypos}-8, $66, 1, {xpos}-48
-db {ypos}-8, $a6, 2, {xpos}-40
-db {ypos}-8, $e6, 3, {xpos}-32
-db {ypos}-8, $27, 0, {xpos}-24
-db {ypos}-8, $67, 1, {xpos}-16
-db {ypos}-8, $a7, 2, {xpos}-8
-db {ypos}-8, $e7, 3, {xpos}
+.byte {ypos}-8, $26, 0, {xpos}-56
+.byte {ypos}-8, $66, 1, {xpos}-48
+.byte {ypos}-8, $a6, 2, {xpos}-40
+.byte {ypos}-8, $e6, 3, {xpos}-32
+.byte {ypos}-8, $27, 0, {xpos}-24
+.byte {ypos}-8, $67, 1, {xpos}-16
+.byte {ypos}-8, $a7, 2, {xpos}-8
+.byte {ypos}-8, $e7, 3, {xpos}

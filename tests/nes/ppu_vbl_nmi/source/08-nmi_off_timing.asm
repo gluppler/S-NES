@@ -37,11 +37,11 @@ test:   jsr print_a
 	lda #0
 	sta <nmi_count
 	lda #$80
-	sta $2000
+	sta $0
 	nop
 	nop
 	lda #0
-	sta $2000
+	sta $0
 	nop
 	nop
 	

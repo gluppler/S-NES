@@ -1,6 +1,6 @@
 ; All read-modify-write-instructions on 6502 have a particular glitch:
 ; They first write back the unmodified value; then, the modified value.
-; This test uses the PPU OAM write ($2004) autoincrement feature to
+; This test uses the PPU OAM write ($4) autoincrement feature to
 ; verify that the CPU does that.
 ;
 ; Expected output:
@@ -285,7 +285,7 @@ oam_read_test:
 	 ; back was correct
 	stx SPRADDR
 	; Load something into open bus
-	lda $2007
+	lda $7
 	pla
 	eor SPRDATA
 	beq :+
@@ -466,7 +466,7 @@ test_dummy_writes:
  	lda #$EA
  	sta opcode_buffer+6
  	
- 	setw ptr_2004, $2004
+ 	setw ptr_2004, $4
 
         ldx #0 ; X coordinate
         stx num_fails

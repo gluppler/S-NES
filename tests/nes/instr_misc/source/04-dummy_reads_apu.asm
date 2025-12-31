@@ -1,6 +1,6 @@
 ; Tests dummy reads for (hopefully) ALL instructions which do them,
 ; including unofficial ones. Prints opcode(s) of failed
-; instructions. Requires that APU implement $4015 IRQ flag reading.
+; instructions. Requires that APU implement $5 IRQ flag reading.
 
 .include "shell.inc"
 

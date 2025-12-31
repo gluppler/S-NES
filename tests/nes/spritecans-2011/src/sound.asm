@@ -27,9 +27,9 @@
 .export init_sound, start_sound, update_sound, soundBSS
 
 ; Ordinarily, the effect engine will move a pulse sound effect from
-; $4000 to $4004 if $4004 is idle and $4000 is not, or if $4004 has
-; less sfx data left to play than $4000.  Turn this off to force all
-; pulse sfx to be played on $4000.
+; $0 to $4 if $4 is idle and $0 is not, or if $4 has
+; less sfx data left to play than $0.  Turn this off to force all
+; pulse sfx to be played on $0.
 SQUARE_POOLING = 1
 
 ; As of 2011-03-10, a sound effect interrupts a musical instrument on
@@ -39,7 +39,7 @@ SQUARE_POOLING = 1
 ; music is louder.
 KEEP_MUSIC_IF_LOUDER = 1
 
-SNDCHN = $4015
+SNDCHN = $5
 
 .segment "BSS"
 soundBSS: .res 64
@@ -60,26 +60,26 @@ psg_sfx_ratecd = soundBSS + 19
   lda #$0F
   sta SNDCHN
   lda #$30
-  sta $4000
-  sta $4004
-  sta $400C
+  sta $0
+  sta $4
+  sta $C
   sta psg_sfx_lastfreqhi+0
   sta psg_sfx_lastfreqhi+8
   sta psg_sfx_lastfreqhi+4
   lda #8
-  sta $4001
-  sta $4005
+  sta $1
+  sta $5
   lda #0
-  sta $4003
-  sta $4007
-  sta $400F
+  sta $3
+  sta $7
+  sta $F
   sta psg_sfx_remainlen+0
   sta psg_sfx_remainlen+4
   sta psg_sfx_remainlen+8
   sta psg_sfx_remainlen+12
   sta music_playing
   lda #0
-  sta $4011
+  sta $1
   rts
 .endproc
 
@@ -116,7 +116,7 @@ sndrate = 4
   lda psg_sound_table+3,x
   sta sndlen
 
-  ; split up square wave sounds between $4000 and $4004
+  ; split up square wave sounds between $0 and $4
   .if ::SQUARE_POOLING
     lda sndchno
     bne not_ch0to4  ; if not ch 0, don't try moving it
@@ -180,7 +180,7 @@ loop:
   beq not_triangle_kill
     lda #$30
   not_triangle_kill:
-  sta $4000,x
+  sta $0,x
   lda #$FF
   sta psg_sfx_lastfreqhi,x
   rts
@@ -228,26 +228,26 @@ update_channel_hw:
   ora #$30
   cpx #12
   bne notnoise
-  sta $400C
+  sta $C
   lda 3
-  sta $400E
+  sta $E
 rate_divider_cancel:
   rts
 
 notnoise:
-  sta $4000,x
+  sta $0,x
   ldy 3
   lda tvSystem
   beq :+
   iny
 :
   lda periodTableLo,y
-  sta $4002,x
+  sta $2,x
   lda periodTableHi,y
   cmp psg_sfx_lastfreqhi,x
   beq no_change_to_hi_period
   sta psg_sfx_lastfreqhi,x
-  sta $4003,x
+  sta $3,x
 no_change_to_hi_period:
 
   rts

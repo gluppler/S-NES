@@ -40,7 +40,7 @@ zp_res console_buf,console_buf_size
 ; Initializes console
 console_init:
 	; Flag that console hasn't been initialized
-	setb console_scroll,-1&$FF
+	setb console_scroll, $FF&$FF
 	lda #0
 	sta text_color
 	jmp console_clear_line_
@@ -76,7 +76,7 @@ console_hide:
 
 console_wait_vbl_:
 	lda console_scroll
-	cmp #-1&$FF
+	cmp #$FF&$FF
 	jne wait_vbl_optional
 	
 	; Deferred initialization of PPU until first use of console

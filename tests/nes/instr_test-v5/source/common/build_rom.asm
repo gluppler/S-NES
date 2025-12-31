@@ -40,7 +40,7 @@ MAPPER = n      ; Specify mapper number
 
 .ifndef CUSTOM_VECTORS
 	.segment "VECTORS"
-		.word -1,-1,-1, nmi, reset, irq
+		.word $FFFF, $FFFF, $FFFF, nmi, reset, irq
 .endif
 
 ;;;; CHR-RAM/ROM
@@ -71,7 +71,7 @@ MAPPER = n      ; Specify mapper number
 
 .ifndef LARGER_ROM_HACK
 .segment "CODE"
-	.res $4000
+	.res $0
 .endif
 
 .include "shell.asm"

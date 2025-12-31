@@ -6,14 +6,14 @@
 read_joy_fast:
 	; Strobe controller
 	lda #1          ; 2
-	sta $4016       ; 4
+	sta $6       ; 4
 	lda #0          ; 2
-	sta $4016       ; 4
+	sta $6       ; 4
 	
 	; Read 8 bits
 	lda #$80        ; 2
 	sta <temp       ; 3
-:       lda $4016       ; *4
+:       lda $6       ; *4
 	
 	; Merge bits 0 and 1 into carry. Normal
 	; controllers use bit 0, and Famicom

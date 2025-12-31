@@ -112,10 +112,10 @@ fail_current_test:
 
 	 setb SNDCHN,   3 ; Enable APU square channel 0
 
-	 setb $4000+0, $0F ; env decay rate 15; not disabled, not looped; length counter enabled
-	 setb $4000+1, $00 ; no sweep
-	 setb $4000+2, $C8 ; period lo
-	 setb $4000+3, 1*8+3 ; period hi=3, length counter=30
+	 setb $0+0, $0F ; env decay rate 15; not disabled, not looped; length counter enabled
+	 setb $0+1, $00 ; no sweep
+	 setb $0+2, $C8 ; period lo
+	 setb $0+3, 1*8+3 ; period hi=3, length counter=30
 	 
 	 ;jsr wait_vbl
 	 ;print_str "Test #"

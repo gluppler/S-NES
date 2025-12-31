@@ -7,21 +7,21 @@
 .include "vol_shell.inc"
 
 test_main:
-	setb $4001,$7F  ; disable sweep
-	setb $4005,$7F
-	setb $4002,0    ; period = 0
-	setb $4003,0
-	setb $4006,0
-	setb $4007,0
+	setb $1,$7F  ; disable sweep
+	setb $5,$7F
+	setb $2,0    ; period = 0
+	setb $3,0
+	setb $6,0
+	setb $7,0
 	delay 5000      ; allow period to settle in
-	setb $4015,$03
+	setb $5,$03
 	
 	ldx #$6F        ; period = 896*2
 	ldy #$00
-	stx $4002
-	stx $4006
-	sty $4003
-	sty $4007
+	stx $2
+	stx $6
+	sty $3
+	sty $7
 	delay 175
 	
 	extra = 27-1
@@ -31,18 +31,18 @@ test_main:
 
 @1:     delay extra
 @2:     lda dmc,x
-	sta $4011
+	sta $1
 	delay 896-4-2
 	lda #127
-	sta $4011
+	sta $1
 	delay 896-4-5-extra-4
 	dey
 	bne @1
 @first: inx
 	lda sq1,x       ; update square volumes
-	sta $4000
+	sta $0
 	lda sq2,x
-	sta $4004
+	sta $4
 	ldy #80
 	lda dmc,x
 	bne @2

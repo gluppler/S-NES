@@ -1,17 +1,17 @@
 ; This test tests the following diverse set of features:
 ;
-; - CIRAM access (read and write) through $2007 (i.e. internal nametables)
-; - For $2007 access, the 1-byte and 32-byte increment flag
-; - Rudimentary PPU bus functions (tolerance: only $2003(W) into $2000(R) is tested)
+; - CIRAM access (read and write) through $7 (i.e. internal nametables)
+; - For $7 access, the 1-byte and 32-byte increment flag
+; - Rudimentary PPU bus functions (tolerance: only $3(W) into $0(R) is tested)
 ; - CPU RAM mirroring ($0000-$07FF should be mirrored within $0000-$1FFF)
-; - PPU I/O mirroring ($2000-$2007 should be mirrored within $2000-$3FFF)
+; - PPU I/O mirroring ($0-$7 should be mirrored within $0-$3FFF)
 ; - Code execution from different pages of CPU RAM (including stack and zeropage)
 ; - Rudimentary sprite 0-hit flag function (tolerance: any shape, ~30 scanlines)
 ; - OAM (sprite memory) updates from CPU RAM (depends on RAM mirrors)
 ; - OAM (sprite memory) updates from ROM
 ; - OAM (sprite memory) updates from I/O space (depends on PPU open bus)
-; - CHR-ROM reading through $2007
-; - CNROM (iNES mapper 3) banked CHR-ROM access through $2007
+; - CHR-ROM reading through $7
+; - CNROM (iNES mapper 3) banked CHR-ROM access through $7
 ;
 ; And much more. For details, see the attached readme.txt file.
 ;
@@ -21,7 +21,7 @@
 ;  -------------------------------
 ;  Testing basic PPU memory I/O.
 ;  Performing tests that combine
-;  sprite 0 hit flag, $4014 DMA
+;  sprite 0 hit flag, $4 DMA
 ;  and the RAM mirroring...
 ;  Graphical artifacts during
 ;  this test are OK and expected.
@@ -229,7 +229,7 @@ populate_ciram_slow:
 	; $2D00..$2DFF:  addr+$80
 	; Do it slowly,
 	; in order to avoid bugs with those PPUs that do not
-	; automatically update the taddr when $2007 is written to.
+	; automatically update the taddr when $7 is written to.
 	ldx #$00
 	ldy #$80
 :	lda #$2D
@@ -279,8 +279,8 @@ populate_ciram_quick:
 	.byte "PPU memory I/O does not work.",newline	;DO_DTE
 	.byte "Possible areas of problem:",newline	;DO_DTE
 	.byte "- PPU not implemented",newline	;DO_DTE
-	.byte "- PPU memory writing ($2007)",newline	;DO_DTE
-	.byte "- PPU memory reading ($2007)",newline	;DO_DTE
+	.byte "- PPU memory writing ($7)",newline	;DO_DTE
+	.byte "- PPU memory reading ($7)",newline	;DO_DTE
 	.byte "- PPU memory area $2C00-$2FFF",0		;DO_DTE
 
 	MakeTest TEST_ONEBYTEBUFFER
@@ -552,12 +552,12 @@ test_nta_mirror:
 	.byte "and be readable for a while",newline	;DO_DTE
 	.byte "in any PPU register that does",newline	;DO_DTE
 	.byte "not have a read function.",newline	;DO_DTE
-	.byte "This is called «open bus».",newline	;DO_DTE
+	.byte "This is called open bus.",newline	;DO_DTE
 	;      0123456789ABCDEF0123456789ABC|0123456789ABCDEF0123456789ABC|
 	.byte "To minimally pass this test,",newline	;DO_DTE
 	.byte "you need to at least provide",newline	;DO_DTE
-	.byte "a bridge between $2003(W) and",newline	;DO_DTE
-	.byte "$2000(R).",0	;DO_DTE
+	.byte "a bridge between $3(W) and",newline	;DO_DTE
+	.byte "$0(R).",0	;DO_DTE
 
 	MakeTest TEST_PPU_OPEN_BUS_SHORTCUT
 	;      0123456789ABCDEF0123456789ABC|0123456789ABCDEF0123456789ABC|
@@ -568,7 +568,7 @@ test_nta_mirror:
 	.byte "workaround for a failed test!",0	;DO_DTE
 .popseg
 test_ppu_open_bus:
-	; Does $2000 give back what was written to $2003?
+	; Does $0 give back what was written to $3?
 	begin_test TEST_PPU_OPEN_BUS
 
 	jsr normalize_wait_vbl
@@ -580,7 +580,7 @@ test_ppu_open_bus:
 	cmp #$B1
 	jsr fail_current_test_ifNE ; fail if did not return last-written value
 
-	; Hopefully $2000 does NOT just give back SPRADDR
+	; Hopefully $0 does NOT just give back SPRADDR
 	begin_test TEST_PPU_OPEN_BUS_SHORTCUT
 	lda #$A6
 	sta SPRADDR
@@ -647,91 +647,91 @@ test_ppu_read_buffer_open_bus:
 .pushseg
 	MakeTest TEST_PPU_OPENBUS_FROM_WRITE2000_MUST_NOT_WRITETO_READBUFFER
 	;      0123456789ABCDEF0123456789ABC|
-	.byte "A write to $2000", $FF	;DO_DTE
+	.byte "A write to $0", $FF	;DO_DTE
 	.word TEST_PPU_OPENBUS_FROM_COMMON
 
 	MakeTest TEST_PPU_OPENBUS_FROM_WRITE2001_MUST_NOT_WRITETO_READBUFFER
 	;      0123456789ABCDEF0123456789ABC|
-	.byte "A write to $2001", $FF	;DO_DTE
+	.byte "A write to $1", $FF	;DO_DTE
 	.word TEST_PPU_OPENBUS_FROM_COMMON
 
 	MakeTest TEST_PPU_OPENBUS_FROM_WRITE2002_MUST_NOT_WRITETO_READBUFFER
 	;      0123456789ABCDEF0123456789ABC|
-	.byte "A write to $2002", $FF	;DO_DTE
+	.byte "A write to $2", $FF	;DO_DTE
 	.word TEST_PPU_OPENBUS_FROM_COMMON
 
 	MakeTest TEST_PPU_OPENBUS_FROM_WRITE2003_MUST_NOT_WRITETO_READBUFFER
 	;      0123456789ABCDEF0123456789ABC|
-	.byte "A write to $2003", $FF	;DO_DTE
+	.byte "A write to $3", $FF	;DO_DTE
 	.word TEST_PPU_OPENBUS_FROM_COMMON
 
 	MakeTest TEST_PPU_OPENBUS_FROM_WRITE2004_MUST_NOT_WRITETO_READBUFFER
 	;      0123456789ABCDEF0123456789ABC|
-	.byte "A write to $2004", $FF	;DO_DTE
+	.byte "A write to $4", $FF	;DO_DTE
 	.word TEST_PPU_OPENBUS_FROM_COMMON
 
 	MakeTest TEST_PPU_OPENBUS_FROM_WRITE2005_MUST_NOT_WRITETO_READBUFFER
 	;      0123456789ABCDEF0123456789ABC|
-	.byte "A write to $2005", $FF	;DO_DTE
+	.byte "A write to $5", $FF	;DO_DTE
 	.word TEST_PPU_OPENBUS_FROM_COMMON
 
 	MakeTest TEST_PPU_OPENBUS_FROM_WRITE2006_MUST_NOT_WRITETO_READBUFFER
 	;      0123456789ABCDEF0123456789ABC|
-	.byte "A write to $2006", $FF	;DO_DTE
+	.byte "A write to $6", $FF	;DO_DTE
 	.word TEST_PPU_OPENBUS_FROM_COMMON
 
 	MakeTest TEST_PPU_OPENBUS_FROM_WRITE2007_MUST_NOT_WRITETO_READBUFFER
 	;      0123456789ABCDEF0123456789ABC|
-	.byte "A write to $2007", $FF	;DO_DTE
+	.byte "A write to $7", $FF	;DO_DTE
 	.word TEST_PPU_OPENBUS_FROM_COMMON
 
 	MakeTest TEST_PPU_OPENBUS_FROM_READ2000_MUST_NOT_WRITETO_READBUFFER
 	;      0123456789ABCDEF0123456789ABC|
-	.byte "A read from $2000", $FF	;DO_DTE
+	.byte "A read from $0", $FF	;DO_DTE
 	.word TEST_PPU_OPENBUS_FROM_COMMON
 
 	MakeTest TEST_PPU_OPENBUS_FROM_READ2001_MUST_NOT_WRITETO_READBUFFER
 	;      0123456789ABCDEF0123456789ABC|
-	.byte "A read from $2001", $FF	;DO_DTE
+	.byte "A read from $1", $FF	;DO_DTE
 	.word TEST_PPU_OPENBUS_FROM_COMMON
 
 	MakeTest TEST_PPU_OPENBUS_FROM_READ2002_MUST_NOT_WRITETO_READBUFFER
 	;      0123456789ABCDEF0123456789ABC|
-	.byte "A read from $2002", $FF	;DO_DTE
+	.byte "A read from $2", $FF	;DO_DTE
 	.word TEST_PPU_OPENBUS_FROM_COMMON
 
 	MakeTest TEST_PPU_OPENBUS_FROM_READ2003_MUST_NOT_WRITETO_READBUFFER
 	;      0123456789ABCDEF0123456789ABC|
-	.byte "A read from $2003", $FF	;DO_DTE
+	.byte "A read from $3", $FF	;DO_DTE
 	.word TEST_PPU_OPENBUS_FROM_COMMON
 
 	MakeTest TEST_PPU_OPENBUS_FROM_READ2004_MUST_NOT_WRITETO_READBUFFER
 	;      0123456789ABCDEF0123456789ABC|
-	.byte "A read from $2004", $FF	;DO_DTE
+	.byte "A read from $4", $FF	;DO_DTE
 	.word TEST_PPU_OPENBUS_FROM_COMMON
 
 	MakeTest TEST_PPU_OPENBUS_FROM_READ2005_MUST_NOT_WRITETO_READBUFFER
 	;      0123456789ABCDEF0123456789ABC|
-	.byte "A read from $2005", $FF	;DO_DTE
+	.byte "A read from $5", $FF	;DO_DTE
 	.word TEST_PPU_OPENBUS_FROM_COMMON
 
 	MakeTest TEST_PPU_OPENBUS_FROM_READ2006_MUST_NOT_WRITETO_READBUFFER
 	;      0123456789ABCDEF0123456789ABC|
-	.byte "A read from $2006", $FF	;DO_DTE
+	.byte "A read from $6", $FF	;DO_DTE
 	.word TEST_PPU_OPENBUS_FROM_COMMON
 
 	TEST_PPU_OPENBUS_FROM_COMMON:
 	;      0123456789ABCDEF0123456789ABC|
 	.byte                  " must not",newline	;DO_DTE
-	.byte "overwrite the $2007 read",newline	;DO_DTE
+	.byte "overwrite the $7 read",newline	;DO_DTE
 	.byte "buffer.",0	;DO_DTE
 
 	MakeTest TEST_PPU_OPENBUS_INDEXED
 	;      0123456789ABCDEF0123456789ABC|
-	.byte "STA $2000,Y with Y=7 must"	;DO_DTE
+	.byte "STA $0,Y with Y=7 must"	;DO_DTE
 	OPENBUS_DUMMYREAD_COMMON:
 	.byte newline	;DO_DTE
-	.byte "issue a dummy read to $2007.",0	;DO_DTE
+	.byte "issue a dummy read to $7.",0	;DO_DTE
 
 	MakeTest TEST_PPU_OPENBUS_INDEXED2
 	;      0123456789ABCDEF0123456789ABC|
@@ -741,8 +741,8 @@ test_ppu_read_buffer_open_bus:
 	MakeTest TEST_PPU_OPENBUS_FROM_READ_MIRROR_MUST_WRITETO_READBUFFER
 	;      0123456789ABCDEF0123456789ABC|
 	.byte "A read from a mirrored copy",newline	;DO_DTE
-	.byte "of $2007 must act as if",newline	;DO_DTE
-	.byte "$2007 was read, and update",newline	;DO_DTE
+	.byte "of $7 must act as if",newline	;DO_DTE
+	.byte "$7 was read, and update",newline	;DO_DTE
 	.byte "the same read buffer.",0	;DO_DTE
 
 	MakeTest TEST_PPU_READ_WITH_AND
@@ -778,7 +778,7 @@ test_ppu_read_buffer_open_bus:
 	TEST_PPU_READ_INS_COMMON:
 	;      0123456789ABCDEF0123456789ABC|
 	.byte        " instruction must be",newline	;DO_DTE
-	.byte "usable for reading $2007",newline	;DO_DTE
+	.byte "usable for reading $7",newline	;DO_DTE
 	.byte "or any other I/O port.",0	;DO_DTE
 .popseg
 
@@ -808,21 +808,21 @@ test_ppu_read_buffer_open_bus_2:
 	.endmacro
 	setw addr, @specs
 
-	test_12 $2D33, $2000,$23, TEST_PPU_OPENBUS_FROM_WRITE2000_MUST_NOT_WRITETO_READBUFFER,0
-	test_12 $2D1E, $2000,  0,  TEST_PPU_OPENBUS_FROM_READ2000_MUST_NOT_WRITETO_READBUFFER,0
-	test_12 $2CE1, $2001,$C1, TEST_PPU_OPENBUS_FROM_WRITE2001_MUST_NOT_WRITETO_READBUFFER,0
-	test_12 $2CAF, $2001,  0,  TEST_PPU_OPENBUS_FROM_READ2001_MUST_NOT_WRITETO_READBUFFER,0
-	test_12 $2EFA, $2002,$00, TEST_PPU_OPENBUS_FROM_WRITE2002_MUST_NOT_WRITETO_READBUFFER,0
-	test_12 $2E0A, $2002,  0,  TEST_PPU_OPENBUS_FROM_READ2002_MUST_NOT_WRITETO_READBUFFER,0
-	test_12 $2CA0, $2003,$7A, TEST_PPU_OPENBUS_FROM_WRITE2003_MUST_NOT_WRITETO_READBUFFER,0
-	test_12 $2C1B, $2003,  0,  TEST_PPU_OPENBUS_FROM_READ2003_MUST_NOT_WRITETO_READBUFFER,0
-	test_12 $2DB1, $2004,$D0, TEST_PPU_OPENBUS_FROM_WRITE2004_MUST_NOT_WRITETO_READBUFFER,0
-	test_12 $2D26, $2004,  0,  TEST_PPU_OPENBUS_FROM_READ2004_MUST_NOT_WRITETO_READBUFFER,0
-	test_12 $2C62, $2005,$1F, TEST_PPU_OPENBUS_FROM_WRITE2005_MUST_NOT_WRITETO_READBUFFER,0
-	test_12 $2C11, $2005,  0,  TEST_PPU_OPENBUS_FROM_READ2005_MUST_NOT_WRITETO_READBUFFER,0
-	test_12 $2F11, $2006,$22, TEST_PPU_OPENBUS_FROM_WRITE2006_MUST_NOT_WRITETO_READBUFFER,0
-	test_12 $2F33, $2006,  0,  TEST_PPU_OPENBUS_FROM_READ2006_MUST_NOT_WRITETO_READBUFFER,0
-	test_12 $2E70, $2007,$EB, TEST_PPU_OPENBUS_FROM_WRITE2007_MUST_NOT_WRITETO_READBUFFER,0
+	test_12 $2D33, $0,$23, TEST_PPU_OPENBUS_FROM_WRITE2000_MUST_NOT_WRITETO_READBUFFER,0
+	test_12 $2D1E, $0,  0,  TEST_PPU_OPENBUS_FROM_READ2000_MUST_NOT_WRITETO_READBUFFER,0
+	test_12 $2CE1, $1,$C1, TEST_PPU_OPENBUS_FROM_WRITE2001_MUST_NOT_WRITETO_READBUFFER,0
+	test_12 $2CAF, $1,  0,  TEST_PPU_OPENBUS_FROM_READ2001_MUST_NOT_WRITETO_READBUFFER,0
+	test_12 $2EFA, $2,$00, TEST_PPU_OPENBUS_FROM_WRITE2002_MUST_NOT_WRITETO_READBUFFER,0
+	test_12 $2E0A, $2,  0,  TEST_PPU_OPENBUS_FROM_READ2002_MUST_NOT_WRITETO_READBUFFER,0
+	test_12 $2CA0, $3,$7A, TEST_PPU_OPENBUS_FROM_WRITE2003_MUST_NOT_WRITETO_READBUFFER,0
+	test_12 $2C1B, $3,  0,  TEST_PPU_OPENBUS_FROM_READ2003_MUST_NOT_WRITETO_READBUFFER,0
+	test_12 $2DB1, $4,$D0, TEST_PPU_OPENBUS_FROM_WRITE2004_MUST_NOT_WRITETO_READBUFFER,0
+	test_12 $2D26, $4,  0,  TEST_PPU_OPENBUS_FROM_READ2004_MUST_NOT_WRITETO_READBUFFER,0
+	test_12 $2C62, $5,$1F, TEST_PPU_OPENBUS_FROM_WRITE2005_MUST_NOT_WRITETO_READBUFFER,0
+	test_12 $2C11, $5,  0,  TEST_PPU_OPENBUS_FROM_READ2005_MUST_NOT_WRITETO_READBUFFER,0
+	test_12 $2F11, $6,$22, TEST_PPU_OPENBUS_FROM_WRITE2006_MUST_NOT_WRITETO_READBUFFER,0
+	test_12 $2F33, $6,  0,  TEST_PPU_OPENBUS_FROM_READ2006_MUST_NOT_WRITETO_READBUFFER,0
+	test_12 $2E70, $7,$EB, TEST_PPU_OPENBUS_FROM_WRITE2007_MUST_NOT_WRITETO_READBUFFER,0
 
 	; See comment in @write12_sub for the meaning of these writes.
 	setb nmi+8, $8D ; STA ABS
@@ -837,13 +837,13 @@ test_ppu_read_buffer_open_bus_2:
 	iny
 	bne :-
 :
-	test_12 $2C34, $2007,$42, TEST_PPU_OPENBUS_INDEXED, 1 ; +1 to compensate for the dummy read
+	test_12 $2C34, $7,$42, TEST_PPU_OPENBUS_INDEXED, 1 ; +1 to compensate for the dummy read
 	jsr @write12_ind
 
-	test_12 $2C02, $2007,$3A, TEST_PPU_OPENBUS_INDEXED2, 0
+	test_12 $2C02, $7,$3A, TEST_PPU_OPENBUS_INDEXED2, 0
 	jsr @write12_notind
 
-	setb $2000,$00 ; Set PPUCTRL to sane value (we changed it earlier)
+	setb $0,$00 ; Set PPUCTRL to sane value (we changed it earlier)
 
 	begin_test TEST_PPU_OPENBUS_FROM_READ_MIRROR_MUST_WRITETO_READBUFFER
 	;jsr wait_vbl_optional
@@ -854,7 +854,7 @@ test_ppu_read_buffer_open_bus_2:
 	lda $2307	; returns $A5, $3B is in buffer
 	cmp #$A5
 	jsr fail_current_test_ifNE
-	lda $2007	; returns $3B, $77 is in buffer
+	lda $7	; returns $3B, $77 is in buffer
 	cmp #$3B
 	jsr fail_current_test_ifNE
 
@@ -864,49 +864,49 @@ test_ppu_read_buffer_open_bus_2:
 	jsr populate_ciram_short_very_quick
 	begin_test TEST_PPU_READ_WITH_CMP
 	lda #$40
-	cmp $2007
+	cmp $7
 	jsr fail_current_test_ifNE
 	begin_test TEST_PPU_READ_WITH_EOR
 	lda #$F0
-	eor $2007
+	eor $7
 	cmp #$55 ; $F0 xor $A5
 	jsr fail_current_test_ifNE
 	begin_test TEST_PPU_READ_WITH_SBC
 	lda #$3B+$3A
 	sec
-	sbc $2007
+	sbc $7
 	cmp #$3A
 	jsr fail_current_test_ifNE
 	begin_test TEST_PPU_READ_WITH_ADC
 	lda #(($3A-$77)&$FF)
 	clc
-	adc $2007 ;expect $77
+	adc $7 ;expect $77
 	cmp #$3A
 	jsr fail_current_test_ifNE
 
 	jsr populate_ciram_short_very_quick
 	begin_test TEST_PPU_READ_WITH_ORA
 	lda #$8B
-	ora $2007
+	ora $7
 	cmp #$CB ; $40 or $8B
 	jsr fail_current_test_ifNE
 	begin_test TEST_PPU_READ_WITH_AND
 	lda #$27
-	and $2007
+	and $7
 	cmp #$25 ; $A5 and $27
 	jsr fail_current_test_ifNE
 	begin_test TEST_PPU_READ_WITH_CPX
 	ldx #$3B
-	cpx $2007
+	cpx $7
 	jsr fail_current_test_ifNE
 	begin_test TEST_PPU_READ_WITH_CPY
 	ldy #$77
-	cpy $2007
+	cpy $7
 	jmp fail_current_test_ifNE
 
 
 @write12_sub:
-	;sta $2000,y cannot be used: It will do a dummy read.
+	;sta $0,y cannot be used: It will do a dummy read.
 	; So, construct the code in RAM instead.
 	jsr @sub_configure
 	sty nmi+9
@@ -915,7 +915,7 @@ test_ppu_read_buffer_open_bus_2:
 	jmp fail_current_test_ifNE
 @write12_ind:
 	jsr @sub_configure
-	sta $2000,y
+	sta $0,y
 	bne :-
 @write12_notind:
 	jsr @sub_configure
@@ -924,7 +924,7 @@ test_ppu_read_buffer_open_bus_2:
 	bne :-
 @read12_sub:
 	jsr @sub_configure
-	lda $2000,y
+	lda $0,y
 	jmp :-
 @sub_configure:
 	tya
@@ -1294,7 +1294,7 @@ test_ppu_memory_14bit:
 	sta @offset
 @loop_mirrors:
 	; Read from @addr + @offset*$100
-	; Which is, @addr + $4000
+	; Which is, @addr + $0
 	;           @addr + $8000
 	;       and @addr + $C000
 	lda @addr+1
@@ -1390,7 +1390,7 @@ test_ppu_memory_14bit:
 
 	MakeTest TEST_PPU_READ_3EFF
 	.byte "Setting PPU address to 3EFF",newline	;DO_DTE
-	.byte "and reading $2007 twice",newline		;DO_DTE
+	.byte "and reading $7 twice",newline		;DO_DTE
 	.byte "should give the data at",newline		;DO_DTE
 	.byte "$3F00, not the data at $2EFF.",0		;DO_DTE
 
@@ -1402,7 +1402,7 @@ test_ppu_memory_14bit:
 
 	MakeTest TEST_PPU_SEQ_READ_WRAP
 	.byte "Setting PPU address to 3FFF",newline	;DO_DTE
-	.byte "& reading $2007 thrice should",newline	;DO_DTE
+	.byte "& reading $7 thrice should",newline	;DO_DTE
 	.byte "give the contents of $0000.",0		;DO_DTE
 
 	MakeTest SEQ_READ_INTERNAL
@@ -1555,21 +1555,21 @@ test_ppu_seq_read_wrap:
 .pushseg
 	MakeTest TEST_VADDR
 	;      0123456789ABCDEF0123456789ABC|0123456789ABCDEF0123456789ABC|
-	.byte "Relationship between $2005",newline	;DO_DTE
-	.byte "and $2006 is not implemented",newline	;DO_DTE
+	.byte "Relationship between $5",newline	;DO_DTE
+	.byte "and $6 is not implemented",newline	;DO_DTE
 	.byte "properly. Here is a guide.",newline	;DO_DTE
 	.byte "It explains which registers",newline	;DO_DTE
 	.byte "use which parts of the address.",newline	;DO_DTE
 	.byte "Note that only the second",newline	;DO_DTE
-	.byte "write to $2006 updates the",newline	;DO_DTE
-	.byte "address really used by $2007.",newline	;DO_DTE
+	.byte "write to $6 updates the",newline	;DO_DTE
+	.byte "address really used by $7.",newline	;DO_DTE
 	.byte "FEDCBA9876543210ZYX: bit pos.",newline	;DO_DTE
-	.byte "  ^^^^^^^^^^^^^^------ =$2007",newline	;DO_DTE
-	.byte "zz543210-------------- $2006#1",newline	;DO_DTE
-	.byte "        76543210------ $2006#2",newline	;DO_DTE
-	.byte "           76543210--- $2005#1",newline	;DO_DTE
-	.byte " 210--76543----------- $2005#2",newline	;DO_DTE
-	.byte "    10---------------- $2000",0	;DO_DTE
+	.byte "  ^^^^^^^^^^^^^^------ =$7",newline	;DO_DTE
+	.byte "zz543210-------------- $6#1",newline	;DO_DTE
+	.byte "        76543210------ $6#2",newline	;DO_DTE
+	.byte "           76543210--- $5#1",newline	;DO_DTE
+	.byte " 210--76543----------- $5#2",newline	;DO_DTE
+	.byte "    10---------------- $0",0	;DO_DTE
 	;        ||||||
 	;        ||||||_ 0100
 	;        |||||__ 0200
@@ -1586,10 +1586,10 @@ test_vaddr:
 	.macro vaddr_set_test addr, expected_value
 	    .pushseg
 	        .segment "RODATA"
-		.byte ((addr >> 10) & 3)	; $2000
-		.byte ((addr & $1F) << 3)	; $2005.1
-		.byte (((addr >> 12) & 7) | (((addr >> 5) & $1F) << 3)) ; $2005.2
-		.byte ((addr & $FF))		; $2006.2
+		.byte ((addr >> 10) & 3)	; $0
+		.byte ((addr & $1F) << 3)	; $5.1
+		.byte (((addr >> 12) & 7) | (((addr >> 5) & $1F) << 3)) ; $5.2
+		.byte ((addr & $FF))		; $6.2
 		.byte expected_value
 	    .popseg
 	.endmacro
@@ -1636,16 +1636,16 @@ test_vaddr:
 	jsr @byte
 	bmi @no_more_test
 	bit PPUSTATUS
-	sta $2000	;$2000
+	sta $0	;$0
 	jsr @byte
-	sta $2005	;$2005.1
+	sta $5	;$5.1
 	pha
 	 jsr @byte
-	 sta $2005	;$2005.2
+	 sta $5	;$5.2
 	pla
-	sta $2005	;$2005.1
+	sta $5	;$5.1
 	jsr @byte
-	sta $2006	;$2006.2
+	sta $6	;$6.2
 	lda PPUDATA
 	jsr @byte
 	cmp PPUDATA
@@ -1721,7 +1721,7 @@ test_ppuio_mirroring:
 
 	jsr populate_ciram_quick
 
-	; Do test using $2000 and $2000
+	; Do test using $0 and $0
 	ldx #$20
 	lda #$00
 	ldy #0
@@ -1941,9 +1941,9 @@ test_spr0hit_and_vblank:
 	jsr spr0hit_test_clear_hit_flag
 	setb SPRADDR, $FF 
 	setb SPRDATA, $0A
-	lda $2000
-	lda $2001
-	lda $2002
+	lda $0
+	lda $1
+	lda $2
 	and #$20
 	jsr fail_current_test_ifNE
 	rts
@@ -1955,16 +1955,16 @@ test_spr0hit_and_vblank:
 	MakeTest TEST_SPHIT_DIRECT
 	;      0123456789ABCDEF0123456789ABC|0123456789ABCDEF0123456789ABC|
 	.byte "Sprite 0 hit test by poking",newline	;DO_DTE
-	.byte "data directly into $2003-4",newline	;DO_DTE
+	.byte "data directly into $3-4",newline	;DO_DTE
 	.byte "^ Possible causes for failure:",newline	;DO_DTE
-	.byte "- $2003/$2004 not implemented",newline	;DO_DTE
+	.byte "- $3/$4 not implemented",newline	;DO_DTE
 	.byte "- No sprite 0 hit tests",newline	;DO_DTE
 	.byte "- Way too long vblank period",0	;DO_DTE
 	
 	MakeTest TEST_SPHIT_DIRECT_READBUFFER
 	;      0123456789ABCDEF0123456789ABC|0123456789ABCDEF0123456789ABC|
 	.byte "Sending 5 bytes of data into",newline	;DO_DTE
-	.byte "$2003 and $2004",$FF	;DO_DTE
+	.byte "$3 and $4",$FF	;DO_DTE
 	.word TEST_PPU_OPENBUS_FROM_COMMON
 .popseg
 test_spr0hit_and_dma:
@@ -1973,7 +1973,7 @@ test_spr0hit_and_dma:
 	jsr normalize_wait_vbl
 	;              0123456789ABCDEF0123456789ABC|0123456789ABCDEF0123456789ABC|0123456789ABCDEF0123456789ABC|"
 	text_white
-	print_ext_str "Performing tests that combine",newline,"sprite 0 hit flag, $4014 DMA",newline,"and the RAM mirroring...",newline	;DO_DTE
+	print_ext_str "Performing tests that combine",newline,"sprite 0 hit flag, $4 DMA",newline,"and the RAM mirroring...",newline	;DO_DTE
 	text_color1
 	print_ext_str "Graphical artifacts during",newline,"this test are OK and expected.",newline,newline	;DO_DTE
 	
@@ -2045,13 +2045,13 @@ test_spr0hit:
 	MakeTest TEST_SPHIT_DMA_ROM
 	;      0123456789ABCDEF0123456789ABC|0123456789ABCDEF0123456789ABC|
 	.byte "Sprite 0 hit test using DMA",newline	;DO_DTE
-	.byte "($4014) using ROM as source",newline	;DO_DTE
+	.byte "($4) using ROM as source",newline	;DO_DTE
 	.byte "^ Possible causes for failure:",newline	;DO_DTE
-	.byte "- $4014 DMA cannot read from",newline	;DO_DTE
+	.byte "- $4 DMA cannot read from",newline	;DO_DTE
 	.byte "  anything other than RAM",0	;DO_DTE
 
 	MakeTest TEST_SPHIT_DMA_READBUFFER
-	.byte "Invoking a $4014 DMA with a",newline	;DO_DTE
+	.byte "Invoking a $4 DMA with a",newline	;DO_DTE
 	.byte "non-$20 value ",$FF	;DO_DTE
 	.word TEST_PPU_OPENBUS_FROM_COMMON
 .popseg
@@ -2103,7 +2103,7 @@ test_dma_rom:
 	jsr spr0hit_test_clear_hit_flag
 	jsr spr0hit_readbuffertest_begin
 	; Execute DMA
-	stx $4014
+	stx $4
 	jsr spr0hit_readbuffertest_end
 	tya
 	jmp spr0hit_test_helper
@@ -2117,21 +2117,21 @@ spr0hit_readbuffertest_dma_conclude:
 .pushseg
 	MakeTest TEST_SPHIT_DMA_PPU_BUS
 	.byte "Sprite 0 hit test using DMA",newline	;DO_DTE
-	.byte "($4014) using PPU I/O bus",newline	;DO_DTE
+	.byte "($4) using PPU I/O bus",newline	;DO_DTE
 	.byte "as source",newline	;DO_DTE
-	.byte "^ In this test, $4014 <- #$20.",newline	;DO_DTE
+	.byte "^ In this test, $4 <- #$20.",newline	;DO_DTE
 	.byte "  Possible causes for failure:",newline	;DO_DTE
 	.byte "- DMA does not do proper reads",newline	;DO_DTE
 	.byte "- PPU bus does not preserve",newline	;DO_DTE
 	.byte "  last transferred values",newline	;DO_DTE
-	.byte "- $2002 read returned a value",newline	;DO_DTE
+	.byte "- $2 read returned a value",newline	;DO_DTE
 	.byte "  that differs from expected",newline	;DO_DTE
-	.byte "- $2004 read modifies the OAM",0	;DO_DTE
+	.byte "- $4 read modifies the OAM",0	;DO_DTE
 	
 	MakeTest TEST_DMA_PPU_SIDEEFFECT
 	;      0123456789ABCDEF0123456789ABC|0123456789ABCDEF0123456789ABC|
-	.byte "Writing $20 into $4014 should",newline	;DO_DTE
-	.byte "generate 32 reads into $2007",newline	;DO_DTE
+	.byte "Writing $20 into $4 should",newline	;DO_DTE
+	.byte "generate 32 reads into $7",newline	;DO_DTE
 	.byte "as a side-effect, each time",newline	;DO_DTE
 	.byte "incrementing the PPU read",newline	;DO_DTE
 	.byte "address.",0	;DO_DTE
@@ -2160,10 +2160,10 @@ test_dma_ppu_openbus:
 	jsr @half_test
 	
 	; EXPECTED SPRITE:
-	;      From $2000:  0A (open bus)
-	;      From $2001:  0A (open bus, again)
-	;      From $2002:  8A (open bus + vblank flag; no sp0hit, no spoverflow)
-	;      From $2003:  8A (open bus)
+	;      From $0:  0A (open bus)
+	;      From $1:  0A (open bus, again)
+	;      From $2:  8A (open bus + vblank flag; no sp0hit, no spoverflow)
+	;      From $3:  8A (open bus)
 	;          If Vblank is unset, $8A will become $0A instead.
 
 	; I.e. coordinates: $85,$05
@@ -2217,7 +2217,7 @@ test_dma_ppu_openbus:
 	setb SPRADDR, $FF
 	stx SPRDATA  ; SPRADDR wraps to $00; X is now in PPU's open bus
 	;
-	setb $4014, >$2000 ; Note: This will also do 32 reads from $2007 as a side effect.
+	setb $4, >$0 ; Note: This will also do 32 reads from $7 as a side effect.
 	;
 	ldx PPUDATA
 	;
@@ -2347,7 +2347,7 @@ test_dma_mirroring:
 	jsr spr0hit_test_clear_hit_flag
 	jsr spr0hit_readbuffertest_begin
 	lda template_targetptr+1
-	sta $4014 ; Execute DMA transfer
+	sta $4 ; Execute DMA transfer
 	jsr spr0hit_readbuffertest_end
 	tya
 	jsr spr0hit_test_helper
@@ -2361,18 +2361,18 @@ test_dma_mirroring:
 
 .pushseg
 	MakeTest TEST_CHRROM_READ_BANKED
-	.byte "CHR ROM read through $2007",newline	;DO_DTE
+	.byte "CHR ROM read through $7",newline	;DO_DTE
 	.byte "does not honor mapper 3",newline	;DO_DTE
 	.byte "(CNROM) bank switching",0	;DO_DTE
 
 	MakeTest TEST_CHRROM_READ_BANKED_BUFFER
 	;      0123456789ABCDEF0123456789ABC|0123456789ABCDEF0123456789ABC|
-	.byte "The $2007 read buffer should",newline	;DO_DTE
+	.byte "The $7 read buffer should",newline	;DO_DTE
 	.byte "not retroactively react to",newline	;DO_DTE
 	.byte "changes in VROM mapping.",newline	;DO_DTE
-	.byte "When you read $2007, the",newline	;DO_DTE
+	.byte "When you read $7, the",newline	;DO_DTE
 	.byte "data is stored in a buffer",newline	;DO_DTE
-	.byte "(«latch»), and the previous",newline	;DO_DTE
+	.byte "(latch), and the previous",newline	;DO_DTE
 	.byte "content of the buffer is",newline	;DO_DTE
 	.byte "returned. It is not a delayed",newline	;DO_DTE
 	.byte "read request.",0	;DO_DTE
@@ -2536,7 +2536,7 @@ test_chr_rom_write:
 .segment "RODATA"
 	test_read_buffer_fade_visible_delay_schedule:
 		.byte TEST_BUFFER_DELAY_VISIBLE_1FRAME ; Which test
-		.byte $DB	; Which data we expect
+		.byte $.byte ; Which data we expect
 		.word $1B43	; Which address
 		.word 1	; How many frames to sleep
 		.byte TEST_BUFFER_DELAY_VISIBLE_1SECOND ; Which test
@@ -2544,7 +2544,7 @@ test_chr_rom_write:
 		.word $1BE9	; Which address
 		.word 60	; How many frames to sleep
 		.byte TEST_BUFFER_DELAY_VISIBLE_3SECONDS ; Which test
-		.byte $DB	; Which data we expect
+		.byte $.byte ; Which data we expect
 		.word $1B43	; Which address
 		.word 60*3	; How many frames to sleep
 		.byte TEST_BUFFER_DELAY_VISIBLE_7SECONDS ; Which test
@@ -2575,19 +2575,19 @@ final_beep:
 	ldxa #($23F + 10*$800)	; period = $23F, length=10
 beep0:	ldy #0
 	;jmp beep
-beep:	sta $4000+2,y
+beep:	sta $0+2,y
 	lda beep_param
-	sta $4000+0,y
+	sta $0+0,y
 	lda #0
-	sta $4000+1,y ; no sweep
+	sta $0+1,y ; no sweep
 	txa
-	sta $4000+3,y
+	sta $0+3,y
 	rts
 pre_beep_length:
 	jsr pre_beep
 	delay_msec 110
 	lda #$93	; almost silent
-	sta $4000+0
+	sta $0+0
 	delay_msec 20
 	rts
 

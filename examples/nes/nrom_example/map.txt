@@ -1,0 +1,101 @@
+Modules list:
+-------------
+nrom.o:
+    INESHDR           Offs=000000  Size=000008  Align=00001  Fill=0000
+    VECTORS           Offs=000000  Size=000006  Align=00001  Fill=0000
+init.o:
+    CODE              Offs=000000  Size=000036  Align=00001  Fill=0000
+main.o:
+    CODE              Offs=000036  Size=000052  Align=00001  Fill=0000
+    RODATA            Offs=000000  Size=000020  Align=00001  Fill=0000
+    ZEROPAGE          Offs=000000  Size=000006  Align=00001  Fill=0000
+    CHR               Offs=000000  Size=002000  Align=00001  Fill=0000
+bg.o:
+    CODE              Offs=000088  Size=00006D  Align=00001  Fill=0000
+player.o:
+    CODE              Offs=0000F5  Size=00013B  Align=00001  Fill=0000
+    RODATA            Offs=000020  Size=000008  Align=00001  Fill=0000
+    ZEROPAGE          Offs=000006  Size=000007  Align=00001  Fill=0000
+pads.o:
+    CODE              Offs=000230  Size=000036  Align=00001  Fill=0000
+ppuclear.o:
+    CODE              Offs=000266  Size=000045  Align=00001  Fill=0000
+
+
+Segment list:
+-------------
+Name                   Start     End    Size  Align
+----------------------------------------------------
+CHR                   000000  001FFF  002000  00001
+INESHDR               000000  000007  000008  00001
+ZEROPAGE              000010  00001C  00000D  00001
+CODE                  00C000  00C2AA  0002AB  00001
+RODATA                00C300  00C327  000028  00001
+VECTORS               00FFFA  00FFFF  000006  00001
+
+
+Exports list by name:
+---------------------
+OAM                       000200 REA    cur_keys                  000012 RLZ    
+draw_bg                   00C088 RLA    draw_player_sprite        00C1BB RLA    
+init_player               00C0F5 RLA    irq_handler               00C039 RLA    
+main                      00C03A RLA    move_player               00C108 RLA    
+new_keys                  000014 RLZ    nmi_handler               00C036 RLA    
+oam_used                  000011 RLZ    ppu_clear_nt              00C266 RLA    
+ppu_clear_oam             00C288 RLA    ppu_screen_on             00C298 RLA    
+reset_handler             00C000 RLA    run_dma_and_read_pads     00C230 RLA    
+
+
+
+Exports list by value:
+----------------------
+oam_used                  000011 RLZ    cur_keys                  000012 RLZ    
+new_keys                  000014 RLZ    OAM                       000200 REA    
+reset_handler             00C000 RLA    nmi_handler               00C036 RLA    
+irq_handler               00C039 RLA    main                      00C03A RLA    
+draw_bg                   00C088 RLA    init_player               00C0F5 RLA    
+move_player               00C108 RLA    draw_player_sprite        00C1BB RLA    
+run_dma_and_read_pads     00C230 RLA    ppu_clear_nt              00C266 RLA    
+ppu_clear_oam             00C288 RLA    ppu_screen_on             00C298 RLA    
+
+
+
+Imports list:
+-------------
+OAM (main.o):
+    ppuclear.o                src/ppuclear.asm:12
+    pads.o                    src/pads.asm:32
+    player.o                  src/global.inc:9
+cur_keys (main.o):
+    pads.o                    src/pads.asm:31
+    player.o                  src/global.inc:10
+draw_bg (bg.o):
+    main.o                    src/global.inc:13
+draw_player_sprite (player.o):
+    main.o                    src/global.inc:16
+init_player (player.o):
+    main.o                    src/global.inc:16
+irq_handler (main.o):
+    nrom.o                    src/nrom.asm:1
+main (main.o):
+    init.o                    src/global.inc:8
+move_player (player.o):
+    main.o                    src/global.inc:16
+new_keys (main.o):
+    pads.o                    src/pads.asm:31
+nmi_handler (main.o):
+    nrom.o                    src/nrom.asm:1
+oam_used (main.o):
+    player.o                  src/global.inc:10
+ppu_clear_nt (ppuclear.o):
+    bg.o                      src/global.inc:19
+ppu_clear_oam (ppuclear.o):
+    main.o                    src/global.inc:19
+    init.o                    src/global.inc:19
+ppu_screen_on (ppuclear.o):
+    main.o                    src/global.inc:19
+reset_handler (init.o):
+    nrom.o                    src/nrom.asm:1
+run_dma_and_read_pads (pads.o):
+    main.o                    src/global.inc:22
+

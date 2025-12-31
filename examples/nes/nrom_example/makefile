@@ -79,7 +79,7 @@ endif
 # Phony targets are those not associated with an output file.
 .PHONY: run debug all dist zip clean
 
-# Create object directory
+# Create object directory (order-only prerequisite)
 $(objdir):
 	@mkdir -p $(objdir)
 
@@ -113,7 +113,7 @@ $(objdir)/ntscPeriods.s: tools/mktables.py | $(objdir)
 # source code to object code
 
 $(objdir)/%.o: $(srcdir)/%.asm $(srcdir)/nes.inc $(srcdir)/global.inc | $(objdir)
-	$(CA65) $(CA65FLAGS) $< -o $@
+	$(CA65) $(CA65FLAGS) -I $(srcdir) $< -o $@
 
 $(objdir)/%.o: $(objdir)/%.asm | $(objdir)
 	$(CA65) $(CA65FLAGS) $< -o $@
@@ -135,10 +135,10 @@ objlist128 := $(foreach o,nrom $(objlist),$(objdir)/$(o).o)
 objlist256 := $(foreach o,nrom256 $(objlist),$(objdir)/$(o).o)
 
 map.txt $(title).nes: nrom128.cfg $(objlist128)
-	$(LD65) -o $(title).nes --dbgfile $(title).dbg -m map.txt -C $^
+	$(LD65) -o $(title).nes --dbgfile $(title).dbg -m map.txt -C nrom128.cfg $(objlist128)
 
 map256.txt $(title)256.nes: nrom256-without-dmc.cfg $(objlist256)
-	$(LD65) -o $(title)256.nes --dbgfile $(title)256.dbg -m map256.txt -C $^
+	$(LD65) -o $(title)256.nes --dbgfile $(title)256.dbg -m map256.txt -C nrom256-without-dmc.cfg $(objlist256)
 
 # Rule to create or update the distribution zipfile by adding all
 # files listed in zip.in.  Though the zipfile depends on every file
@@ -149,7 +149,7 @@ map256.txt $(title)256.nes: nrom256-without-dmc.cfg $(objlist256)
 dist: zip
 zip: $(title)-$(version).zip
 $(title)-$(version).zip: \
-  zip.in all README.md CHANGES.txt $(objdir)/index.txt
+	zip.in all README.md CHANGES.txt $(objdir)/index.txt
 	zip -9 -u $@ -@ < $<
 
 # Build zip.in from the list of files in the Git tree.

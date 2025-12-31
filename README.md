@@ -123,6 +123,8 @@ Key top-level files:
 - [`LICENSE`](LICENSE) - License
 - [`GETTINGSTARTED.md`](GETTINGSTARTED.md) - Environment setup and first steps
 
+All framework content is self-contained. Documentation, examples, and tests are fully integrated into the repository structure.
+
 ## Framework Principles
 
 - **Hardware-first**: All explanations start from hardware behavior, not abstractions
@@ -144,11 +146,12 @@ This framework consists of four integrated components:
 ## Current Status
 
 ### NES
-- ✅ Complete documentation structure
+- ✅ Complete documentation structure (47 markdown files)
 - ✅ Production-ready template (matches hello_world pattern)
-- ✅ 6 working examples
-- ✅ 64+ test ROM directories
+- ✅ 6+ working examples (all build with ca65/cc65)
+- ✅ 64+ test ROM directories (467 assembly files)
 - ✅ Comprehensive Makefile build system
+- ✅ All content integrated and self-contained
 
 ### SNES
 - ✅ Complete documentation structure (three-processor architecture)

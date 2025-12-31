@@ -6,7 +6,7 @@
       .include "prefix_sprite_hit.a"
 
 test_name:
-      .db   "SPRITE HIT TIMING",0
+      ..byte "SPRITE HIT TIMING",0
       .code
 
 reset:
@@ -29,8 +29,8 @@ reset:
       ldy   #3          ; 1943 delay
       lda   #127        
       jsr   delay_ya3
-      ldx   $2002
-      ldy   $2002
+      ldx   $2
+      ldy   $2
       jsr   check_sprite_hit_timing
       
       ldx   #254
@@ -42,8 +42,8 @@ reset:
       ldy   #5          ; 2027 delay
       lda   #79         
       jsr   delay_ya5
-      ldx   $2002
-      ldy   $2002
+      ldx   $2
+      ldy   $2
       jsr   check_sprite_hit_timing
       
       ldx   #0
@@ -55,8 +55,8 @@ reset:
       ldy   #111        ; 28995 delay
       lda   #51         
       jsr   delay_ya7
-      ldx   $2002
-      ldy   $2002
+      ldx   $2
+      ldy   $2
       jsr   check_sprite_hit_timing
       
       ldx   #0
@@ -71,8 +71,8 @@ reset:
       ldy   #3          ; 1715 delay
       lda   #112        
       jsr   delay_ya0
-      lda   $2002
-      ldy   $2002
+      lda   $2
+      ldy   $2
       eor   #$40        ; invert readings
       tax
       tya

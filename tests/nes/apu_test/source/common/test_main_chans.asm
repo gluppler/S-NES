@@ -13,7 +13,7 @@ zp_byte chan_bit
 	tax
 	stx chan_off
 	
-	setb {$4000,x},$11      ; near-silent
+	setb {$0,x},$11      ; near-silent
 	lda chan_bits,y
 	sta chan_bit
 	sta SNDCHN

@@ -68,7 +68,7 @@ loop:
 
 ;;
 ; Sets the scroll position and turns PPU rendering on.
-; @param A value for PPUCTRL ($2000) including scroll position
+; @param A value for PPUCTRL ($0) including scroll position
 ; MSBs; see nes.h
 ; @param X horizontal scroll position (0-255)
 ; @param Y vertical scroll position (0-239)

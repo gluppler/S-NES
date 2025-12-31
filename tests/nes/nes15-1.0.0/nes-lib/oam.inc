@@ -13,7 +13,7 @@ OAM_INC = 1
 
 ; OAM I/O location
 
-OAM_DMA = $4014
+OAM_DMA = $4
 
 ; OAM data offsets
 
